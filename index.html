@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ONE Digitales Planen — Struktur-Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#242429; --sub:#6B6B79; --paper:#FAFAFB; --surface:#ffffff;
+    --line:#E3E9EC; --line2:#EEF0F2;
+    --steel:#242429; --azure:#EC004F; --azure-d:#C50042;
+    --frei:#2e7d4f; --gep:#bd7d1a; --bearb:#6B6B79;
+    --chipbg:#F4F4F6;
+  }
+  *{box-sizing:border-box}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  html,body{height:100%}
+  body{margin:0; color:var(--ink); background:var(--paper);
+    font-family:Inter,system-ui,sans-serif; font-size:15px; line-height:1.5;
+    -webkit-font-smoothing:antialiased; overflow:hidden}
+  a{color:var(--azure-d)}
+  :focus-visible{outline:2.5px solid var(--azure); outline-offset:2px; border-radius:6px}
+  .mono{font-family:Inter,sans-serif}
+
+  header.top{position:fixed; inset:0 0 auto 0; z-index:30; height:58px;
+    display:flex; align-items:center; gap:14px; padding:0 20px;
+    background:rgba(255,255,255,.92); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line)}
+  .logo{font-weight:800; letter-spacing:.2em; font-size:14.5px; color:#000}
+  .claim{font-size:11.5px; color:var(--sub); font-style:italic; white-space:nowrap}
+  @media(max-width:900px){.claim{display:none}}
+  .brand{display:flex; align-items:baseline; gap:7px; font-family:Inter,sans-serif}
+  .brand b{font-weight:800; font-size:18px; color:#000}
+  .brand .bim{font-weight:800; font-size:18px; color:#fff; background:var(--azure);
+    border-radius:6px; padding:0 8px; line-height:1.4}
+  .crumb{font-family:Inter,sans-serif; font-size:12px; color:var(--sub)}
+  .crumb b{color:var(--ink)}
+  .spacer{flex:1}
+  #btnBack{display:none; font:inherit; font-weight:600; font-size:13px; cursor:pointer;
+    border:1.5px solid var(--line); background:var(--surface); color:var(--steel);
+    padding:7px 14px; border-radius:8px}
+  #btnBack:hover{border-color:var(--azure)}
+  .proto-tag{font-family:Inter,sans-serif; font-size:11px; color:var(--sub);
+    border:1px dashed var(--line); border-radius:20px; padding:4px 10px}
+
+  /* Buehne */
+  #stage{position:fixed; inset:58px 0 0 0; overflow:hidden;
+    background-image:
+      linear-gradient(var(--line2) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line2) 1px,transparent 1px);
+    background-size:20px 20px}
+  .blob{position:absolute; width:58vmax; height:58vmax; border-radius:50%;
+    filter:blur(70px); pointer-events:none}
+  .blob.b1{background:radial-gradient(circle, rgba(236,0,79,.10), transparent 62%);
+    top:-20vmax; left:-14vmax; animation:drift1 46s ease-in-out infinite alternate}
+  .blob.b2{background:radial-gradient(circle, rgba(36,36,41,.09), transparent 62%);
+    bottom:-22vmax; right:-16vmax; animation:drift2 58s ease-in-out infinite alternate}
+  @keyframes drift1{from{transform:translate(0,0)}to{transform:translate(10vmax,7vmax)}}
+  @keyframes drift2{from{transform:translate(0,0)}to{transform:translate(-9vmax,-6vmax)}}
+  #wires{position:absolute; inset:0; width:100%; height:100%}
+  #wires line{stroke:#b9c4cd; stroke-width:1.6; opacity:0; transition:opacity .5s ease}
+  #wires line.on{opacity:.85}
+  #nodes{position:absolute; inset:0}
+
+  .nd{position:absolute; transform:translate(-50%,-50%); cursor:pointer;
+    transition:transform .55s cubic-bezier(.2,.8,.25,1), opacity .45s ease, box-shadow .15s ease;
+    text-align:center; user-select:none}
+  .nd.leaving{opacity:0 !important; transform:translate(-50%,-50%) scale(.4) !important; pointer-events:none}
+
+  .nd.center{width:168px; height:168px; border-radius:50%;
+    background:#1A1A1F; color:#fff; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:4px; z-index:5;
+    box-shadow:0 0 0 3px rgba(236,0,79,.25), 0 0 46px rgba(236,0,79,.45), 0 14px 36px rgba(0,0,0,.22);
+    animation:glow 3.2s ease-in-out infinite}
+  .nd.center::after{content:""; position:absolute; inset:-7px; border-radius:50%;
+    border:2px solid rgba(236,0,79,.5); animation:ring 2.6s ease-out infinite}
+  .nd.center .t em{font-style:normal; color:#FF3D77}
+  @keyframes glow{0%,100%{box-shadow:0 0 0 3px rgba(236,0,79,.22),0 0 34px rgba(236,0,79,.35),0 14px 36px rgba(0,0,0,.22)}
+    50%{box-shadow:0 0 0 3px rgba(236,0,79,.4),0 0 66px rgba(236,0,79,.6),0 14px 36px rgba(0,0,0,.22)}}
+  @keyframes ring{0%{transform:scale(1); opacity:.7}100%{transform:scale(1.45); opacity:0}}
+  .nd.center .t{font-family:Inter,sans-serif; font-weight:800; font-size:26px;
+    letter-spacing:.06em; line-height:1}
+  .nd.center .t2{font-family:Inter,sans-serif; font-weight:700; font-size:13.5px; color:#FF3D77;
+    line-height:1.15; padding:0 14px}
+  .nd.center .h{font-size:11.5px; opacity:.82}
+  .nd.center:hover{filter:brightness(1.12)}
+
+  .nd.cat{width:132px; height:132px; border-radius:50%;
+    background:var(--surface); border:2px solid var(--azure);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:12px; gap:5px; z-index:4}
+  .nd.cat:hover{box-shadow:0 10px 26px rgba(23,33,43,.16)}
+  .nd.cat .t{font-family:Inter,sans-serif; font-weight:700; font-size:14.5px; line-height:1.15}
+  .nd.cat .h{font-size:10.5px; color:var(--sub)}
+
+  .nd.awf{width:172px; background:var(--surface); border:1.5px solid var(--line);
+    border-radius:13px; padding:11px 13px 10px; z-index:4; text-align:left}
+  .nd.awf.sm{width:152px; padding:9px 11px 8px}
+  .nd.awf.sm .t{font-size:11.5px; margin:2px 0 6px}
+  .nd.awf.sm .num{font-size:10px}
+  .nk{display:inline-block; font-size:10px; font-weight:500; color:#8a95a0;
+    background:#f2f4f6; border:1px solid var(--line2); border-radius:20px; padding:2px 8px}
+  .nd.awf:hover{border-color:var(--azure); box-shadow:0 10px 24px rgba(23,33,43,.14)}
+  .nd.awf .num{font-family:Inter,sans-serif; font-size:10.5px; color:var(--bearb)}
+  .nd.awf .t{font-family:Inter,sans-serif; font-weight:700; font-size:13.5px;
+    line-height:1.2; margin:2px 0 7px}
+  .st{display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-weight:600;
+    padding:2px 8px; border-radius:20px; white-space:nowrap}
+  .st::before{content:""; width:6px; height:6px; border-radius:50%}
+  .st.f{color:var(--frei); background:#e8f3ec}.st.f::before{background:var(--frei)}
+  .st.g{color:var(--gep); background:#f7efdf}.st.g::before{background:var(--gep)}
+  .st.b{color:var(--bearb); background:#eef1f4}.st.b::before{background:var(--bearb)}
+
+  /* Legende */
+  #legend{position:fixed; left:20px; bottom:18px; z-index:25; background:var(--surface);
+    border:1px solid var(--line); border-radius:12px; padding:12px 16px; max-width:330px;
+    font-size:12.5px; color:var(--sub); box-shadow:0 8px 24px rgba(23,33,43,.08)}
+  #legend .row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:7px}
+  #legend .gov{border-top:1px solid var(--line2); padding-top:7px; font-size:12px}
+  #legend .gov b{color:var(--steel)}
+  #legend .sys{font-family:Inter,sans-serif; font-size:10.5px; margin-top:6px; color:var(--bearb)}
+  #legend.mini{padding:9px 12px; max-width:none}
+  #legend.mini .row{margin-bottom:0}
+  #legend.mini .gov, #legend.mini .sys{display:none}
+
+  /* Seitenpanel */
+  #panel{position:fixed; top:58px; right:0; bottom:0; width:min(400px,92vw); z-index:28;
+    background:var(--surface); border-left:1px solid var(--line);
+    box-shadow:-14px 0 34px rgba(23,33,43,.12);
+    transform:translateX(105%); transition:transform .38s cubic-bezier(.2,.8,.25,1);
+    display:flex; flex-direction:column}
+  #panel.open{transform:translateX(0)}
+  #panel .ph{display:flex; align-items:flex-start; gap:10px; padding:18px 20px 12px;
+    border-bottom:1px solid var(--line2)}
+  #panel .ph h3{font-family:Inter,sans-serif; font-size:19px; margin:0; flex:1; line-height:1.2}
+  #panel .ph .x{border:none; background:var(--chipbg); border-radius:8px; width:30px; height:30px;
+    cursor:pointer; font-size:15px; color:var(--sub); font-family:inherit}
+  #panel .pb{padding:16px 20px 24px; overflow:auto}
+  #panel h4{font-family:Inter,sans-serif; font-size:12.5px; margin:16px 0 8px; color:var(--azure-d); text-transform:uppercase; letter-spacing:.05em}
+  #panel p{margin:0 0 10px; font-size:13.5px}
+  #panel ul{margin:0 0 10px; padding-left:18px; font-size:13.5px}
+  #panel li{margin-bottom:6px}
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 6px}
+  .chip{font-family:Inter,sans-serif; font-size:11px; color:var(--steel);
+    background:var(--chipbg); border:1px solid var(--line2); border-radius:6px; padding:3px 8px}
+  .pipe{display:flex; border:1px solid var(--line); border-radius:9px; overflow:hidden; margin:6px 0 4px}
+  .pipe span{flex:1; text-align:center; padding:7px 4px; font-size:11px; color:var(--bearb); font-weight:500}
+  .pipe span + span{border-left:1px solid var(--line)}
+  .pipe span.done{color:var(--frei); background:#eef6f0}
+  .pipe span.cur{color:#fff; background:var(--frei)}
+  .pipe span.cur.g{background:var(--gep)}
+  .pipe span.cur.b{background:var(--bearb)}
+  .flink{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:9px;
+    margin-bottom:7px; font-size:13px; cursor:pointer; background:var(--surface)}
+  .flink:hover{border-color:var(--azure)}
+  .flink .m{font-family:Inter,sans-serif; font-size:10.5px; color:var(--bearb); margin-right:8px}
+  a.flink{text-decoration:none; color:var(--ink); display:grid; grid-template-columns:auto 1fr auto; gap:8px 10px; align-items:center}
+  a.flink .lt{font-weight:600; font-size:13px}
+  a.flink .lx{grid-column:2; font-size:12px; color:var(--sub); line-height:1.4}
+  a.flink .go{color:var(--azure-d); font-size:12px; font-weight:700}
+  a.flink .m{display:inline-block; min-width:52px; text-align:center; background:var(--chipbg); border-radius:6px; padding:3px 7px; margin:0; color:var(--ink)}
+  .nolinks{font-size:12.5px; color:var(--sub); border:1.5px dashed var(--line); border-radius:9px; padding:9px 12px}
+  .nolinks code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11.5px; background:var(--chipbg); padding:1px 5px; border-radius:4px}
+  .govnote{margin-top:14px; padding:10px 12px; background:#f4f7f9; border-radius:9px;
+    font-size:12.5px; color:var(--sub)}
+  .govnote b{color:var(--steel)}
+
+  /* KI-Agenten Suche */
+  #kiSearch{display:none; align-items:center; gap:8px}
+  #kiSearch input{font:inherit; font-size:13px; width:min(320px,40vw); padding:7px 12px 7px 32px;
+    border:1.5px solid var(--line); border-radius:8px; background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236B6B79' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") 10px 50% no-repeat; color:var(--ink)}
+  #kiSearch input:focus{border-color:var(--azure); outline:none}
+  #kiSearch input::placeholder{color:#9aa0aa}
+  @media(max-width:700px){#kiSearch input{width:44vw}}
+  .nd.cat.ki{border-color:#E07A12}
+  .nd.cat.ki .h{color:#8C4A05}
+  /* Bereichs-Knoten unter ONE Digitales Planen */
+  .nd.cat.dom{width:150px; height:150px; border-width:2.5px; border-color:#1A1A1F}
+  .nd.cat.dom .t{font-size:18px; font-weight:800; letter-spacing:.02em}
+  .nd.cat.dom .t em{font-style:normal; color:var(--azure)}
+  .nd.cat.dom.soon{border-style:dashed; border-color:#b9c4cd}
+  .nd.cat.dom.soon .t em{color:#8a95a0}
+  .nd.cat.dom.soon .h{color:#8a95a0}
+  .nd.cat.tool{border-color:#1A1A1F}
+  .nd.cat.grp{width:124px; height:124px; border-width:2px; border-color:var(--line)}
+  .nd.cat.grp:hover{border-color:var(--azure)}
+  .nd.cat.grp .rom{font-family:Inter,sans-serif; font-weight:800; font-size:11px; color:#fff; background:var(--steel);
+    border-radius:20px; padding:1px 8px; margin-bottom:2px}
+  .nd.cat.grp .t{font-size:12.5px}
+  .nd.awf .agn{display:inline-block; font-size:10px; font-weight:600; color:#8C4A05; background:#FFF2E2;
+    border:1px solid #f6dcbf; border-radius:20px; padding:2px 8px}
+  .pr{margin:4px 0 10px; padding:9px 11px; background:#f4f7f9; border-radius:9px; font-size:12.5px; color:var(--ink); white-space:pre-wrap}
+  .kw{font-size:12px; color:var(--sub); margin:0 0 6px}
+  mark{background:#ffe9c2; color:inherit; padding:0 1px; border-radius:2px}
+
+  /* ---------- Unterseite Freigabeprozess ---------- */
+  #flow{position:absolute; inset:0; overflow:auto; padding:26px 24px 46px; display:none; background:var(--paper)}
+  #flow.open{display:block}
+  #flow .fwrap{max-width:1180px; margin:0 auto}
+  #flow h2{font-size:16px; font-weight:800; margin:0 0 2px}
+  #flow .fsub{font-size:12.5px; color:var(--sub); margin:0 0 18px}
+  .fgrid{display:grid; grid-template-columns:1fr 38px 1fr 38px 1fr; gap:12px; align-items:stretch}
+  @media(max-width:900px){.fgrid{grid-template-columns:1fr} .farrow{transform:rotate(90deg); height:38px}}
+  .fcol{border:1.5px solid var(--line); border-radius:16px; background:var(--surface); overflow:hidden; display:flex; flex-direction:column; transition:box-shadow .25s, border-color .25s}
+  .fcol .fh{padding:12px 14px 10px; border-bottom:1px solid var(--line2)}
+  .fcol .fh b{display:block; font-size:14.5px; font-weight:800}
+  .fcol .fh small{display:block; font-size:11.5px; color:var(--sub); margin-top:1px}
+  .fcol.ph1 .fh{background:#F1F1F4} .fcol.ph2 .fh{background:#FBF3E4} .fcol.ph3 .fh{background:#E7F3EC}
+  .fcol.ph1 .fh b{color:var(--bearb)} .fcol.ph2 .fh b{color:var(--gep)} .fcol.ph3 .fh b{color:var(--frei)}
+  .fcol.on{border-color:var(--azure); box-shadow:0 0 0 3px rgba(236,0,79,.12)}
+  .fbody{padding:12px 14px 14px; display:flex; flex-direction:column; gap:10px; flex:1}
+  .drop{min-height:64px; border:1.5px dashed var(--line); border-radius:12px; display:flex; align-items:center; justify-content:center; padding:8px}
+  .fcol.on .drop{border-color:var(--azure)}
+  .token{width:100%; border:1.5px solid var(--line); border-left:5px solid var(--bearb); border-radius:11px; background:var(--paper); padding:9px 12px; transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .token .tt{font-weight:700; font-size:13px}
+  .token .tk{font-size:11px; color:var(--sub)}
+  .token.tp2{border-left-color:var(--gep)} .token.tp3{border-left-color:var(--frei)}
+  .token.pulse{animation:tpulse .8s ease}
+  @keyframes tpulse{0%{box-shadow:0 0 0 0 rgba(46,125,79,.55)} 100%{box-shadow:0 0 0 14px transparent}}
+  .rlbl{font-size:10.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--sub)}
+  .frole{display:grid; grid-template-columns:30px 1fr; gap:9px; align-items:center; border:1px solid var(--line2); border-radius:11px; padding:6px 9px; background:var(--paper)}
+  .frole .fa{width:30px; height:30px; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:800; font-size:10.5px}
+  .frole b{font-size:12.5px; display:block; line-height:1.2}
+  .frole span{font-size:10.8px; color:var(--sub); display:block}
+  .fchecks{display:flex; flex-direction:column; gap:6px}
+  .fc{display:grid; grid-template-columns:20px 10px 1fr; gap:8px; align-items:center; border:1px solid var(--line2); border-radius:10px; padding:6px 9px; font-size:12px; background:var(--surface); transition:background .25s, border-color .25s}
+  .fc .bx{width:17px; height:17px; border:2px solid var(--line); border-radius:5px; display:grid; place-items:center; color:#fff; font-size:10px; font-weight:800; transition:all .2s}
+  .fc.ok{border-color:var(--frei); background:#E7F3EC}
+  .fc.ok .bx{background:var(--frei); border-color:var(--frei)}
+  .fc.ok .bx::before{content:"\2713"}
+  .fc .rd{width:9px; height:9px; border-radius:50%}
+  .fc small{display:block; color:var(--sub); font-size:10.6px}
+  .fdec{border:1.5px dashed var(--azure-d); color:var(--azure-d); border-radius:10px; padding:7px 10px; font-size:11.5px; font-weight:600; background:rgba(236,0,79,.04)}
+  .farrow{display:grid; place-items:center; color:var(--sub)}
+  .farrow svg{width:26px; height:26px}
+  .freturns{display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:840px; margin:10px auto 0}
+  @media(max-width:900px){.freturns{grid-template-columns:1fr}}
+  .fret{border-top:2px dashed var(--azure-d); color:var(--azure-d); font-size:11.5px; font-weight:600; padding-top:5px; text-align:center}
+  .fbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:20px 0 8px; padding:11px 13px; background:var(--surface); border:1px solid var(--line); border-radius:13px}
+  .fbar .fstat{font-size:12.5px; color:var(--sub); margin-right:auto}
+  .fbar .fstat b{color:var(--ink)}
+  .fbtn2{font:inherit; font-weight:700; font-size:13px; padding:8px 15px; border-radius:9px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink); cursor:pointer}
+  .fbtn2:hover{border-color:var(--azure)}
+  .fbtn2.prim{background:var(--azure); border-color:var(--azure); color:#fff}
+  .fbtn2.prim:hover{background:var(--azure-d)}
+  .fbtn2:disabled{opacity:.45; cursor:not-allowed}
+  .frules{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:9px; margin-top:14px}
+  .frule{border:1px solid var(--line); border-radius:11px; padding:8px 11px; background:var(--surface); font-size:11.8px; color:var(--sub)}
+  .frule b{display:block; color:var(--ink); font-size:12px}
+
+  /* ---------- Unterseite Skripte ---------- */
+  #scripts{position:absolute; inset:0; overflow:auto; padding:26px 24px 46px; display:none; background:var(--paper)}
+  #scripts.open{display:block}
+  #scripts .swrap{max-width:1180px; margin:0 auto}
+  #scripts h2{font-size:16px; font-weight:800; margin:0 0 2px}
+  #scripts .ssub{font-size:12.5px; color:var(--sub); margin:0 0 18px}
+  .sgrid{display:grid; grid-template-columns:minmax(300px,380px) 1fr; gap:18px; align-items:start}
+  @media(max-width:900px){.sgrid{grid-template-columns:1fr}}
+  .sform{border:1.5px solid var(--line); border-radius:16px; background:var(--surface); padding:16px 16px 14px; position:sticky; top:0}
+  .sform label{display:block; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--sub); margin:12px 0 5px}
+  .sform label:first-of-type{margin-top:0}
+  .sform input[type=text], .sform input[type=url], .sform textarea, .sform select{width:100%; font:inherit; font-size:13px; padding:8px 10px;
+    border:1.5px solid var(--line); border-radius:9px; background:var(--paper); color:var(--ink)}
+  .sform textarea{min-height:150px; resize:vertical; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px; line-height:1.45}
+  .sform input:focus, .sform textarea:focus, .sform select:focus{border-color:var(--azure); outline:none}
+  .stype{display:flex; gap:6px}
+  .stype button{flex:1; font:inherit; font-size:12.5px; font-weight:700; padding:7px 8px; border-radius:9px; border:1.5px solid var(--line); background:var(--surface); color:var(--sub); cursor:pointer}
+  .stype button.on{border-color:#1A1A1F; background:#1A1A1F; color:#fff}
+  .serr{display:none; margin-top:8px; font-size:12px; color:var(--azure-d); background:rgba(236,0,79,.06); border-radius:8px; padding:7px 10px}
+  .serr.show{display:block}
+  .sbar{display:flex; gap:8px; margin-top:14px}
+  .slist{display:flex; flex-direction:column; gap:10px}
+  .sempty{border:1.5px dashed var(--line); border-radius:14px; padding:26px; text-align:center; color:var(--sub); font-size:13px}
+  .scard{border:1.5px solid var(--line); border-radius:14px; background:var(--surface); overflow:hidden}
+  .scard .sh{display:flex; align-items:center; gap:10px; padding:11px 14px; cursor:pointer}
+  .scard .sh:hover{background:#f7f8fa}
+  .scard .sh b{font-size:14px; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .scard .kind{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:20px; background:#1A1A1F; color:#fff}
+  .scard .kind.json{background:var(--azure)}
+  .scard .sdate{font-size:11.5px; color:var(--sub); white-space:nowrap}
+  .scard .chev{width:18px; height:18px; color:var(--sub); transition:transform .25s}
+  .scard.open .chev{transform:rotate(90deg)}
+  .scard .sb{display:none; border-top:1px solid var(--line2); padding:12px 14px 14px}
+  .scard.open .sb{display:block}
+  .scard pre{margin:0; max-height:360px; overflow:auto; background:#f4f7f9; border-radius:10px; padding:10px 12px; font-size:12px; line-height:1.45; white-space:pre-wrap; word-break:break-word; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .scard .slink{display:inline-flex; align-items:center; gap:6px; margin:0 0 10px; font-size:12.5px; font-weight:600; color:var(--azure-d); text-decoration:none; border:1px solid var(--line); border-radius:8px; padding:5px 10px; background:var(--paper)}
+  .scard .slink:hover{border-color:var(--azure)}
+  .scard .sact{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
+  .sfilter{display:flex; gap:8px; align-items:center; margin-bottom:12px}
+  .sfilter input{flex:1; font:inherit; font-size:13px; padding:7px 11px; border:1.5px solid var(--line); border-radius:9px; background:var(--surface)}
+  .sfilter input:focus{border-color:var(--azure); outline:none}
+  .scount{font-size:12px; color:var(--sub); white-space:nowrap}
+  .sform ol.show{margin:0; padding-left:18px; font-size:13px; color:var(--sub)}
+  .sform ol.show li{margin-bottom:6px}
+  .sform ol.show b{color:var(--ink)}
+  .sstat{font-size:12.5px; color:var(--sub); background:var(--paper); border:1px solid var(--line); border-radius:9px; padding:8px 10px}
+  .sstat.ok{color:var(--frei); border-color:#cfe6d6; background:#eef6f0}
+  .sstat.warn{color:var(--gep); border-color:#efdcb7; background:#fbf3e4}
+  .sbar a.fbtn2{text-decoration:none; display:inline-block}
+  .scard .sdesc{font-size:13px; color:var(--ink); margin:0 0 10px}
+  .scard .st{margin-left:0}
+  .scard .kind{background:#1A1A1F}
+
+  .toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#fff; padding:11px 17px; border-radius:10px; font-size:13px;
+    opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:60; max-width:90vw}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="logo" aria-label="Obermeyer">OBERMEYER</div>
+  <div class="brand"><b>ONE</b><span class="bim" id="brandTag">Digitales Planen</span></div>
+  <span class="crumb" id="crumb">Start</span>
+  <div id="kiSearch"><input id="kiQ" type="search" placeholder="Agent suchen: Protokoll, AIA, ProVI, Excel …" aria-label="KI-Agenten durchsuchen" autocomplete="off"></div>
+  <div class="spacer"></div>
+  <span class="claim">We design for generations ahead.</span>
+  <button id="btnBack" onclick="goBack()">Zurück</button>
+  <span class="proto-tag">Klick-Demo · Zielbild</span>
+</header>
+
+<div id="stage">
+  <div class="blob b1" aria-hidden="true"></div>
+  <div class="blob b2" aria-hidden="true"></div>
+  <svg id="wires" aria-hidden="true"></svg>
+  <div id="nodes"></div>
+</div>
+
+<div id="legend">
+  <div class="row">
+    <span class="st b">In Bearbeitung</span>
+    <span class="st g">Geprüft</span>
+    <span class="st f">Freigegeben</span>
+  </div>
+  <div class="gov"><b>Zentral gesteuert:</b> Den Status einer Karte ändert nur das Kernteam. Beitragen darf jede und jeder.</div>
+  <div class="sys">ONE Digitales Planen = ONE BIM · ONE DIM · ONE KI · ONE GIS — dahinter: SharePoint · ambersearch · Desite · Kernteam</div>
+</div>
+
+<aside id="panel" aria-live="polite">
+  <div class="ph"><h3 id="pTitle">—</h3><button class="x" onclick="closePanel()" aria-label="Schließen">×</button></div>
+  <div class="pb" id="pBody"></div>
+</aside>
+
+<div id="flow" aria-label="Freigabeprozess"><div class="fwrap" id="fwrap"></div></div>
+<div id="scripts" aria-label="Skripte"><div class="swrap">
+  <h2>Skripte — freigegebene Sammlung des Clusters</h2>
+  <p class="ssub">Die Skripte liegen im GitHub-Repository. Diese Seite liest die Liste <b>skripte.json</b> und zeigt Titel, Kurzbeschreibung, Typ, Datum, Status und den Link. Ansehen und Herunterladen öffnet GitHub — Änderungen laufen über den Freigabeprozess (Pull Request).</p>
+  <div class="sgrid">
+    <div class="sform" id="sInfo">
+      <label>So kommt ein Skript hinein</label>
+      <ol class="show">
+        <li>Skript-Datei im Ordner <b>skripte/</b> des Repositorys hochladen.</li>
+        <li>In <b>skripte.json</b> einen Eintrag ergänzen (Titel, Kurztext, Typ, Pfad).</li>
+        <li>Als Pull Request einreichen — Ebene 2 prüft, Ebene 3 schaltet frei.</li>
+        <li>Nach dem Merge erscheint der Eintrag hier automatisch.</li>
+      </ol>
+      <label>Status der Liste</label>
+      <div class="sstat" id="sStat">—</div>
+      <div class="sbar">
+        <a class="fbtn2 prim" id="sRepo" href="#" target="_blank" rel="noopener">Repository öffnen</a>
+        <a class="fbtn2" id="sNew" href="#" target="_blank" rel="noopener">Skript vorschlagen</a>
+      </div>
+    </div>
+    <div>
+      <div class="sfilter"><input type="search" id="sQ" placeholder="Skripte durchsuchen: Titel, Typ, Stichwort …" aria-label="Skripte durchsuchen"><span class="scount" id="sCount"></span></div>
+      <div class="slist" id="slist"></div>
+    </div>
+  </div>
+</div></div>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+var AWFS = [
+  {id:'a010', num:'AwF 010', name:'Bestandserfassung und -modellierung', st:'f'},
+  {id:'a020', num:'AwF 020', name:'Bedarfsplanung', st:null},
+  {id:'a030', num:'AwF 030', name:'Planungsvarianten', st:null},
+  {id:'a040', num:'AwF 040', name:'Visualisierung', st:null},
+  {id:'a050', num:'AwF 050', name:'Koordination der Fachgewerke', st:'b'},
+  {id:'a060', num:'AwF 060', name:'Planungsfortschrittskontrolle und Qualitätsprüfung', st:null},
+  {id:'a070', num:'AwF 070', name:'Bemessung und Nachweisführung', st:null},
+  {id:'a080', num:'AwF 080', name:'Ableitung von Planunterlagen', st:'b'},
+  {id:'a090', num:'AwF 090', name:'Genehmigungsprozess', st:null},
+  {id:'a100', num:'AwF 100', name:'Mengen- und Kostenermittlung', st:null},
+  {id:'a110', num:'AwF 110', name:'Leistungsverzeichnis, Ausschreibung, Vergabe', st:null},
+  {id:'a120', num:'AwF 120', name:'Terminplanung der Ausführung', st:null},
+  {id:'a130', num:'AwF 130', name:'Logistikplanung', st:null},
+  {id:'a140', num:'AwF 140', name:'Baufortschrittskontrolle', st:null}
+];
+var DOMAINS = [
+  {id:'bim', name:'BIM', hint:'Anwendungsfälle, VDC Manager, Skripte, Freigabe', cls:''},
+  {id:'dim', name:'DIM', hint:'im Aufbau', cls:'soon'},
+  {id:'ki',  name:'KI',  hint:'KI-Agenten · ambersearch', cls:'ki'},
+  {id:'gis', name:'GIS', hint:'im Aufbau', cls:'soon'}
+];
+var DNAME = {bim:'BIM', dim:'DIM', ki:'KI', gis:'GIS'};
+var CATS = [
+  {id:'awf', name:'Anwendungsfälle', hint:'14 nach BIM Deutschland', kind:'children'},
+  {id:'vdc', name:'VDC Manager', hint:'Desite · Prüfung, Koordination', kind:'panel', cls:'tool'},
+  {id:'skripte', name:'Skripte', hint:'GitHub · freigegebene Skripte', kind:'scripts', cls:'tool'},
+  {id:'freigabe', name:'Freigabeprozess', hint:'3 Ebenen · 8 Rollen', kind:'flow'},
+  {id:'vorlagen', name:'Vorlagen und Standards', hint:'Kartenvorlage, Nummern', kind:'panel'},
+  {id:'software', name:'Software und Werkzeuge', hint:'ReCap, Revit, Desite …', kind:'panel'},
+  {id:'projekte', name:'Projekterfahrungen', hint:'3 Projekte', kind:'panel'},
+  {id:'team', name:'Beitragen und Kernteam', hint:'so kommt Neues rein', kind:'panel'}
+];
+var STLABEL = {f:'Freigegeben', g:'Geprüft', b:'In Bearbeitung'};
+
+/* ---------- Inhalte (Titel, Text, Link) je Knoten – Quelle: inhalte.json ---------- */
+var INHALTE = {};
+function inhalteLoad(cb){
+  if(location.protocol==='file:'){ if(cb) cb(); return; }
+  fetch('inhalte.json?t='+Date.now(),{cache:'no-store'})
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(d){ INHALTE=(d&&d.inhalte)||d||{}; inhalteApplyStatus(); if(cb) cb(); })
+    .catch(function(){ if(cb) cb(); });
+}
+function inhalteEntry(id){ var v=INHALTE[id]; if(!v) return {links:[]}; if(Array.isArray(v)) return {links:v}; return {status:v.status||null, links:v.links||[]}; }
+function inhalteApplyStatus(){
+  AWFS.forEach(function(a){ var e=inhalteEntry(a.id); if(e.status && STLABEL[e.status]) a.st=e.status; });
+  AGENTS.forEach(function(a){ var e=inhalteEntry(a.id); if(e.status && STLABEL[e.status]) a.st=e.status; });
+}
+function linkKind(l){
+  if(l.typ) return l.typ;
+  var u=(l.link||'').toLowerCase();
+  var m=/\.(md|drawio|docx|xlsx|pptx|pdf|json|py|txt|csv|ifc)(\?|#|$)/.exec(u);
+  if(m) return '.'+m[1];
+  if(u.indexOf('sharepoint')>=0) return 'SharePoint';
+  if(u.indexOf('github')>=0) return 'GitHub';
+  if(u.indexOf('teams.microsoft')>=0) return 'Teams';
+  return 'Link';
+}
+function linksHTML(id, title){
+  var e=inhalteEntry(id), out='<h4>'+(title||'Dateien und Links')+'</h4>';
+  if(!e.links.length){
+    return out+'<div class="nolinks">Noch nichts verlinkt. Eintrag in <code>inhalte.json</code> unter <code>"'+id+'"</code> ergänzen: Titel, Text, Link.</div>';
+  }
+  return out+e.links.map(function(l){
+    var href=l.link||'#';
+    return '<a class="flink" href="'+esc2(href)+'" target="_blank" rel="noopener">'
+      +'<span class="m">'+esc2(linkKind(l))+'</span>'
+      +'<span class="lt">'+esc2(l.titel||href)+'</span>'
+      +'<span class="go">↗</span>'
+      +(l.text?'<span class="lx">'+esc2(l.text)+'</span>':'')
+      +'</a>';
+  }).join('');
+}
+function esc2(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ---------- KI-Agenten (ambersearch) ---------- */
+var KI_GROUPS = [
+  {id:'ps',  name:'Projektsteuerung', hint:'PM / PL'},
+  {id:'fp',  name:'Fachplaner', hint:'Verkehr, Bahn, Straße'},
+  {id:'bim', name:'BIM / DIM', hint:'Koordination, Daten'}
+];
+var KI_CATS = [
+  {id:1, rom:'I',   name:'Vertrag', hint:'Was ist geschuldet?'},
+  {id:2, rom:'II',  name:'Datenanalyse und Aufbereitung', hint:'Tabellen, Formate'},
+  {id:3, rom:'III', name:'Thematische und historische Analyse', hint:'über Dokumente hinweg'},
+  {id:4, rom:'IV',  name:'Erstellung und Fortschreibung', hint:'Protokolle, Handbuch'},
+  {id:5, rom:'V',   name:'Planungsgrundlagen', hint:'Datenmanagement, Stände'},
+  {id:6, rom:'VI',  name:'Spezial', hint:'AwF-Auskunft, Skripte'}
+];
+var AGENTS = [
+  {id:'ps-vertrag', g:'ps', c:[1], st:null, name:'Vertragssicht', tags:['Vertrag','AIA','BAP','Leistungsumfang','Fristen'],
+   purpose:'Beantwortet Fragen zu Leistungsumfang, Fristen, Lieferobjekten und BIM-Pflichten aus Vertrag, AIA und BAP, immer mit Fundstelle.',
+   sources:'Vertrag, AIA, BAP des Projekts (pdf/docx-Upload oder Projektordner als Wissensdatenbank). Ein Agent pro Projekt.',
+   config:'Modell GPT-5.6 Sol oder Claude Opus 5. Deep Research aus. Regel: Fundstelle nennen, keine Rechtsberatung.',
+   prompt:'Welche BIM-Leistungen schulden wir laut AIA für die Leistungsphase 3? Nenne Kapitel und Seite.'},
+  {id:'ps-fertig', g:'ps', c:[2], st:null, name:'Fertigstellungsgrade', tags:['Leistungsstand','Abrechnung','Excel','Gewerk','kaufmännisch','technisch'],
+   purpose:'Führt Leistungsstand (technisch) und Abrechnungsstand (kaufmännisch) zusammen und zeigt Abweichungen je Gewerk.',
+   sources:'Leistungsstandstabellen, Rechnungsplan, Terminplan-Export (xlsx/csv).',
+   config:'Modell GPT-5.6 Terra oder Gemini 3.1 Pro bei langen Tabellen. Ausgabe als Tabelle, Download als .xlsx.',
+   prompt:'Vergleiche technischen und kaufmännischen Fertigstellungsgrad je Gewerk und markiere Abweichungen über 10 Prozentpunkten.'},
+  {id:'ps-monitor', g:'ps', c:[2], st:null, name:'Monitoring', tags:['ERP','PEP','Budget','Stunden','Wochenstatus','Historie'],
+   purpose:'Wöchentlicher Statusbericht aus Budget-, Stunden- und Terminständen mit Trend zur Vorwoche.',
+   sources:'Exporte aus ERP und PEP (xlsx) in einem geteilten Bibliotheks-Ordner. Später SQL-Konnektor über die IT.',
+   config:'Funktion „Geplant“: montags 7:00 automatisch, Bericht per Mail. Ohne API-Zugriff zunächst manuelle Exporte.',
+   prompt:'Erstelle den Wochenstatus für Projekt X: Budgetverbrauch, Stunden je Phase, Terminabweichungen, Veränderung zur Vorwoche.'},
+  {id:'ps-analyse', g:'ps', c:[3,2], st:null, name:'Themenanalyse', tags:['Analyse','Dashboard','Deep Research','Protokolle','Auswertung'],
+   purpose:'Beantwortet eine Fragestellung über mehrere Dokumente und Projekte hinweg, schriftlich, als Tabelle oder Diagramm.',
+   sources:'Projektordner mehrerer Projekte, Protokolle, Berichte (Wissensdatenbank).',
+   config:'Deep Research an, Export als Word. Diagramme direkt im Chat oder als Excel-Datei.',
+   prompt:'Analysiere alle Protokolle 2025–2026 nach wiederkehrenden Ursachen für Terminverschiebungen und ordne sie nach Häufigkeit.'},
+  {id:'ps-praes', g:'ps', c:[4], st:null, name:'Präsentationen', tags:['PowerPoint','Folien','Lenkungskreis','Status'],
+   purpose:'Baut aus Stichpunkten und vorhandenen Folien einen Präsentationsentwurf im Hausformat.',
+   sources:'Foliensammlung (pptx), Projektsteckbrief, aktuelle Statusdaten.',
+   config:'Dateierstellung PowerPoint an. Regel: Titel, Kernaussage, Beleg je Folie.',
+   prompt:'Erstelle einen 8-Folien-Entwurf für das Lenkungskreis-Update Projekt X aus folgenden Stichpunkten: …'},
+  {id:'ps-proto', g:'ps', c:[4], st:'b', name:'Protokolle', tags:['Protokoll','Transkript','Besprechung','Aufgaben','Gesprächsnotiz','Word'],
+   purpose:'Macht aus Transkript, Diktat oder Stichpunkten ein Protokoll im Obermeyer-Format mit Beschlüssen, Aufgaben, Zuständigen und Terminen.',
+   sources:'Protokollvorlage (docx), Teilnehmerliste, Transkript als txt/md im Chat.',
+   config:'Modell GPT-5.6 Terra. Regel: nichts ergänzen, was nicht gesagt wurde; offene Punkte kennzeichnen.',
+   prompt:'Erstelle aus diesem Transkript das Besprechungsprotokoll nach unserer Vorlage. Aufgaben als Tabelle: Thema | Zuständig | Termin | Status.'},
+  {id:'fp-handbuch', g:'fp', c:[4], st:null, name:'Projekthandbuch / DAP', tags:['Projekthandbuch','DAP','Datenaustausch','Formate','Fristen','Projektübersicht'],
+   purpose:'Auskunft und Fortschreibung zu Projekthandbuch und Datenaustauschplan: Wer liefert was, wann, in welchem Format?',
+   sources:'Projekthandbuch, DAP, Organigramm, Adressliste (docx/xlsx).',
+   config:'Canvas an für Fortschreibungen. Regel: Änderungsvorschläge immer mit Bezug auf den bestehenden Abschnitt.',
+   prompt:'Welche Austauschformate und Fristen gelten laut DAP für die Übergabe der Trassierung an die Fachplanung Oberleitung?'},
+  {id:'fp-grundlagen', g:'fp', c:[5], st:null, name:'Planungsgrundlagen', tags:['Bestand','Vermessung','Version','Planungsstand','Grundlagen','Änderungen'],
+   purpose:'Sagt, welche Grundlage in welcher Version gilt und was sich seit dem letzten Stand geändert hat.',
+   sources:'Geteilter Bibliotheks-Ordner „Planungsgrundlagen“ mit Versionen im Dateinamen. Arup-SharePoint ist nicht anbindbar, daher bewusste Ablage.',
+   config:'Regel: immer Datum und Version nennen. „Geplant“: tägliche Zusammenfassung neuer Dokumente.',
+   prompt:'Welche Version der Bestandsvermessung gilt aktuell für Bf. Dettingen und was hat sich gegenüber der Vorversion geändert?'},
+  {id:'fp-leistung', g:'fp', c:[1], st:null, name:'Leistungsbilder', tags:['Vertrag','Leistungsbild','HOAI','Zusatzleistung','AIA'],
+   purpose:'Übersetzt Vertrag und AIA in das Leistungsbild der eigenen Fachplanung: Was ist drin, was ist Zusatzleistung?',
+   sources:'Vertrag, Leistungsbeschreibung, AIA, HOAI-Leistungsbild als Referenz (pdf).',
+   config:'Modell Claude Opus 5. Tabelle Leistung | im Vertrag? | Fundstelle | Anmerkung. Unklares als „zu klären“ markieren.',
+   prompt:'Liste alle Leistungen der Fachplanung Verkehrsanlagen aus dem Vertrag und markiere, welche über das Standard-Leistungsbild hinausgehen.'},
+  {id:'bim-awf', g:'bim', c:[6], st:'b', name:'AwF-Auskunft', tags:['Visualisierung','AwF','AIA','BAP','LOD','Anforderungen','Kollisionsprüfung'],
+   purpose:'Beantwortet für einen Anwendungsfall (z. B. Visualisierung) die Anforderungen aus AIA und BAP: LOD, Formate, Lieferzeitpunkte, Verantwortliche.',
+   sources:'AIA, BAP, Vertrag, AwF-Karten aus ONE BIM (pdf/docx/md). Ein Agent pro Projekt.',
+   config:'Modell GPT-5.6 Sol. Beispielprompts je AwF. Regel: Fundstelle mit Kapitel; fehlende Festlegung ausdrücklich benennen.',
+   prompt:'Welche Anforderungen gelten für den AwF Visualisierung: Detaillierungsgrad, Formate, Zeitpunkt, wer liefert? Nenne die Kapitel in AIA und BAP.'},
+  {id:'bim-workflow', g:'bim', c:[2,3,4], st:null, name:'Modellieferliste / Kollisionsmatrix', tags:['Modellieferliste','Kollisionsmatrix','Issue','Semantik','Geometrie','Projektbedarf','BIMcollab'],
+   purpose:'Leitet aus AIA und Projektbedarf die Modellieferliste ab, daraus die Informations- und Kollisionsmatrix, und formuliert Issue-Texte.',
+   sources:'AIA, BAP, Vorlagen für Modellieferliste und Kollisionsmatrix (xlsx), Issue-Exporte (csv).',
+   config:'Drei Agenten in Serie: Lieferliste, Matrix, Issues. Ausgabe je als xlsx. Kein API-Zugriff auf das Issue-Tool, daher Text-Export.',
+   prompt:'Erstelle aus der AIA einen Entwurf der Modellieferliste: Modell | Fachdisziplin | LOD je Phase | Format | Liefertermin.'},
+  {id:'bim-daten', g:'bim', c:[2,1], st:'b', name:'Datenaufbereitung (ProVI)', tags:['ProVI','cfg','Excel','Konvertierung','Tabelle','Fortschreibung'],
+   purpose:'Wandelt Konfigurations- und Exportdateien in saubere Tabellen um, z. B. ProVI-.cfg nach Excel, und schreibt Bestandsdaten fort.',
+   sources:'Datei im Chat hochladen; .cfg vorher in .txt umbenennen (erlaubte Formate). Beispiel-cfg und Ziel-Excel als Vorlage im Agenten.',
+   config:'Modell Claude Opus 5. Anweisung enthält Spaltenschema und Vorher/Nachher-Beispiel. Tabelle als .xlsx herunterladen.',
+   prompt:'Wandle diese ProVI-Konfiguration in eine Excel-Tabelle mit den Spalten Parameter | Wert | Einheit | Abschnitt um. Fehlende Werte leer lassen.'},
+  {id:'bim-skript', g:'bim', c:[6], st:null, name:'Skript-Werkstatt', tags:['Python','Dynamo','VBA','Skript','IFC','Automatisierung','Code'],
+   purpose:'Schreibt und erklärt Skripte (Python, Dynamo, Excel-VBA) für Modell- und Datenaufgaben; die Ausführung bleibt lokal.',
+   sources:'Code-Richtlinien des Clusters (md), Beispielskripte, IFC-Schema-Auszüge.',
+   config:'Modell Claude Opus 5. Canvas an. Regel: Kommentare, Ein-/Ausgabe-Beschreibung, Testdatei. Keine API-Keys im Code.',
+   prompt:'Schreibe ein Python-Skript, das aus einer IFC-Datei alle IfcBuildingElementProxy mit Name, GUID und Klassifikation als CSV exportiert.'},
+  {id:'bim-prozess', g:'bim', c:[4], st:null, name:'Prozessdarstellung', tags:['Prozess','Swimlane','draw.io','Mermaid','Automatisierung','Freigabe'],
+   purpose:'Erstellt Prozessdiagramme (Mermaid, draw.io-XML) aus Textbeschreibungen und schlägt Automatisierungsschritte vor.',
+   sources:'BAP-Prozesskapitel, Swimlane-Vorlagen, Rollenliste.',
+   config:'Ausgabe als Mermaid oder draw.io-XML zum Import. Später: amber-Aktionen (Teams-Nachricht, Aufgabe) an Prozessschritte koppeln.',
+   prompt:'Stelle den Freigabeprozess Modell → Prüfung → Kollisionsbericht → Issue als Swimlane dar (Rollen: FK, GK, AG). Ausgabe als draw.io-XML.'},
+  {id:'bim-ifc', g:'bim', c:[2,6], st:null, name:'IFC-Klassifikation', tags:['IFC','FacilityType','ElementProxy','Klassifikation','SOM','buildingSMART','2x3'],
+   purpose:'Schlägt Zuordnungen für Proxy-Elemente und Facility-Typen zu Klassifikationssystemen vor, auf Basis öffentlicher Quellen.',
+   sources:'Websuche mit bis zu fünf URLs (buildingSMART, SOM, Klassifikationsstandards). Kein internes Wissen nötig, daher auch mit externer Lizenz zulässig.',
+   config:'Websuche an (dann kein internes Wissen im selben Agenten). Tabelle Element | Vorschlag | Quelle | Sicherheit.',
+   prompt:'Welche Klassifikation passt für IfcBuildingElementProxy-Elemente einer Oberleitungsanlage? Quelle nennen.'}
+];
+var GNAME = {ps:'Projektsteuerung', fp:'Fachplaner', bim:'BIM / DIM'};
+var ROM = {1:'I',2:'II',3:'III',4:'IV',5:'V',6:'VI'};
+
+var stage=document.getElementById('stage'), wires=document.getElementById('wires'),
+    nodesL=document.getElementById('nodes'), crumb=document.getElementById('crumb'),
+    btnBack=document.getElementById('btnBack'), kiSearch=document.getElementById('kiSearch'),
+    kiQ=document.getElementById('kiQ');
+var level=0, liveNodes=[], nav=[], curView=null, domain=null; /* nav: Stack der Ansichten für Zurück */
+
+function cxy(){ var r=stage.getBoundingClientRect(); return {x:r.width/2, y:r.height*0.5}; }
+function radius(f){ var r=stage.getBoundingClientRect(); return Math.min(r.width,r.height)*f; }
+
+function closeFlow(){ var f=document.getElementById('flow'); if(f) f.classList.remove('open');
+  var sc=document.getElementById('scripts'); if(sc) sc.classList.remove('open'); }
+function clearRing(){ closeFlow();
+  liveNodes.forEach(function(n){ n.el.classList.add('leaving'); if(n.ln)n.ln.classList.remove('on');
+    setTimeout(function(){ n.el.remove(); if(n.ln)n.ln.remove(); },520); });
+  liveNodes=[];
+}
+function addNode(html, cls, angle, rx, ry, onclick, dataId, delay){
+  delay = delay||0;
+  var c=cxy(), dx=Math.cos(angle)*rx, dy=Math.sin(angle)*ry;
+  var el=document.createElement('button');
+  el.className='nd '+cls; el.innerHTML=html; el.setAttribute('data-id',dataId||'');
+  el.style.left=c.x+'px'; el.style.top=c.y+'px';
+  el.style.opacity='0';
+  el.style.transform='translate(-50%,-50%) scale(.25)';
+  el.onclick=onclick;
+  nodesL.appendChild(el);
+  var ln=document.createElementNS('http://www.w3.org/2000/svg','line');
+  ln.setAttribute('x1',c.x); ln.setAttribute('y1',c.y);
+  ln.setAttribute('x2',c.x+dx); ln.setAttribute('y2',c.y+dy);
+  wires.appendChild(ln);
+  el.style.transitionDelay=delay+'ms';
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){
+    el.style.opacity='1';
+    el.style.transform='translate(-50%,-50%) translate('+dx+'px,'+dy+'px) scale(1)';
+    setTimeout(function(){ ln.classList.add('on'); },260+delay);
+    setTimeout(function(){ el.style.transitionDelay='0ms'; },700+delay);
+  });});
+  liveNodes.push({el:el, ln:ln, angle:angle, rx:rx, ry:ry});
+  return el;
+}
+
+function centerNode(){
+  var c=cxy();
+  var el=document.createElement('button');
+  el.className='nd center'; el.id='nodeCenter';
+  el.innerHTML='<span class="t">ONE</span><span class="t2" id="centerT2">Digitales Planen</span><span class="h" id="centerHint">anklicken</span>';
+  el.style.left=c.x+'px'; el.style.top=c.y+'px';
+  el.onclick=function(){
+    if(level===0){ showDomains(); }
+    else if(level===1){ goHome(); }
+    else if(domain==='bim'){ showCats(); }
+    else if(domain==='ki'){ showKiGroups(); }
+    else { showDomains(); }
+  };
+  nodesL.appendChild(el);
+}
+function setDomain(d){
+  domain=d;
+  document.getElementById('centerT2').textContent = d ? DNAME[d] : 'Digitales Planen';
+  document.getElementById('brandTag').textContent = d ? DNAME[d] : 'Digitales Planen';
+}
+/* Ebene 1: die vier Bereiche unter ONE Digitales Planen */
+function showDomains(){
+  closePanel(); clearRing(); level=1; nav=[]; setSearch(false); setDomain(null);
+  document.getElementById('legend').classList.remove('mini');
+  setCrumb('<b>ONE Digitales Planen</b> — Bereiche', false);
+  document.getElementById('centerHint').textContent='Start';
+  var n=DOMAINS.length, start=-Math.PI/2, r0=radius(0.30);
+  DOMAINS.forEach(function(d,i){
+    var ang=start+i*(2*Math.PI/n);
+    addNode('<span class="t">ONE <em>'+d.name+'</em></span><span class="h">'+d.hint+'</span>',
+      'cat dom '+d.cls, ang, r0, r0, function(){ enterDomain(d.id); }, 'dom-'+d.id, i*110);
+  });
+}
+function enterDomain(id){
+  if(id==='bim'){ showCats(); }
+  else if(id==='ki'){ showKiGroups(); }
+  else { openDomainPanel(id); }
+}
+function openDomainPanel(id){
+  var t = id==='dim' ? 'ONE DIM' : 'ONE GIS';
+  var what = id==='dim' ? 'Digitales Informationsmanagement: Daten, Formate, Schnittstellen und Lebenszyklus der Informationen.' : 'Geoinformation: Bestandsdaten, Koordinatensysteme, Kartengrundlagen und die Verbindung zum BIM-Modell.';
+  openPanel(t,
+    '<p class="kw"><span class="nk">im Aufbau</span></p>'
+    +'<h4>Was hier entsteht</h4><p>'+what+'</p>'
+    +'<h4>Stand</h4><p>Dieser Bereich ist angelegt, aber noch ohne Inhalte. Struktur und Freigabeprozess gelten wie in ONE BIM: Inhalte durchlaufen Erstellung, Prüfung und Freigabe, bevor sie hier erscheinen.</p>'
+    +'<p>Wer Themen für diesen Bereich hat: über das Formular einreichen oder eine Datei in den Eingang-Ordner legen.</p>'
+    +linksHTML(id)+govHTML());
+}
+function setCrumb(t,back){ crumb.innerHTML=t; btnBack.style.display=back?'inline-block':'none'; }
+function setSearch(on){ kiSearch.style.display = on ? 'flex' : 'none'; if(!on){ kiQ.value=''; } }
+function push(view){ nav.push(view); }
+
+function showCats(){
+  closePanel(); clearRing(); level=2; nav=[{f:showDomains}]; setSearch(false); setDomain('bim');
+  document.getElementById('legend').classList.remove('mini');
+  setCrumb('ONE Digitales Planen › <b>ONE BIM</b> — Hauptbereiche', true);
+  document.getElementById('centerHint').textContent='ONE BIM';
+  var n=CATS.length, start=-Math.PI/2;
+  CATS.forEach(function(cat,i){
+    var ang=start+i*(2*Math.PI/n);
+    var r0=radius(0.31);
+    addNode('<span class="t">'+cat.name+'</span><span class="h">'+cat.hint+'</span>',
+      'cat'+(cat.cls?' '+cat.cls:''), ang, r0, r0,
+      function(){ if(cat.kind==='children'){showAwfs();} else if(cat.kind==='flow'){showFlow();} else if(cat.kind==='scripts'){showScripts();} else {openCatPanel(cat.id);} }, cat.id, i*100);
+  });
+}
+function showAwfs(){
+  closePanel(); clearRing(); level=3; nav=[{f:showDomains},{f:showCats}]; setSearch(false); setDomain('bim');
+  setCrumb('ONE BIM › <b>Anwendungsfälle</b> (Liste BIM Deutschland)', true);
+  document.getElementById('legend').classList.add('mini');
+  var r=stage.getBoundingClientRect();
+  var rx=Math.min(r.width*0.36, 470), ry=r.height*0.375;
+  var n=AWFS.length, start=-Math.PI/2;
+  AWFS.forEach(function(a,i){
+    var ang=start+i*(2*Math.PI/n);
+    var badge=a.st ? '<span class="st '+a.st+'">'+STLABEL[a.st]+'</span>'
+                   : '<span class="nk">noch keine Karte</span>';
+    addNode('<span class="num">'+a.num+'</span><div class="t">'+a.name+'</div>'+badge,
+      'awf sm', ang, rx, ry, function(){ openAwfPanel(a); }, a.id, i*90);
+  });
+}
+
+/* ---------- KI-Agenten: Zielgruppen › Agenten-Gruppen › Agenten ---------- */
+function showKiGroups(){
+  closePanel(); clearRing(); level=2; nav=[{f:showDomains}]; setSearch(true); curView=showKiGroups; setDomain('ki');
+  setCrumb('ONE Digitales Planen › <b>ONE KI</b> — KI-Agenten (ambersearch) — Zielgruppe wählen', true);
+  document.getElementById('centerHint').textContent='ONE KI';
+  document.getElementById('legend').classList.add('mini');
+  var n=KI_GROUPS.length, start=-Math.PI/2, r0=radius(0.30);
+  KI_GROUPS.forEach(function(g,i){
+    var cnt=AGENTS.filter(function(a){return a.g===g.id;}).length;
+    var ang=start+i*(2*Math.PI/n);
+    addNode('<span class="t">'+g.name+'</span><span class="h">'+g.hint+' · '+cnt+' Agenten</span>',
+      'cat', ang, r0, r0, function(){ showKiCats(g); }, 'kg-'+g.id, i*110);
+  });
+}
+function showKiCats(g){
+  closePanel(); clearRing(); level=3; nav=[{f:showDomains},{f:showKiGroups}]; setSearch(true); curView=function(){showKiCats(g);}; setDomain('ki');
+  setCrumb('ONE KI › KI-Agenten › <b>'+g.name+'</b> — Agenten-Gruppe wählen', true);
+  var cats=KI_CATS.filter(function(c){ return AGENTS.some(function(a){return a.g===g.id && a.c.indexOf(c.id)>=0;}); });
+  var n=cats.length, start=-Math.PI/2, r0=radius(0.31);
+  cats.forEach(function(c,i){
+    var cnt=AGENTS.filter(function(a){return a.g===g.id && a.c.indexOf(c.id)>=0;}).length;
+    var ang=start+i*(2*Math.PI/n);
+    addNode('<span class="rom">'+c.rom+'</span><span class="t">'+c.name+'</span><span class="h">'+cnt+(cnt===1?' Agent':' Agenten')+'</span>',
+      'cat grp', ang, r0, r0, function(){ showKiAgents(g,c); }, 'kc-'+c.id, i*100);
+  });
+}
+function agentNodeHTML(a, q){
+  var badge=a.st ? '<span class="st '+a.st+'">'+STLABEL[a.st]+'</span>' : '<span class="nk">noch kein Agent</span>';
+  var name = q ? hl(a.name,q) : a.name;
+  return '<span class="agn">'+GNAME[a.g]+' · '+a.c.map(function(c){return ROM[c];}).join(', ')+'</span><div class="t">'+name+'</div>'+badge;
+}
+function ringAgents(list, q){
+  var r=stage.getBoundingClientRect();
+  var n=list.length, start=-Math.PI/2;
+  var rx = n<=4 ? radius(0.30) : Math.min(r.width*0.36, 470);
+  var ry = n<=4 ? radius(0.30) : r.height*0.375;
+  list.forEach(function(a,i){
+    var ang=start+i*(2*Math.PI/n);
+    addNode(agentNodeHTML(a,q), 'awf sm', ang, rx, ry, function(){ openAgentPanel(a); }, a.id, i*90);
+  });
+}
+function showKiAgents(g,c){
+  closePanel(); clearRing(); level=4; nav=[{f:showDomains},{f:showKiGroups},{f:function(){showKiCats(g);}}]; setSearch(true); curView=function(){showKiAgents(g,c);}; setDomain('ki');
+  setCrumb('ONE KI › KI-Agenten › '+g.name+' › <b>'+c.rom+' '+c.name+'</b>', true);
+  ringAgents(AGENTS.filter(function(a){return a.g===g.id && a.c.indexOf(c.id)>=0;}));
+}
+
+/* Suche nach Stichwörtern über alle Agenten */
+function esc(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+function hl(t,q){ return t.replace(new RegExp('('+esc(q)+')','ig'),'<mark>$1</mark>'); }
+function matches(a,q){
+  var hay=(a.name+' '+a.tags.join(' ')+' '+a.purpose+' '+a.sources+' '+a.config+' '+GNAME[a.g]).toLowerCase();
+  return q.toLowerCase().split(/\s+/).filter(Boolean).every(function(w){ return hay.indexOf(w)>=0; });
+}
+var searchT, lastNonSearch=null;
+kiQ.addEventListener('input', function(){
+  clearTimeout(searchT);
+  searchT=setTimeout(function(){
+    var q=kiQ.value.trim();
+    if(q.length<2){ if(level===5 && lastNonSearch){ var f=lastNonSearch; lastNonSearch=null; f(); } return; }
+    showSearch(q);
+  },160);
+});
+kiQ.addEventListener('keydown', function(e){ if(e.key==='Escape'){ kiQ.value=''; kiQ.dispatchEvent(new Event('input')); } });
+function showSearch(q){
+  if(level!==5){ lastNonSearch = curView || showKiGroups; }
+  closePanel(); clearRing(); level=5; setSearch(true);
+  nav=[{f:showDomains},{f:showKiGroups}]; setDomain('ki');
+  var list=AGENTS.filter(function(a){return matches(a,q);});
+  setCrumb('ONE KI › KI-Agenten › <b>Suche „'+q.replace(/</g,'&lt;')+'“</b> — '+list.length+(list.length===1?' Treffer':' Treffer'), true);
+  if(!list.length){
+    openPanel('Kein Agent gefunden',
+      '<p>Zu <b>'+q.replace(/</g,'&lt;')+'</b> gibt es noch keinen Agenten.</p>'
+      +'<p>Stichwörter, die Treffer liefern: Protokoll, AIA, BAP, ProVI, Excel, IFC, Vertrag, Modellieferliste, Budget, Skript.</p>'
+      +'<p>Fehlt ein Anwendungsfall? Über das ONE-BIM-Formular einen Agent-Steckbrief einreichen, das Kernteam legt ihn an.</p>'+govAgentHTML());
+    return;
+  }
+  ringAgents(list, q);
+}
+
+function goBack(){
+  if(level===5){ var f=lastNonSearch||showKiGroups; lastNonSearch=null; kiQ.value=''; f(); return; }
+  if(nav.length){ var v=nav[nav.length-1]; v.f(); } else { goHome(); }
+}
+function goHome(){
+  closePanel(); clearRing(); level=0; nav=[]; setSearch(false); setDomain(null);
+  document.getElementById('legend').classList.remove('mini');
+  setCrumb('Start', false);
+  document.getElementById('centerHint').textContent='anklicken';
+}
+
+/* ---------- Panels ---------- */
+var panel=document.getElementById('panel'), pT=document.getElementById('pTitle'), pB=document.getElementById('pBody');
+function openPanel(title, html){ pT.textContent=title; pB.innerHTML=html; panel.classList.add('open'); }
+function closePanel(){ panel.classList.remove('open'); }
+
+function pipeHTML(st){
+  if(st==='f') return '<div class="pipe"><span class="done">In Bearbeitung</span><span class="done">Geprüft</span><span class="cur">Freigegeben</span></div>';
+  if(st==='g') return '<div class="pipe"><span class="done">In Bearbeitung</span><span class="cur g">Geprüft</span><span>Freigegeben</span></div>';
+  return '<div class="pipe"><span class="cur b">In Bearbeitung</span><span>Geprüft</span><span>Freigegeben</span></div>';
+}
+function govHTML(){ return '<div class="govnote"><b>Zentrale Steuerung:</b> Den Status ändern nur Ebene 2 (Prüfung) und Ebene 3 (Freigabe). Erst Freigegebenes gilt als Standard.</div>'; }
+function govAgentHTML(){ return '<div class="govnote"><b>Freigabe von Agenten:</b> Ebene 2 prüft Steckbrief und Testfragen, Ebene 3 schaltet frei. Erst freigegebene Agenten werden mit der Gruppe „BIM Cluster“ in ambersearch geteilt.</div>'; }
+
+function openAgentPanel(a){
+  var chips=a.tags.map(function(t){return '<span class="chip">'+t+'</span>';}).join('');
+  var groups=a.c.map(function(c){ var k=KI_CATS.filter(function(x){return x.id===c;})[0]; return k.rom+' '+k.name; }).join(' · ');
+  openPanel(a.name,
+    (a.st ? pipeHTML(a.st) : '<p class="kw"><span class="nk">noch kein Agent</span></p>')
+    +'<p class="kw">'+GNAME[a.g]+' · '+groups+'</p>'
+    +'<h4>Stichwörter</h4><div class="chips">'+chips+'</div>'
+    +'<h4>Was der Agent tut</h4><p>'+a.purpose+'</p>'
+    +'<h4>Wissensquellen</h4><p>'+a.sources+'</p>'
+    +'<h4>Einstellungen in ambersearch</h4><p>'+a.config+'</p>'
+    +'<h4>Beispielprompt</h4><div class="pr">'+a.prompt+'</div>'
+    +linksHTML(a.id, 'Hinterlegte Dateien und Links')
+    +govAgentHTML());
+}
+
+function openAwfPanel(a){
+  var intro = a.id==='a010'
+    ? '<h4>Themen in dieser Karte</h4>'
+      +'<div class="chips"><span class="chip">Punktwolke</span><span class="chip">GIS</span><span class="chip">BAP/PBP</span><span class="chip">Vermessung</span></div>'
+      +'<h4>Worum es geht</h4>'
+      +'<p>Aus der vermessenen Punktwolke entsteht das Bestandsmodell — die verlässliche Grundlage der Planung.</p>'
+      +'<h4>Erwartete Formate</h4>'
+      +'<p>Geometrie als <span class="chip">E57</span> <span class="chip">RCP</span>, mit Klassifikation als <span class="chip">LAS</span> <span class="chip">LAZ</span> <span class="chip">RCP</span>. E57 kann keine Klassifikation tragen.</p>'
+    : (a.st
+      ? '<h4>Stand</h4><p>Diese Karte ist in Arbeit. Sie folgt derselben Struktur wie AwF 010: Zweck, erwartete Dateien mit Format, Aufgabe der Koordination, Prüfpunkte und was zu tun ist, wenn etwas fehlt.</p>'
+      : '<h4>Stand</h4><p>Für diesen Anwendungsfall gibt es noch keine ONE-BIM-Karte. Wer hier Wissen aus einem Projekt hat: über das ONE-BIM-Formular beitragen, das dauert rund fünf Minuten.</p>');
+  openPanel(a.num+' — '+a.name,
+    (a.st ? pipeHTML(a.st) : '')
+    +intro
+    +linksHTML(a.id, 'Hinterlegte Dateien und Links')
+    +govHTML());
+}
+function openCatPanel(id){
+  if(id==='vdc'){
+    openPanel('VDC Manager',
+      '<p class="kw">Desite · Modellprüfung und Koordination</p>'
+      +'<h4>Wofür wir ihn nutzen</h4>'
+      +'<ul><li>Zusammenführen der Fachmodelle (IFC) zum Koordinationsmodell</li>'
+      +'<li>Regelbasierte Prüfungen: Attribute, Klassifikation, Geometrie</li>'
+      +'<li>Kollisions- und Schnittstellenprüfung zwischen den Gewerken</li>'
+      +'<li>Auswertungen und Berichte als Grundlage für Issues</li></ul>'
+      +'<h4>Skripte und Automatisierung</h4>'
+      +'<p>Prüfregeln und Auswertungen werden als Skripte hinterlegt. Freigegebene Skripte liegen im GitHub-Repository und werden unter <b>ONE BIM › Skripte</b> mit Titel, Kurztext, Typ und Link angezeigt.</p>'
+      +'<div class="flink" onclick="showScripts()"><span class="m">→</span>Zum Bereich Skripte</div>'
+      +'<h4>Bezug zu den Anwendungsfällen</h4>'
+      +'<p>AwF 050 Koordination der Fachgewerke, AwF 060 Planungsfortschrittskontrolle und Qualitätsprüfung.</p>'
+      +linksHTML('vdc')+govHTML());
+  } else if(id==='vorlagen'){
+    openPanel('Vorlagen und Standards',
+      '<ul><li>Kartenvorlage für neue Anwendungsfälle (Markdown mit festem Kopf)</li>'
+      +'<li>Steckbrief-Vorlage für KI-Agenten (Markdown: Rolle, Aufgabe, Regeln, Quellen, Beispielprompts, Tests)</li>'
+      +'<li>Offizielle Anwendungsfall-Nummern nach der Liste von BIM Deutschland, gezählt in Zehnerschritten</li>'
+      +'<li>Namenskonvention für Dateien, damit alles auffindbar bleibt</li></ul>'+linksHTML('vorlagen')+govHTML());
+  } else if(id==='software'){
+    openPanel('Software und Werkzeuge',
+      '<ul><li><b>ReCap</b> — Punktwolken ansehen und aufbereiten</li>'
+      +'<li><b>Revit</b> — Modellierung</li>'
+      +'<li><b>Desite</b> — Prüfung und Koordination</li>'
+      +'<li><b>ProVI</b> — Trassierung</li>'
+      +'<li><b>BIMcollab</b> — Issue-Management</li>'
+      +'<li><b>ambersearch</b> — KI-Agenten, Suche im Firmenwissen</li></ul>'
+      +'<p>Je Anwendungsfall steht in der Karte, welche Werkzeuge dort im Einsatz sind.</p>'+linksHTML('software'));
+  } else if(id==='projekte'){
+    openPanel('Projekterfahrungen',
+      '<ul><li><b>Bad Bevensen</b> (Bahn) — Punktwolken, Projektbasispunkt auf dem VA-System</li>'
+      +'<li><b>Leverkusen</b> (Straße, INGE) — CDE-Ökosystem, LoG-Anforderungen</li>'
+      +'<li><b>Dettingen</b> — Referenz für spätere Leistungsphasen</li></ul>'
+      +'<p>Erfahrungen fließen als Abschnitt in die jeweilige Karte ein, mit Projektnamen als Erfahrungsbasis.</p>'+linksHTML('projekte'));
+  } else if(id==='team'){
+    openPanel('Beitragen und Kernteam',
+      '<h4>Drei Wege zum Beitragen</h4>'
+      +'<ul><li>Formular ausfüllen, rund fünf Minuten. Daraus entsteht automatisch eine Karte.</li>'
+      +'<li>Vorhandene Datei in den Eingang-Ordner legen, Ebene 1 macht die Karte daraus.</li>'
+      +'<li>KI-Agent vorschlagen: Steckbrief (.md) einreichen, die KI-Koordination legt den Agenten in ambersearch an und teilt ihn nach Freigabe.</li></ul>'
+      +'<h4>Das Team — schlank, 8 Rollen</h4>'
+      +'<ul><li><b>Ebene 1 · Erstellung (4):</b> KI-Koordination, Wissens- &amp; Datenmanagement, BIM Controller, Prozess- &amp; QS-Koordination</li>'
+      +'<li><b>Ebene 2 · Prüfung (2):</b> fachliche Prüfung und Konsistenzprüfung</li>'
+      +'<li><b>Ebene 3 · Freigabe (2):</b> finale Prüfung und offizielle Freischaltung</li></ul>'
+      +'<h4>Der Weg jedes Inhalts</h4>'
+      +pipeHTML('b')
+      +'<p>Details mit Klick-Demo unter <b>ONE BIM › Freigabeprozess</b>.</p>'
+      +linksHTML('team')+govHTML());
+  }
+}
+
+var toastT;
+function toast(msg){
+  var el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(function(){el.classList.remove('show')},2400);
+}
+
+window.addEventListener('resize', function(){
+  var c=cxy(); var ctr=document.getElementById('nodeCenter');
+  if(ctr){ ctr.style.left=c.x+'px'; ctr.style.top=c.y+'px'; }
+  liveNodes.forEach(function(n){
+    var dx=Math.cos(n.angle)*n.rx, dy=Math.sin(n.angle)*n.ry;
+    n.el.style.left=c.x+'px'; n.el.style.top=c.y+'px';
+    n.el.style.transform='translate(-50%,-50%) translate('+dx+'px,'+dy+'px) scale(1)';
+    n.ln.setAttribute('x1',c.x); n.ln.setAttribute('y1',c.y);
+    n.ln.setAttribute('x2',c.x+dx); n.ln.setAttribute('y2',c.y+dy);
+  });
+});
+
+
+/* ---------- Unterseite: Freigabeprozess ---------- */
+var FROLES = {
+  ki:{n:'KI-Koordination', s:'ambersearch: Agenten, Prompts, Tests', i:'KI', c:'#E07A12'},
+  wd:{n:'Wissens- & Datenmanagement', s:'weiß, wo alles liegt: Quellen, Ablage, Links', i:'WD', c:'#1E5AA8'},
+  bc:{n:'BIM Controller', s:'fachlicher Inhalt: AwF, AIA, BAP, Modelle', i:'BC', c:'#2A8A47'},
+  qs:{n:'Prozess- & QS-Koordination', s:'Vorlagen, Vollständigkeit, Vorprüfung', i:'QS', c:'#6B46C1'},
+  pf:{n:'Fachliche Prüfung', s:'Richtigkeit gegen AIA, BAP, Normen', i:'P1', c:'#0F7A8A'},
+  pk:{n:'Konsistenzprüfung', s:'Abgleich mit dem freigegebenen Bestand', i:'P2', c:'#0F7A8A'},
+  f1:{n:'Freigabe A · Clusterleitung', s:'finale Prüfung aller Punkte', i:'F1', c:'#C50042'},
+  f2:{n:'Freigabe B · BIM-Management', s:'offizielle Freischaltung', i:'F2', c:'#C50042'}
+};
+var FPH = [
+  {name:'In Bearbeitung', lvl:'Ebene 1 · Erstellung — 4 Rollen', roles:['ki','wd','bc','qs'], checks:[
+    {p:'bc', t:'Inhalt erstellt', s:'Karte, Agent oder Vorlage nach ONE-BIM-Struktur'},
+    {p:'wd', t:'Quellen und Ablage dokumentiert', s:'richtiger Ordner, Links gesetzt, Version im Namen'},
+    {p:'ki', t:'KI-Anteil getestet', s:'Agent konfiguriert, fünf Testfragen bestanden'},
+    {p:'qs', t:'Vorprüfung abgeschlossen', s:'Vorlage eingehalten, Pflichtfelder vollständig'}]},
+  {name:'In Prüfung', lvl:'Ebene 2 · Prüfung — 2 Rollen', roles:['pf','pk'], dec:true, checks:[
+    {p:'pf', t:'Fachlich richtig?', s:'stimmt mit AIA, BAP, Normen und Projektpraxis überein'},
+    {p:'pk', t:'Konsistent mit dem Bestand?', s:'keine Dopplung, gleiche Begriffe und Struktur'},
+    {p:'pk', t:'Quellen nachvollziehbar?', s:'Links funktionieren, Version und Datum vorhanden'}]},
+  {name:'Freigeschaltet', lvl:'Ebene 3 · Freigabe — 2 Rollen', roles:['f1','f2'], back2:true, checks:[
+    {p:'f1', t:'Prüfprotokoll vollständig', s:'alle Punkte der Ebene 2 erledigt, Rückfragen geklärt'},
+    {p:'f1', t:'Freigabe A erteilt', s:''},
+    {p:'f2', t:'Freigabe B erteilt — freigeschaltet', s:'Status in ONE BIM: Freigegeben'}]}
+];
+var fstate={ph:0, busy:false, built:false};
+
+function flowHTML(){
+  var arrow='<div class="farrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>';
+  var cols=FPH.map(function(ph,pi){
+    var roles=ph.roles.map(function(r){var x=FROLES[r];
+      return '<div class="frole"><span class="fa" style="background:'+x.c+'">'+x.i+'</span><span><b>'+x.n+'</b><span>'+x.s+'</span></span></div>';}).join('');
+    var checks=ph.checks.map(function(c,ci){var x=FROLES[c.p];
+      return '<div class="fc" id="fc'+pi+'_'+ci+'"><span class="bx"></span><span class="rd" style="background:'+x.c+'" title="'+x.n+'"></span><span>'+c.t+(c.s?'<small>'+c.s+'</small>':'')+'</span></div>';}).join('');
+    var dec = ph.dec ? '<div class="fdec">Eine Antwort „nein“ → zurück an Ebene 1, mit Begründung im Verlauf</div>' :
+              ph.back2 ? '<div class="fdec">Offene Punkte → zurück an Ebene 2</div>' : '';
+    return '<div class="fcol ph'+(pi+1)+'" id="fcol'+pi+'">'
+      +'<div class="fh"><b>'+(pi+1)+' · '+ph.name+'</b><small>'+ph.lvl+'</small></div>'
+      +'<div class="fbody"><div class="drop" id="drop'+pi+'"></div>'
+      +'<span class="rlbl">Zuständig</span>'+roles
+      +'<span class="rlbl">Prüfpunkte</span><div class="fchecks">'+checks+'</div>'+dec+'</div></div>';
+  });
+  return '<h2>Freigabeprozess — eine Karte, drei Ebenen</h2>'
+    +'<p class="fsub">Gilt für alles in ONE BIM: AwF-Karten, KI-Agenten (ambersearch), Vorlagen und Prozesse. Schlankes Team: vier erstellen, zwei prüfen, zwei schalten frei. Erst Freigeschaltetes erscheint in ONE BIM mit Status „Freigegeben“.</p>'
+    +'<div class="fgrid">'+cols[0]+arrow+cols[1]+arrow+cols[2]+'</div>'
+    +'<div class="freturns"><div class="fret">&#8592; Rückgabe: Prüfung an Erstellung (mit Begründung)</div><div class="fret">&#8592; Rückgabe: Freigabe an Prüfung</div></div>'
+    +'<div class="fbar"><span class="fstat" id="fstat"></span>'
+    +'<button class="fbtn2" id="fback" type="button">Zurückgeben</button>'
+    +'<button class="fbtn2 prim" id="fnext" type="button">Weiter</button>'
+    +'<button class="fbtn2" id="freset" type="button">Neu starten</button></div>'
+    +'<div class="frules">'
+    +'<div class="frule"><b>Vier-Augen-Prinzip</b>Prüfung und Freigabe brauchen beide Personen der Ebene.</div>'
+    +'<div class="frule"><b>Keine Ebene überspringen</b>Freigeschaltet wird nur, was geprüft wurde. Zurück geht immer.</div>'
+    +'<div class="frule"><b>Fristen</b>Prüfung 5 Arbeitstage, Freigabe 3 Arbeitstage, danach Erinnerung.</div>'
+    +'<div class="frule"><b>Änderungen</b>Freigegebene Inhalte werden nur über eine neue Runde ab Ebene 1 geändert.</div></div>';
+}
+function fToken(){
+  var t=document.createElement('div'); t.className='token'; t.id='ftoken';
+  t.innerHTML='<span class="tt">Beispiel: AwF 040 Visualisierung — Karte + Agent</span><span class="tk" id="ftk">eingereicht von Ebene 1</span>';
+  return t;
+}
+function fRender(moveFrom){
+  for(var pi=0;pi<3;pi++){
+    var col=document.getElementById('fcol'+pi); col.classList.toggle('on', pi===Math.min(fstate.ph,2));
+    FPH[pi].checks.forEach(function(c,ci){
+      var el=document.getElementById('fc'+pi+'_'+ci);
+      el.classList.toggle('ok', pi<fstate.ph || (pi===2 && fstate.ph===3));
+    });
+  }
+  var tok=document.getElementById('ftoken');
+  var target=document.getElementById('drop'+Math.min(fstate.ph,2));
+  if(tok && tok.parentNode!==target){
+    var a=tok.getBoundingClientRect();
+    target.appendChild(tok);
+    var b=tok.getBoundingClientRect();
+    tok.style.transition='none'; tok.style.transform='translate('+(a.left-b.left)+'px,'+(a.top-b.top)+'px)';
+    requestAnimationFrame(function(){requestAnimationFrame(function(){ tok.style.transition=''; tok.style.transform=''; });});
+  }
+  if(tok){
+    tok.classList.toggle('tp2', fstate.ph===1);
+    tok.classList.toggle('tp3', fstate.ph>=2);
+    document.getElementById('ftk').textContent = fstate.ph===0?'in Bearbeitung bei Ebene 1'
+      : fstate.ph===1?'liegt zur Prüfung bei Ebene 2'
+      : fstate.ph===2?'liegt zur Freigabe bei Ebene 3'
+      : 'freigeschaltet — Status in ONE BIM: Freigegeben';
+    if(fstate.ph===3){ tok.classList.add('pulse'); setTimeout(function(){tok.classList.remove('pulse');},900); }
+  }
+  var st=document.getElementById('fstat'), nx=document.getElementById('fnext'), bk=document.getElementById('fback');
+  var msg=['<b>Schritt 1:</b> Ebene 1 erstellt und hakt die vier Prüfpunkte ab.',
+           '<b>Schritt 2:</b> Ebene 2 prüft fachlich und auf Konsistenz.',
+           '<b>Schritt 3:</b> Ebene 3 prüft final und schaltet offiziell frei.',
+           '<b>Fertig:</b> Inhalt ist Standard in ONE BIM. Änderungen starten neu bei Ebene 1.'][fstate.ph];
+  st.innerHTML=msg;
+  nx.disabled = fstate.busy || fstate.ph>=3;
+  nx.textContent = fstate.ph===0?'Zur Prüfung geben':fstate.ph===1?'Zur Freigabe geben':fstate.ph===2?'Offiziell freischalten':'Freigeschaltet';
+  bk.disabled = fstate.busy || fstate.ph===0 || fstate.ph===3;
+}
+function fAdvance(){
+  if(fstate.busy||fstate.ph>=3) return; fstate.busy=true;
+  var pi=fstate.ph, checks=FPH[pi].checks, i=0;
+  (function tick(){
+    if(i<checks.length){ document.getElementById('fc'+pi+'_'+i).classList.add('ok'); i++; setTimeout(tick,260); }
+    else { setTimeout(function(){ fstate.ph++; fstate.busy=false; fRender(pi);
+      toast(fstate.ph===3?'Freigeschaltet — erscheint in ONE BIM als „Freigegeben“':'Übergeben an '+FPH[fstate.ph].lvl.split(' — ')[0]); },220); }
+  })();
+}
+function fBack(){
+  if(fstate.busy||fstate.ph===0||fstate.ph===3) return;
+  var from=fstate.ph;
+  FPH[from].checks.forEach(function(c,ci){document.getElementById('fc'+from+'_'+ci).classList.remove('ok');});
+  FPH[from-1].checks.forEach(function(c,ci){document.getElementById('fc'+(from-1)+'_'+ci).classList.remove('ok');});
+  fstate.ph=from-1; fRender();
+  toast('Zurückgegeben an '+FPH[fstate.ph].lvl.split(' — ')[0]+' — Begründung kommt in den Verlauf');
+}
+function showFlow(){
+  closePanel(); clearRing(); level=6; nav=[{f:showDomains},{f:showCats}]; setSearch(false); setDomain('bim');
+  setCrumb('ONE BIM › <b>Freigabeprozess</b> — In Bearbeitung › In Prüfung › Freigeschaltet', true);
+  document.getElementById('legend').classList.add('mini');
+  var f=document.getElementById('flow');
+  if(!fstate.built){
+    document.getElementById('fwrap').innerHTML=flowHTML();
+    document.getElementById('drop0').appendChild(fToken());
+    document.getElementById('fnext').onclick=fAdvance;
+    document.getElementById('fback').onclick=fBack;
+    document.getElementById('freset').onclick=function(){ fstate.ph=0; fstate.busy=false;
+      for(var pi=0;pi<3;pi++) FPH[pi].checks.forEach(function(c,ci){document.getElementById('fc'+pi+'_'+ci).classList.remove('ok');});
+      fRender(); };
+    fstate.built=true;
+  }
+  f.classList.add('open');
+  fRender();
+}
+
+/* ---------- Unterseite: Skripte (Quelle: skripte.json im GitHub-Repository) ---------- */
+/* EINMAL ANPASSEN: Organisation/Benutzer, Repository und Branch eures GitHub-Repositorys */
+var GH = { owner:'DEINE-ORGANISATION', repo:'one-bim', branch:'main' };
+
+/* Fallback, falls skripte.json nicht geladen werden kann (z. B. Datei lokal per Doppelklick geöffnet) */
+var SKRIPTE_FALLBACK = [
+  { titel:'IFC-Export: Proxy-Elemente als CSV', kurz:'Liest alle IfcBuildingElementProxy mit Name, GUID und Klassifikation aus einer IFC-Datei und schreibt sie als CSV.',
+    typ:'Python', pfad:'skripte/ifc_proxy_export.py', datum:'2026-09-10', status:'f', tags:['IFC','CSV','Klassifikation'] },
+  { titel:'Prüfregel: Pflichtattribute Oberleitung', kurz:'Regeldefinition (JSON) für die Attributprüfung im VDC Manager — welche Attribute je Elementtyp gefüllt sein müssen.',
+    typ:'JSON', pfad:'skripte/pruefregel_pflichtattribute.json', datum:'2026-09-10', status:'b', tags:['VDC Manager','Attribute','Prüfung'] }
+];
+var SKRIPTE = SKRIPTE_FALLBACK.slice(), sBuilt=false;
+
+function ghBase(){ return 'https://github.com/'+GH.owner+'/'+GH.repo; }
+function ghView(pfad){ return /^https?:\/\//i.test(pfad) ? pfad : ghBase()+'/blob/'+GH.branch+'/'+pfad.replace(/^\//,''); }
+function ghRaw(pfad){ return /^https?:\/\//i.test(pfad) ? pfad : 'https://raw.githubusercontent.com/'+GH.owner+'/'+GH.repo+'/'+GH.branch+'/'+pfad.replace(/^\//,''); }
+function sEsc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function sFmtDate(d){
+  if(!d) return '';
+  var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(d); if(m) return m[3]+'.'+m[2]+'.'+m[1];
+  return d;
+}
+function sSetStat(msg, cls){ var el=document.getElementById('sStat'); el.textContent=msg; el.className='sstat'+(cls?' '+cls:''); }
+function sRender(){
+  var q=(document.getElementById('sQ').value||'').trim().toLowerCase();
+  var all=SKRIPTE;
+  var list=all.filter(function(e){ if(!q) return true;
+    var hay=(e.titel+' '+(e.kurz||'')+' '+(e.typ||'')+' '+(e.tags||[]).join(' ')+' '+(e.pfad||'')).toLowerCase();
+    return q.split(/\s+/).filter(Boolean).every(function(w){ return hay.indexOf(w)>=0; }); });
+  document.getElementById('sCount').textContent = list.length+(list.length===1?' Eintrag':' Einträge')+(q&&list.length!==all.length?' von '+all.length:'');
+  var box=document.getElementById('slist');
+  if(!list.length){ box.innerHTML='<div class="sempty">'+(all.length?'Kein Skript passt zur Suche.':'Noch keine Skripte in skripte.json.')+'</div>'; return; }
+  box.innerHTML=list.map(function(e,i){
+    var badge=e.status ? '<span class="st '+e.status+'">'+STLABEL[e.status]+'</span>' : '';
+    var chips=(e.tags||[]).map(function(t){return '<span class="chip">'+sEsc(t)+'</span>';}).join('');
+    return '<div class="scard">'
+      +'<div class="sh" onclick="this.parentNode.classList.toggle(\'open\')">'
+      +'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>'
+      +'<b title="'+sEsc(e.titel)+'">'+sEsc(e.titel)+'</b>'
+      +'<span class="kind">'+sEsc((e.typ||'Text').toUpperCase())+'</span>'
+      +'<span class="sdate">'+sFmtDate(e.datum)+'</span></div>'
+      +'<div class="sb">'
+      +(badge?'<p class="kw">'+badge+'</p>':'')
+      +'<p class="sdesc">'+sEsc(e.kurz||'')+'</p>'
+      +(chips?'<div class="chips">'+chips+'</div>':'')
+      +'<div class="sact">'
+      +'<a class="slink" href="'+sEsc(ghView(e.pfad))+'" target="_blank" rel="noopener">Auf GitHub ansehen ↗</a>'
+      +'<a class="slink" href="'+sEsc(ghRaw(e.pfad))+'" target="_blank" rel="noopener" download>Herunterladen ⇩</a>'
+      +'</div></div></div>';
+  }).join('');
+}
+function ghAuto(){
+  /* Auf GitHub Pages: Besitzer und Repository automatisch aus der Adresse ableiten — nichts muss von Hand eingetragen werden */
+  try{
+    var h=location.hostname||'';
+    if(/\.github\.io$/i.test(h)){
+      var owner=h.split('.')[0];
+      var seg=location.pathname.split('/').filter(Boolean);
+      if(owner) GH.owner=owner;
+      if(seg.length && !/\.html?$/i.test(seg[0])) GH.repo=seg[0];
+    }
+  }catch(e){}
+}
+function sLoad(){
+  ghAuto(); sLinks();
+  sSetStat('Lade skripte.json …');
+  var url='skripte.json?t='+Date.now();
+  if(location.protocol==='file:'){ sSetStat('Datei lokal geöffnet — Beispielliste wird gezeigt. Über die Web-Adresse (GitHub Pages / Intranet) lädt die Seite skripte.json.', 'warn'); sRender(); return; }
+  fetch(url,{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+  .then(function(data){
+    var list=Array.isArray(data)?data:(data.skripte||[]);
+    if(data && data.github){
+      if(data.github.owner && !/^DEINE/i.test(data.github.owner)) GH.owner=data.github.owner;
+      if(data.github.repo && !/^DEINE/i.test(data.github.repo)) GH.repo=data.github.repo;
+      if(data.github.branch) GH.branch=data.github.branch;
+    }
+    SKRIPTE=list.filter(function(e){return e && e.titel && e.pfad;});
+    sSetStat('skripte.json geladen — '+SKRIPTE.length+' Einträge · Stand '+(data.stand?sFmtDate(data.stand):'—'), 'ok');
+    sLinks(); sRender();
+  })
+  .catch(function(){ sSetStat('skripte.json nicht gefunden — Beispielliste wird gezeigt.', 'warn'); sRender(); });
+}
+function sLinks(){
+  document.getElementById('sRepo').href=ghBase();
+  document.getElementById('sNew').href=ghBase()+'/issues/new?title='+encodeURIComponent('Skript-Vorschlag: ')+'&body='+encodeURIComponent('Titel:\nKurzbeschreibung:\nTyp (Python/JSON/VBA/…):\nZweck / Anwendungsfall:\nDatei (Anhang oder Pfad):');
+}
+function sBuild(){ if(sBuilt) return; sBuilt=true; document.getElementById('sQ').addEventListener('input', sRender); sLinks(); }
+function showScripts(){
+  closePanel(); clearRing(); level=7; nav=[{f:showDomains},{f:showCats}]; setSearch(false); setDomain('bim');
+  setCrumb('ONE BIM › <b>Skripte</b> — Quelle: GitHub-Repository', true);
+  document.getElementById('legend').classList.add('mini');
+  sBuild(); sLoad();
+  document.getElementById('scripts').classList.add('open');
+}
+
+centerNode();
+inhalteLoad();
+</script>
+</body>
+</html>
