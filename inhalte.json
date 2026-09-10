@@ -3,12 +3,12 @@
   "stand": "2026-09-10",
   "inhalte": {
     "a010": {
-      "status": "f",
+      "status": "b",
       "links": [
         {
           "titel": "Steckbrief AwF 010",
           "text": "Karte als Markdown: Zweck, erwartete Dateien, Prüfpunkte",
-          "link": "https://obermeyer.sharepoint.com/sites/BIM-Cluster/ONE-BIM/Karten/AWF-010.md",
+          "link": "https://opb.sharepoint.com/:f:/r/sites/NW-OINF-BIMCluster/Freigegebene%20Dokumente/Prozesse%20und%20Regelwerk/BIM-Gesamtprozess/Detailprozesse/Detailprozess%20Erstellung%20Teil-%20und%20Fachmodelle%20(Bestand)?d=wf6b06e65cf5a431396aa652e489f5c95&csf=1&web=1&e=FcVUhN",
           "typ": ".md"
         },
         {
