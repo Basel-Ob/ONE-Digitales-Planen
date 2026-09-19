@@ -1,6 +1,6 @@
 {
   "_hinweis": "Reifegrad je Anwendungsfall und Niederlassung. Stufen: 0 nicht begonnen · 1 geplant · 2 Pilot · 3 im Einsatz · 4 Standard/Vorreiter. Kurzform: \"Essen\": 3  — Langform mit Ansprechperson: \"Essen\": {\"stufe\": 4, \"person\": \"Vorname Nachname\", \"kontakt\": \"vorname.nachname@obermeyer-group.com\", \"projekt\": \"…\", \"hinweis\": \"…\"}. Nicht genannte Standorte gelten als Stufe 0. Die Standorte pflegen ihre Zeilen selbst — per Pull Request oder über die SharePoint-Liste.",
-  "stand": "2026-09-19",
+  "stand": "2026-09-20",
   "standorte": [
     "Hamburg",
     "Hannover",
@@ -70,7 +70,14 @@
     },
     "a020": {},
     "a030": {},
-    "a040": {},
+    "a040": {
+      "Essen": {
+        "stufe": 4,
+        "person": "Kevin Bruckmann",
+        "kontakt": "Kevin.Bruckmann@obermeyer-group.com",
+        "projekt": "Gasunie Deutschland"
+      }
+    },
     "a060": {
       "Essen": 1
     },
