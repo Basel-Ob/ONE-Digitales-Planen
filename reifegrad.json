@@ -82,7 +82,14 @@
       "Essen": 1
     },
     "a070": {},
-    "a080": {},
+    "a080": {
+      "München": {
+        "stufe": 3,
+        "person": "Kevin Bruckmann",
+        "kontakt": "kevin.Bruckmann@Obermeyer-group.com",
+        "projekt": "Gasunie Deutschland"
+      }
+    },
     "a090": {},
     "a100": {},
     "a110": {},
