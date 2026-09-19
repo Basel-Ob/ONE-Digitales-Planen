@@ -1,0 +1,85 @@
+name: "Inhalt melden (Link oder Status)"
+description: "Einen SharePoint-Link zu einem Bereich hinzufügen oder das Status-Badge ändern — ohne Dateien zu bearbeiten."
+title: "Inhalt: "
+labels: ["inhalt-meldung"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **So funktioniert es:** Formular ausfüllen und absenden. Die Automatik prüft die Meldung und zeigt eine Vorschau. Sobald jemand aus dem Kernteam `/freigeben` kommentiert, wird der Link bzw. Status automatisch in die Seite übernommen. Du kannst nur einen Link eintragen, nur den Status ändern — oder beides zusammen.
+  - type: dropdown
+    id: bereich
+    attributes:
+      label: "Bereich"
+      description: "Wo soll der Link bzw. Status erscheinen?"
+      options:
+        - "a010 · Bestandserfassung und -modellierung"
+        - "a020 · Bedarfsplanung"
+        - "a030 · Planungsvarianten"
+        - "a040 · Visualisierung"
+        - "a050 · Koordination der Fachgewerke"
+        - "a060 · Planungsfortschrittskontrolle und Qualitätsprüfung"
+        - "a070 · Bemessung und Nachweisführung"
+        - "a080 · Ableitung von Planunterlagen"
+        - "a090 · Genehmigungsprozess"
+        - "a100 · Mengen- und Kostenermittlung"
+        - "a110 · Leistungsverzeichnis, Ausschreibung, Vergabe"
+        - "a120 · Terminplanung der Ausführung"
+        - "a130 · Logistikplanung"
+        - "a140 · Baufortschrittskontrolle"
+        - "vdc · VDC Manager"
+        - "vorlagen · Vorlagen und Standards"
+        - "software · Software und Werkzeuge"
+        - "projekte · Projekterfahrungen"
+        - "team · Beitragen und Kernteam"
+        - "dim · ONE DIM"
+        - "gis · ONE GIS"
+        - "ps-vertrag · Agent Prozesssteckbrief (Vertrag)"
+        - "ps-fertig · Agent Prozesssteckbrief (fertig)"
+        - "ps-monitor · Agent Prozesssteckbrief (Monitor)"
+        - "ps-analyse · Agent Prozesssteckbrief (Analyse)"
+        - "ps-praes · Agent Prozesssteckbrief (Präsentation)"
+        - "ps-proto · Agent Prozesssteckbrief (Protokoll)"
+        - "fp-handbuch · Agent Fachplaner-Handbuch"
+        - "fp-grundlagen · Agent Fachplaner-Grundlagen"
+        - "fp-leistung · Agent Fachplaner-Leistung"
+        - "bim-awf · Agent BIM-Anwendungsfälle"
+        - "bim-workflow · Agent BIM-Workflow"
+        - "bim-daten · Agent BIM-Daten"
+        - "bim-skript · Agent BIM-Skripte"
+        - "bim-prozess · Agent BIM-Prozesse"
+        - "bim-ifc · Agent BIM-IFC"
+    validations:
+      required: true
+  - type: input
+    id: linktitel
+    attributes:
+      label: "Link-Titel"
+      description: "Nur ausfüllen, wenn ein Link hinzukommen soll — so heißt der Eintrag auf der Seite."
+      placeholder: "z. B. Steckbrief AwF 050"
+  - type: input
+    id: linkbeschreibung
+    attributes:
+      label: "Link-Beschreibung (optional)"
+      placeholder: "z. B. Karte als Markdown: Zweck, erwartete Dateien, Prüfpunkte"
+  - type: input
+    id: linkadresse
+    attributes:
+      label: "Link-Adresse"
+      description: "Die vollständige Adresse, meist aus dem SharePoint (im SharePoint: Datei anklicken → Teilen → Link kopieren)."
+      placeholder: "https://obermeyer.sharepoint.com/sites/…"
+  - type: dropdown
+    id: status
+    attributes:
+      label: "Status-Badge ändern (optional)"
+      options:
+        - "keine Änderung"
+        - "b · In Bearbeitung"
+        - "g · Geprüft"
+        - "f · Freigegeben"
+      default: 0
+  - type: textarea
+    id: hinweis
+    attributes:
+      label: "Hinweis für das Kernteam (optional)"
+      placeholder: "Warum kommt der Link dazu? (erscheint nur hier, nicht auf der Seite)"
