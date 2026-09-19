@@ -1,0 +1,90 @@
+name: "Reifegrad melden"
+description: "Dein Standort hat etwas gelernt? Hier melden — ohne Dateien zu bearbeiten. Das Kernteam gibt frei, die Karte aktualisiert sich automatisch."
+title: "Reifegrad: "
+labels: ["reifegrad-meldung"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **So funktioniert es:** Formular ausfüllen und absenden. Die Automatik prüft die Meldung und zeigt eine Vorschau als Kommentar. Sobald jemand aus dem Kernteam `/freigeben` kommentiert, wird die Reifegrad-Karte automatisch aktualisiert — niemand muss eine Datei anfassen.
+  - type: dropdown
+    id: awf
+    attributes:
+      label: "Anwendungsfall"
+      options:
+        - "a010 · Bestandserfassung und -modellierung"
+        - "a020 · Bedarfsplanung"
+        - "a030 · Planungsvarianten"
+        - "a040 · Visualisierung"
+        - "a050 · Koordination der Fachgewerke"
+        - "a060 · Planungsfortschrittskontrolle und Qualitätsprüfung"
+        - "a070 · Bemessung und Nachweisführung"
+        - "a080 · Ableitung von Planunterlagen"
+        - "a090 · Genehmigungsprozess"
+        - "a100 · Mengen- und Kostenermittlung"
+        - "a110 · Leistungsverzeichnis, Ausschreibung, Vergabe"
+        - "a120 · Terminplanung der Ausführung"
+        - "a130 · Logistikplanung"
+        - "a140 · Baufortschrittskontrolle"
+    validations:
+      required: true
+  - type: dropdown
+    id: standort
+    attributes:
+      label: "Niederlassung"
+      options:
+        - "Hamburg"
+        - "Hannover"
+        - "Berlin"
+        - "Magdeburg"
+        - "Essen"
+        - "Düsseldorf"
+        - "Köln"
+        - "Leipzig"
+        - "Dresden"
+        - "Chemnitz"
+        - "Erfurt"
+        - "Wiesbaden"
+        - "Aschaffenburg"
+        - "Kaiserslautern"
+        - "Bexbach"
+        - "Nürnberg"
+        - "Karlsruhe"
+        - "Stuttgart"
+        - "Neu-Ulm"
+        - "München"
+    validations:
+      required: true
+  - type: dropdown
+    id: stufe
+    attributes:
+      label: "Neue Stufe"
+      description: "Stufen werden gemeinsam bestätigt: Der Standort schlägt vor, das Kernteam gibt frei (4·2·2)."
+      options:
+        - "1 · geplant — in einem Projekt vorgesehen, noch nicht umgesetzt"
+        - "2 · Pilot — in einem Projekt erprobt, Erfahrungen liegen vor"
+        - "3 · im Einsatz — in laufenden Projekten regelmäßig genutzt"
+        - "4 · Standard / Vorreiter — etabliert, der Standort kann andere anleiten"
+        - "0 · nicht begonnen — Eintrag zurücksetzen"
+    validations:
+      required: true
+  - type: input
+    id: person
+    attributes:
+      label: "Ansprechperson (optional)"
+      placeholder: "Vorname Nachname — mehrere mit · trennen"
+  - type: input
+    id: kontakt
+    attributes:
+      label: "E-Mail (optional)"
+      placeholder: "vorname.nachname@obermeyer-group.com"
+  - type: input
+    id: projekt
+    attributes:
+      label: "Projekt (optional)"
+      placeholder: "In welchem Projekt wurde das gelernt?"
+  - type: textarea
+    id: hinweis
+    attributes:
+      label: "Hinweis / Begründung (optional)"
+      placeholder: "Was wurde gelernt? Was können andere Standorte übernehmen?"

@@ -1,0 +1,46 @@
+name: "Wissenslücke melden"
+description: "Eine Frage, auf die es bei uns noch keine gute Antwort gibt — damit sichtbar wird, welches Wissen wirklich fehlt."
+title: "Wissenslücke: "
+labels: ["wissensluecke"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Du hast gesucht (SharePoint, Frag ONE, Kollegen) und keine brauchbare Antwort gefunden? Genau dafür ist diese Meldung da. Gleiche Fragen bündeln sich hier zu Themen — so entstehen neue Inhalte aus echter Nachfrage, nicht aus Vermutung.
+  - type: textarea
+    id: frage
+    attributes:
+      label: "Die Frage"
+      placeholder: "So, wie du sie einer Kollegin oder einem Kollegen stellen würdest."
+    validations:
+      required: true
+  - type: input
+    id: gesucht
+    attributes:
+      label: "Wo hast du schon gesucht? (optional)"
+      placeholder: "z. B. Know-How-SharePoint, Frag ONE, AwF-Karte …"
+  - type: dropdown
+    id: awf
+    attributes:
+      label: "Betrifft Anwendungsfall (optional)"
+      options:
+        - "a010 · Bestandserfassung und -modellierung"
+        - "a020 · Bedarfsplanung"
+        - "a030 · Planungsvarianten"
+        - "a040 · Visualisierung"
+        - "a050 · Koordination der Fachgewerke"
+        - "a060 · Planungsfortschrittskontrolle und Qualitätsprüfung"
+        - "a070 · Bemessung und Nachweisführung"
+        - "a080 · Ableitung von Planunterlagen"
+        - "a090 · Genehmigungsprozess"
+        - "a100 · Mengen- und Kostenermittlung"
+        - "a110 · Leistungsverzeichnis, Ausschreibung, Vergabe"
+        - "a120 · Terminplanung der Ausführung"
+        - "a130 · Logistikplanung"
+        - "a140 · Baufortschrittskontrolle"
+        - "übergreifend / unklar"
+  - type: input
+    id: projekt
+    attributes:
+      label: "Projekt (optional)"
+      placeholder: "Wo ist die Frage aufgetaucht?"

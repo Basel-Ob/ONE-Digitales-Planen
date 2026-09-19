@@ -1,0 +1,121 @@
+{
+  "_hinweis": "Reifegrad je Anwendungsfall und Niederlassung. Stufen: 0 nicht begonnen · 1 geplant · 2 Pilot · 3 im Einsatz · 4 Standard/Vorreiter. Kurzform: \"Essen\": 3  — Langform mit Ansprechperson: \"Essen\": {\"stufe\": 4, \"person\": \"Vorname Nachname\", \"kontakt\": \"vorname.nachname@obermeyer-group.com\", \"projekt\": \"…\", \"hinweis\": \"…\"}. Nicht genannte Standorte gelten als Stufe 0. Die Standorte pflegen ihre Zeilen selbst — per Pull Request oder über die SharePoint-Liste.",
+  "stand": "2026-09-11",
+  "standorte": [
+    "Hamburg",
+    "Hannover",
+    "Berlin",
+    "Magdeburg",
+    "Essen",
+    "Düsseldorf",
+    "Köln",
+    "Leipzig",
+    "Dresden",
+    "Chemnitz",
+    "Erfurt",
+    "Wiesbaden",
+    "Aschaffenburg",
+    "Kaiserslautern",
+    "Bexbach",
+    "Nürnberg",
+    "Karlsruhe",
+    "Stuttgart",
+    "Neu-Ulm",
+    "München"
+  ],
+  "reifegrad": {
+    "a010": {
+      "Essen": {
+        "stufe": 4,
+        "person": "Nicolai Magdalinski · Basel Nassor",
+        "kontakt": "nicolai.magdalinski@obermeyer-group.com · basel.nassor@obermeyer-group.com",
+        "projekt": "Bad Bevensen",
+        "hinweis": "Punktwolke → Bestandsmodell durchgängig, Klassifikation in LAS"
+      },
+      "Hannover": {
+        "stufe": 3,
+        "person": "Johann Kraft",
+        "kontakt": "johann.kraft@obermeyer-group.com",
+        "projekt": "Leverkusen"
+      },
+      "München": {
+        "stufe": 3,
+        "person": "Steffen Scharun",
+        "kontakt": "steffen.scharun@obermeyer-group.com"
+      },
+      "Hamburg": {
+        "stufe": 2,
+        "person": "Vorname Nachname",
+        "kontakt": ""
+      },
+      "Karlsruhe": 2,
+      "Erfurt": 1,
+      "Dresden": 1
+    },
+    "a050": {
+      "Essen": {
+        "stufe": 3,
+        "person": "Nicolai Magdalinski · Basel Nassor",
+        "kontakt": "nicolai.magdalinski@obermeyer-group.com · basel.nassor@obermeyer-group.com",
+        "projekt": "Dettingen"
+      },
+      "München": {
+        "stufe": 3,
+        "person": "Steffen Scharun",
+        "kontakt": "steffen.scharun@obermeyer-group.com"
+      },
+      "Stuttgart": 2,
+      "Nürnberg": 1
+    },
+    "a020": {},
+    "a030": {},
+    "a040": {},
+    "a060": {},
+    "a070": {},
+    "a080": {},
+    "a090": {},
+    "a100": {},
+    "a110": {},
+    "a120": {},
+    "a130": {},
+    "a140": {}
+  },
+  "cluster": {
+    "_hinweis": "Mitglieder des BIM-Clusters OINF je Standort (Stand Folie 'Zusammensetzung BIM-Cluster OINF'). Zuordnung bitte prüfen.",
+    "Hannover": [
+      "Johann Kraft (Digitales Planen)"
+    ],
+    "Essen": [
+      "Nicolai Magdalinski (Digitales Planen)",
+      "Basel Nassor (Digitales Planen)",
+      "Philipp Henkel (Baumanagement)"
+    ],
+    "Kaiserslautern": [
+      "Nico Haerich (Wasser)"
+    ],
+    "Karlsruhe": [
+      "Marwah Al-Doori (Digitale Planung)",
+      "Felix Eickeler (Digitale Planung)"
+    ],
+    "Nürnberg": [
+      "Stefan Braun (KIB)"
+    ],
+    "Dresden": [
+      "Emilia Oese (KIB)",
+      "Alexander Pilz (Wasser)",
+      "Wenzel Gierlich (Funktionsteam)"
+    ],
+    "München": [
+      "Steffen Scharun (Head of BIM Funktionsteam)",
+      "Thomas Kobler (Straße)",
+      "Manuel Fußer (Tunnel)",
+      "Kevin Schwietert (KIB)",
+      "Rupert Lösch (Straße)"
+    ]
+  },
+  "qualitaetsmonitoring": {
+    "person": "Steffen Scharun",
+    "rolle": "Head of BIM Funktionsteam",
+    "grundsatz": "Die Karte zeigt, wer helfen kann — Stufen werden gemeinsam bestätigt, nicht vergeben. Lernt ein Standort vom anderen, steigen beide."
+  }
+}

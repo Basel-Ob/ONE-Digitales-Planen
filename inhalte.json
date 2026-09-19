@@ -1,0 +1,147 @@
+{
+  "_hinweis": "Pro Knoten beliebig viele Einträge mit titel, text, link. typ ist optional (z. B. '.md', '.drawio', 'SharePoint') – ohne typ wird er aus dem Link erkannt. Bei Anwendungsfällen und Agenten setzt 'status' das Badge: b = In Bearbeitung, g = Geprüft, f = Freigegeben. Zwischen zwei Einträgen steht ein Komma, nach dem letzten keins.",
+  "stand": "2026-09-10",
+  "inhalte": {
+    "a010": {
+      "status": "f",
+      "links": [
+        {
+          "titel": "Steckbrief AwF 010",
+          "text": "Karte als Markdown: Zweck, erwartete Dateien, Prüfpunkte",
+          "link": "https://obermeyer.sharepoint.com/sites/BIM-Cluster/ONE-BIM/Karten/AWF-010.md",
+          "typ": ".md"
+        },
+        {
+          "titel": "Prozessdiagramm",
+          "text": "draw.io – Ablauf von der Punktwolke zum Bestandsmodell",
+          "link": "https://obermeyer.sharepoint.com/sites/BIM-Cluster/ONE-BIM/Karten/AWF-010-Prozess.drawio",
+          "typ": ".drawio"
+        },
+        {
+          "titel": "Detailbericht",
+          "text": "Erfahrungen aus Bad Bevensen",
+          "link": "https://obermeyer.sharepoint.com/sites/BIM-Cluster/ONE-BIM/Karten/AWF-010-Bericht.docx",
+          "typ": ".docx"
+        }
+      ]
+    },
+    "a020": {
+      "links": []
+    },
+    "a030": {
+      "links": []
+    },
+    "a040": {
+      "links": []
+    },
+    "a050": {
+      "status": "b",
+      "links": []
+    },
+    "a060": {
+      "links": []
+    },
+    "a070": {
+      "links": []
+    },
+    "a080": {
+      "status": "b",
+      "links": []
+    },
+    "a090": {
+      "links": []
+    },
+    "a100": {
+      "links": []
+    },
+    "a110": {
+      "links": []
+    },
+    "a120": {
+      "links": []
+    },
+    "a130": {
+      "links": []
+    },
+    "a140": {
+      "links": []
+    },
+    "vdc": {
+      "links": []
+    },
+    "vorlagen": {
+      "links": [
+        {
+          "titel": "Kartenvorlage AwF",
+          "text": "Karte-AwF.md – fester Kopf, Pflichtfelder",
+          "link": "https://obermeyer.sharepoint.com/sites/BIM-Cluster/ONE-BIM/Vorlagen/Karte-AwF.md"
+        },
+        {
+          "titel": "Agent-Steckbrief",
+          "text": "Vorlage für neue KI-Agenten",
+          "link": "https://obermeyer.sharepoint.com/sites/BIM-Cluster/ONE-BIM/Vorlagen/Agent-Steckbrief.md"
+        }
+      ]
+    },
+    "software": {
+      "links": []
+    },
+    "projekte": {
+      "links": []
+    },
+    "team": {
+      "links": []
+    },
+    "dim": {
+      "links": []
+    },
+    "gis": {
+      "links": []
+    },
+    "ps-vertrag": {
+      "links": []
+    },
+    "ps-fertig": {
+      "links": []
+    },
+    "ps-monitor": {
+      "links": []
+    },
+    "ps-analyse": {
+      "links": []
+    },
+    "ps-praes": {
+      "links": []
+    },
+    "ps-proto": {
+      "links": []
+    },
+    "fp-handbuch": {
+      "links": []
+    },
+    "fp-grundlagen": {
+      "links": []
+    },
+    "fp-leistung": {
+      "links": []
+    },
+    "bim-awf": {
+      "links": []
+    },
+    "bim-workflow": {
+      "links": []
+    },
+    "bim-daten": {
+      "links": []
+    },
+    "bim-skript": {
+      "links": []
+    },
+    "bim-prozess": {
+      "links": []
+    },
+    "bim-ifc": {
+      "links": []
+    }
+  }
+}
