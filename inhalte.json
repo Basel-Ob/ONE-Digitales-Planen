@@ -1,6 +1,6 @@
 {
   "_hinweis": "Pro Knoten beliebig viele Einträge mit titel, text, link. typ ist optional (z. B. '.md', '.drawio', 'SharePoint') – ohne typ wird er aus dem Link erkannt. Bei Anwendungsfällen und Agenten setzt 'status' das Badge: b = In Bearbeitung, g = Geprüft, f = Freigegeben. Zwischen zwei Einträgen steht ein Komma, nach dem letzten keins.",
-  "stand": "2026-09-10",
+  "stand": "2026-09-19",
   "inhalte": {
     "a010": {
       "status": "f",
@@ -36,7 +36,12 @@
     },
     "a050": {
       "status": "b",
-      "links": []
+      "links": [
+        {
+          "titel": "Detailprozesse",
+          "link": "https://opb.sharepoint.com/:f:/r/sites/NW-OINF-BIMCluster/Freigegebene%20Dokumente/Prozesse%20und%20Regelwerk/BIM-Gesamtprozess/Detailprozesse/Detailprozess%20Erstellung%20Koordinationsmodell?d=w1a3001ba06bf46308c4bccb9cb4f2f3a&csf=1&web=1&e=RC1jfu"
+        }
+      ]
     },
     "a060": {
       "links": []
