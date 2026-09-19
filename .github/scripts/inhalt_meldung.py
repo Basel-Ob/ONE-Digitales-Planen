@@ -48,6 +48,8 @@ def parse_body(text):
 
     def get(*teile):
         for k, v in felder.items():
+            if k == "bereich" and teile != ("bereich",):
+                continue
             if all(t in k for t in teile):
                 v = v.strip()
                 if v in ("_No response_", "None"):
@@ -56,11 +58,12 @@ def parse_body(text):
         return ""
 
     return {
-        "bereich_roh": get("bereich"),
+        "bereich_roh": felder.get("bereich", "").strip() if felder.get("bereich", "").strip() not in ("_No response_", "None") else "",
         "titel": get("link", "titel"),
         "text": get("link", "beschreibung"),
         "link": get("link", "adresse"),
         "status_roh": get("status"),
+        "beschreibung": get("beschreibung", "bereichs"),
     }
 
 
@@ -89,8 +92,8 @@ def pruefe(d, daten):
             fehler.append("Für einen neuen Link fehlt die Link-Adresse.")
         elif not re.match(r"^https?://\S+$", d["link"]):
             fehler.append(f"Die Link-Adresse sieht ungültig aus: „{d['link']}“ (sie muss mit https:// beginnen)")
-    if not will_link and status is None:
-        fehler.append("Die Meldung enthält nichts zum Übernehmen: bitte einen Link eintragen und/oder einen Status wählen.")
+    if not will_link and status is None and not d["beschreibung"]:
+        fehler.append("Die Meldung enthält nichts zum Übernehmen: bitte einen Link eintragen, einen Status wählen oder eine Beschreibung schreiben.")
 
     if bereich and will_link and d["link"]:
         vorhandene = [e.get("link", "") for e in inhalte.get(bereich, {}).get("links", [])]
@@ -113,6 +116,8 @@ def anwenden(daten, bereich, status, will_link, d):
     alt_status = knoten.get("status")
     if status is not None:
         knoten["status"] = status
+    if d["beschreibung"]:
+        knoten["beschreibung"] = d["beschreibung"]
     daten["stand"] = heute()
     return neu_eintrag, alt_status
 
@@ -149,6 +154,8 @@ def main():
     if status is not None:
         alt_t = STATUS_TEXT.get(alt_status, "kein Badge")
         zeilen.append(f"Status-Badge in **{bereich}**: {alt_t} → **{STATUS_TEXT[status]}**")
+    if d["beschreibung"]:
+        zeilen.append(f"Beschreibung in **{bereich}**:\n> " + d["beschreibung"])
     kern = "\n\n".join(zeilen)
 
     if modus == "vorschau":
@@ -164,6 +171,8 @@ def main():
         kurz.append(f"Link „{d['titel']}“")
     if status is not None:
         kurz.append(f"Status {STATUS_TEXT[status]}")
+    if d["beschreibung"]:
+        kurz.append("Beschreibung")
     schreibe("commitmsg.txt", f"Inhalt: {bereich} — {' · '.join(kurz)} (#{nummer})")
     text = "**Übernommen.**\n\n" + kern + "\n\nDie Seite zeigt die Änderung in etwa einer Minute — einfach neu laden. Danke für die Meldung!"
     schreibe("kommentar.md", text)
