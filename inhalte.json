@@ -1,6 +1,6 @@
 {
   "_hinweis": "Pro Knoten beliebig viele Einträge mit titel, text, link. typ ist optional (z. B. '.md', '.drawio', 'SharePoint') – ohne typ wird er aus dem Link erkannt. Bei Anwendungsfällen und Agenten setzt 'status' das Badge: b = In Bearbeitung, g = Geprüft, f = Freigegeben. Zwischen zwei Einträgen steht ein Komma, nach dem letzten keins.",
-  "stand": "2026-09-19",
+  "stand": "2026-09-20",
   "inhalte": {
     "a010": {
       "status": "f",
@@ -51,7 +51,12 @@
     },
     "a080": {
       "status": "b",
-      "links": []
+      "links": [
+        {
+          "titel": "Planableitung",
+          "link": "https://opb.sharepoint.com/sites/NW-OINF-BIMCluster/Freigegebene%20Dokumente/Forms/AllItems.aspx?id=%2Fsites%2FNW%2DOINF%2DBIMCluster%2FFreigegebene%20Dokumente%2FProzesse%20und%20Regelwerk%2FBIM%2DGesamtprozess%2FDetailprozesse%2FDetailprozess%20Planableitung&viewid=712d69a8%2Dc3bd%2D454e%2D87e4%2D295eeac1c338&d=wf6b06e65cf5a431396aa652e489f5c95&csf=1&CID=912cf1e2%2D6d16%2D471d%2Db587%2Def208bf754a9&FolderCTID=0x0120003FEF2456CF610F428A44AF2AD5098E99"
+        }
+      ]
     },
     "a090": {
       "links": []
