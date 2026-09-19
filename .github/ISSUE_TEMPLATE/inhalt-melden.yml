@@ -1,12 +1,12 @@
 name: "Inhalt melden (Link oder Status)"
-description: "Einen SharePoint-Link zu einem Bereich hinzufügen oder das Status-Badge ändern — ohne Dateien zu bearbeiten."
+description: "Link hinzufügen, Status-Badge ändern oder Beschreibung schreiben — ohne Dateien zu bearbeiten."
 title: "Inhalt: "
 labels: ["inhalt-meldung"]
 body:
   - type: markdown
     attributes:
       value: |
-        **So funktioniert es:** Formular ausfüllen und absenden. Die Automatik prüft die Meldung und zeigt eine Vorschau. Sobald jemand aus dem Kernteam `/freigeben` kommentiert, wird der Link bzw. Status automatisch in die Seite übernommen. Du kannst nur einen Link eintragen, nur den Status ändern — oder beides zusammen.
+        **So funktioniert es:** Formular ausfüllen und absenden. Die Automatik prüft die Meldung und zeigt eine Vorschau. Sobald jemand aus dem Kernteam `/freigeben` kommentiert, wird der Link bzw. Status automatisch in die Seite übernommen. Du kannst einen Link eintragen, den Status ändern oder eine Beschreibung schreiben — einzeln oder zusammen.
   - type: dropdown
     id: bereich
     attributes:
@@ -78,6 +78,12 @@ body:
         - "g · Geprüft"
         - "f · Freigegeben"
       default: 0
+  - type: textarea
+    id: beschreibung
+    attributes:
+      label: "Beschreibung des Bereichs (optional)"
+      description: "Kurzer Text, der auf der Seite im Bereich erscheint (ersetzt eine vorhandene Beschreibung)."
+      placeholder: "Worum geht es hier? Was gibt es schon?"
   - type: textarea
     id: hinweis
     attributes:
