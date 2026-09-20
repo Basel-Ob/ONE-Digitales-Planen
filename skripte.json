@@ -1,0 +1,24 @@
+{
+  "github": { "owner": "basel-ob", "repo": "DEINE-REPO (wird automatisch erkannt)", "branch": "main" },
+  "stand": "2026-09-10",
+  "skripte": [
+    {
+      "titel": "IFC-Export: Proxy-Elemente als CSV",
+      "kurz": "Liest alle IfcBuildingElementProxy mit Name, GUID und Klassifikation aus einer IFC-Datei und schreibt sie als CSV.",
+      "typ": "Python",
+      "pfad": "skripte/ifc_proxy_export.py",
+      "datum": "2026-09-10",
+      "status": "f",
+      "tags": ["IFC", "CSV", "Klassifikation"]
+    },
+    {
+      "titel": "Prüfregel: Pflichtattribute Oberleitung",
+      "kurz": "Regeldefinition für die Attributprüfung im VDC Manager: welche Attribute je Elementtyp gefüllt sein müssen.",
+      "typ": "JSON",
+      "pfad": "skripte/pruefregel_pflichtattribute.json",
+      "datum": "2026-09-10",
+      "status": "b",
+      "tags": ["VDC Manager", "Attribute", "Prüfung"]
+    }
+  ]
+}
