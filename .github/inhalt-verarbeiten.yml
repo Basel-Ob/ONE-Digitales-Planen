@@ -1,0 +1,112 @@
+# Verarbeitet Inhalts-Meldungen (Issue-Formular „Inhalt melden"):
+# 1. Neue oder bearbeitete Meldung → prüfen und Vorschau als Kommentar zeigen
+# 2. Kommentar „/freigeben" vom Kernteam → Link/Status automatisch in inhalte.json
+#    eintragen, committen und die Meldung schließen.
+name: Inhalt-Meldung
+
+on:
+  issues:
+    types: [opened, edited]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: inhalt-${{ github.event.issue.number }}
+  cancel-in-progress: false
+
+jobs:
+  vorschau:
+    name: Meldung prüfen und Vorschau zeigen
+    if: >
+      github.event_name == 'issues' &&
+      (contains(github.event.issue.labels.*.name, 'inhalt-meldung') ||
+       contains(github.event.issue.body, '### Bereich'))
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Meldung lesen
+        env:
+          BODY: ${{ github.event.issue.body }}
+        run: printf '%s' "$BODY" > /tmp/meldung.txt
+
+      - name: Vorschau erstellen
+        run: |
+          python3 .github/scripts/inhalt_meldung.py vorschau /tmp/meldung.txt "${{ github.event.issue.number }}" || true
+
+      - name: Vorschau als Kommentar veröffentlichen
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          NUM="${{ github.event.issue.number }}"
+          CID=$(gh api "repos/${{ github.repository }}/issues/$NUM/comments" --paginate \
+                --jq '[.[] | select(.body | contains("<!-- inhalt-vorschau -->"))][0].id' 2>/dev/null || true)
+          if [ -n "$CID" ] && [ "$CID" != "null" ]; then
+            gh api -X PATCH "repos/${{ github.repository }}/issues/comments/$CID" -F body=@kommentar.md >/dev/null
+          else
+            gh issue comment "$NUM" --body-file kommentar.md
+          fi
+
+  freigeben:
+    name: Freigabe durch das Kernteam ausführen
+    if: >
+      github.event_name == 'issue_comment' &&
+      github.event.issue.state == 'open' &&
+      startsWith(github.event.comment.body, '/freigeben') &&
+      (contains(github.event.issue.labels.*.name, 'inhalt-meldung') ||
+       contains(github.event.issue.body, '### Bereich'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: Berechtigung prüfen (nur Kernteam mit Schreibrecht)
+        id: recht
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          WER="${{ github.event.comment.user.login }}"
+          PERM=$(gh api "repos/${{ github.repository }}/collaborators/$WER/permission" --jq .permission 2>/dev/null || echo none)
+          echo "Berechtigung von $WER: $PERM"
+          if [ "$PERM" = "admin" ] || [ "$PERM" = "write" ] || [ "$PERM" = "maintain" ]; then
+            echo "ok=ja" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=nein" >> "$GITHUB_OUTPUT"
+            gh issue comment "${{ github.event.issue.number }}" \
+              --body "@$WER Die Freigabe ist dem Kernteam vorbehalten (Schreibrecht im Repository). Die Meldung bleibt offen, bis jemand aus dem Kernteam \`/freigeben\` kommentiert."
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.recht.outputs.ok == 'ja'
+
+      - name: Meldung lesen
+        if: steps.recht.outputs.ok == 'ja'
+        env:
+          BODY: ${{ github.event.issue.body }}
+        run: printf '%s' "$BODY" > /tmp/meldung.txt
+
+      - name: Inhalt übernehmen, committen und Meldung schließen
+        if: steps.recht.outputs.ok == 'ja'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -e
+          NUM="${{ github.event.issue.number }}"
+          if ! python3 .github/scripts/inhalt_meldung.py anwenden /tmp/meldung.txt "$NUM"; then
+            gh issue comment "$NUM" --body-file kommentar.md
+            echo "::warning::Meldung #$NUM wurde nicht übernommen – Begründung steht als Kommentar in der Meldung."
+            exit 0
+          fi
+          if git diff --quiet -- inhalte.json; then
+            gh issue comment "$NUM" --body "Die Seite steht bereits auf diesem Stand — es gibt nichts zu ändern. Ich schließe die Meldung."
+            gh issue close "$NUM"
+            exit 0
+          fi
+          git config user.name "inhalt-meldung"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add inhalte.json
+          git commit -m "$(cat commitmsg.txt)"
+          git push
+          gh issue comment "$NUM" --body-file kommentar.md
+          gh issue close "$NUM"

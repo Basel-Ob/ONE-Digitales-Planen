@@ -1,0 +1,64 @@
+# Prüft nach jeder Änderung, ob die JSON-Dateien fehlerfrei sind.
+# Ein roter Haken im Repository zeigt sofort, welche Zeile falsch ist.
+name: JSON prüfen
+
+on:
+  push:
+    paths: ["**.json", ".github/workflows/json-pruefung.yml"]
+  pull_request:
+    paths: ["**.json"]
+  workflow_dispatch:
+
+jobs:
+  pruefen:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: JSON-Dateien und Reifegrad prüfen
+        run: |
+          python3 - <<'PY'
+          import json, glob, re, sys
+          fehler = 0
+          def meldung(datei, text):
+              global fehler
+              fehler += 1
+              print(f"::error file={datei}::{text}")
+
+          daten = {}
+          for datei in sorted(glob.glob("**/*.json", recursive=True)):
+              try:
+                  with open(datei, encoding="utf-8") as f:
+                      daten[datei] = json.load(f)
+              except json.JSONDecodeError as e:
+                  meldung(datei, f"Schreibfehler in Zeile {e.lineno}, Spalte {e.colno}: {e.msg} (oft fehlt ein Komma oder eine Klammer)")
+
+          r = daten.get("reifegrad.json")
+          if r is not None:
+              orte = r.get("standorte", [])
+              awf_ok = {f"a{n:03d}" for n in range(10, 150, 10)}
+              if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(r.get("stand", ""))):
+                  meldung("reifegrad.json", '"stand" bitte als Datum JJJJ-MM-TT eintragen')
+              for awf, eintraege in r.get("reifegrad", {}).items():
+                  if awf not in awf_ok:
+                      meldung("reifegrad.json", f'Unbekannter Anwendungsfall "{awf}" (erlaubt: a010 … a140)')
+                  if not isinstance(eintraege, dict):
+                      meldung("reifegrad.json", f'"{awf}" muss in geschweiften Klammern stehen: {{ }}')
+                      continue
+                  for ort, wert in eintraege.items():
+                      if ort not in orte:
+                          meldung("reifegrad.json", f'{awf}: Niederlassung "{ort}" fehlt in "standorte" (Schreibweise prüfen)')
+                      stufe = wert.get("stufe") if isinstance(wert, dict) else wert
+                      if not isinstance(stufe, int) or isinstance(stufe, bool) or not 0 <= stufe <= 4:
+                          meldung("reifegrad.json", f'{awf} · {ort}: Stufe muss eine Zahl von 0 bis 4 sein, gefunden: {stufe!r}')
+                      if isinstance(wert, dict):
+                          for feld in ("person", "kontakt", "projekt", "hinweis"):
+                              if feld in wert and not isinstance(wert[feld], str):
+                                  meldung("reifegrad.json", f'{awf} · {ort}: "{feld}" muss Text in Anführungszeichen sein')
+                          for mail in re.split(r"\s*[·,;]\s*", wert.get("kontakt", "") or ""):
+                              if mail and not re.fullmatch(r"[^@\s]+@[^@\s]+\.[a-z]{2,}", mail, re.I):
+                                  meldung("reifegrad.json", f'{awf} · {ort}: E-Mail "{mail}" sieht ungültig aus')
+          if fehler:
+              print(f"{fehler} Problem(e) gefunden.")
+              sys.exit(1)
+          print("Alle JSON-Dateien sind in Ordnung.")
+          PY
