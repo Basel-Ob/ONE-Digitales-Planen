@@ -1,0 +1,9 @@
+{
+  "regel": "Pflichtattribute Oberleitung",
+  "version": "0.1",
+  "beschreibung": "Attribute, die je Elementtyp gefüllt sein müssen. Leere Werte = Befund.",
+  "elemente": [
+    { "ifcTyp": "IfcBuildingElementProxy", "filter": { "Name": "OLA*" },
+      "pflicht": ["Bezeichnung", "Klassifikation", "Bauabschnitt", "Status"] }
+  ]
+}
