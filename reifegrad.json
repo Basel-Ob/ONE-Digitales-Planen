@@ -1,0 +1,63 @@
+{
+  "_hinweis": "Reifegrad je Anwendungsfall und Niederlassung. Stufen: 0 nicht begonnen · 1 geplant · 2 Pilot · 3 im Einsatz · 4 Standard/Vorreiter. Kurzform: \"Essen\": 3 — Langform mit Ansprechperson: \"Essen\": {\"stufe\": 4, \"person\": \"Vorname Nachname\", \"hinweis\": \"…\"}. Nicht genannte Standorte gelten als Stufe 0. Keine E-Mail-Adressen, keine Kunden- oder Projektnamen: Die Seite ist öffentlich erreichbar; Kontakt läuft über das Firmenverzeichnis. Gepflegt wird die Datei ausschließlich über Meldungen (Formular „Reifegrad melden“) und Freigabe durch das Kernteam.",
+  "stand": "2026-09-20",
+  "standorte": [
+    "Hamburg",
+    "Hannover",
+    "Berlin",
+    "Magdeburg",
+    "Essen",
+    "Düsseldorf",
+    "Köln",
+    "Leipzig",
+    "Dresden",
+    "Chemnitz",
+    "Erfurt",
+    "Wiesbaden",
+    "Aschaffenburg",
+    "Kaiserslautern",
+    "Bexbach",
+    "Nürnberg",
+    "Karlsruhe",
+    "Stuttgart",
+    "Neu-Ulm",
+    "München"
+  ],
+  "reifegrad": {
+    "a010": {
+      "Essen": {
+        "stufe": 4,
+        "hinweis": "Punktwolke → Bestandsmodell durchgängig, Klassifikation in LAS"
+      },
+      "Hannover": 3,
+      "München": 3,
+      "Hamburg": 2,
+      "Karlsruhe": 2,
+      "Erfurt": 1,
+      "Dresden": 1
+    },
+    "a050": {
+      "Essen": 3,
+      "München": 3,
+      "Stuttgart": 2,
+      "Nürnberg": 1
+    },
+    "a020": {},
+    "a030": {},
+    "a040": {
+      "Essen": 4
+    },
+    "a060": {
+      "Essen": 1
+    },
+    "a070": {},
+    "a080": {},
+    "a090": {},
+    "a100": {},
+    "a110": {},
+    "a120": {},
+    "a130": {},
+    "a140": {}
+  },
+  "_hinweis_personen": "Namen erscheinen auf der öffentlichen Seite — nur mit Einverständnis der Person und nur der Name (Feld \"person\"). Der frühere Block \"cluster\" (Mitgliederlisten je Standort) wurde entfernt und kann nach Freigabe durch Datenschutz/Kernteam wieder ergänzt werden."
+}
