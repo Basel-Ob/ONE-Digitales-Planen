@@ -72,19 +72,11 @@ body:
     id: person
     attributes:
       label: "Ansprechperson (optional)"
+      description: "Nur der Name — erreichbar über das Firmenverzeichnis. Keine E-Mail-Adressen. Bitte nur mit Einverständnis der Person."
       placeholder: "Vorname Nachname — mehrere mit · trennen"
-  - type: input
-    id: kontakt
-    attributes:
-      label: "E-Mail (optional)"
-      placeholder: "vorname.nachname@obermeyer-group.com"
-  - type: input
-    id: projekt
-    attributes:
-      label: "Projekt (optional)"
-      placeholder: "In welchem Projekt wurde das gelernt?"
   - type: textarea
     id: hinweis
     attributes:
       label: "Hinweis / Begründung (optional)"
+      description: "Keine Kunden- oder Projektnamen, keine personenbezogenen Daten — die Seite ist öffentlich erreichbar."
       placeholder: "Was wurde gelernt? Was können andere Standorte übernehmen?"

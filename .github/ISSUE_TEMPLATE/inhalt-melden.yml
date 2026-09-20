@@ -7,6 +7,7 @@ body:
     attributes:
       value: |
         **So funktioniert es:** Formular ausfüllen und absenden. Die Automatik prüft die Meldung und zeigt eine Vorschau. Sobald jemand aus dem Kernteam `/freigeben` kommentiert, wird der Link bzw. Status automatisch in die Seite übernommen. Du kannst einen Link eintragen, den Status ändern oder eine Beschreibung schreiben — einzeln oder zusammen.
+        **Bitte beachten:** Die Seite ist öffentlich erreichbar. Keine E-Mail-Adressen, keine Kunden- oder Projektnamen, keine personenbezogenen Daten in Titel, Beschreibung oder Hinweis.
   - type: dropdown
     id: bereich
     attributes:

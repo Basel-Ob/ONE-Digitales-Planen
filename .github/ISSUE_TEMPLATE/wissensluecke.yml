@@ -39,8 +39,3 @@ body:
         - "a130 · Logistikplanung"
         - "a140 · Baufortschrittskontrolle"
         - "übergreifend / unklar"
-  - type: input
-    id: projekt
-    attributes:
-      label: "Projekt (optional)"
-      placeholder: "Wo ist die Frage aufgetaucht?"
