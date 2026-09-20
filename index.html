@@ -1,0 +1,1858 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ONE Digitales Planen — Struktur-Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#242429; --sub:#6B6B79; --paper:#FAFAFB; --surface:#ffffff;
+    --line:#E3E9EC; --line2:#EEF0F2;
+    --steel:#242429; --azure:#EC004F; --azure-d:#C50042;
+    --frei:#2e7d4f; --gep:#bd7d1a; --bearb:#6B6B79;
+    --chipbg:#F4F4F6;
+  }
+  *{box-sizing:border-box}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+  html,body{height:100%}
+  body{margin:0; color:var(--ink); background:var(--paper);
+    font-family:Inter,system-ui,sans-serif; font-size:15px; line-height:1.5;
+    -webkit-font-smoothing:antialiased; overflow:hidden}
+  a{color:var(--azure-d)}
+  :focus-visible{outline:2.5px solid var(--azure); outline-offset:2px; border-radius:6px}
+  .mono{font-family:Inter,sans-serif}
+
+  header.top{position:fixed; inset:0 0 auto 0; z-index:30; height:58px;
+    display:flex; align-items:center; gap:14px; padding:0 20px;
+    background:rgba(255,255,255,.92); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line)}
+  .logo{font-weight:800; letter-spacing:.2em; font-size:14.5px; color:#000}
+  .claim{font-size:11.5px; color:var(--sub); font-style:italic; white-space:nowrap}
+  @media(max-width:900px){.claim{display:none}}
+  .brand{display:flex; align-items:baseline; gap:7px; font-family:Inter,sans-serif}
+  .brand b{font-weight:800; font-size:18px; color:#000}
+  .brand .bim{font-weight:800; font-size:18px; color:#fff; background:var(--azure);
+    border-radius:6px; padding:0 8px; line-height:1.4}
+  .crumb{font-family:Inter,sans-serif; font-size:12px; color:var(--sub)}
+  .crumb b{color:var(--ink)}
+  .spacer{flex:1}
+  #btnBack{display:none; font:inherit; font-weight:600; font-size:13px; cursor:pointer;
+    border:1.5px solid var(--line); background:var(--surface); color:var(--steel);
+    padding:7px 14px; border-radius:8px}
+  #btnBack:hover{border-color:var(--azure)}
+  .proto-tag{font-family:Inter,sans-serif; font-size:11px; color:var(--sub);
+    border:1px dashed var(--line); border-radius:20px; padding:4px 10px}
+
+  /* Buehne */
+  #stage{position:fixed; inset:58px 0 0 0; overflow:hidden;
+    background-image:
+      linear-gradient(var(--line2) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line2) 1px,transparent 1px);
+    background-size:20px 20px}
+  .blob{position:absolute; width:58vmax; height:58vmax; border-radius:50%;
+    filter:blur(70px); pointer-events:none}
+  .blob.b1{background:radial-gradient(circle, rgba(236,0,79,.10), transparent 62%);
+    top:-20vmax; left:-14vmax; animation:drift1 46s ease-in-out infinite alternate}
+  .blob.b2{background:radial-gradient(circle, rgba(36,36,41,.09), transparent 62%);
+    bottom:-22vmax; right:-16vmax; animation:drift2 58s ease-in-out infinite alternate}
+  @keyframes drift1{from{transform:translate(0,0)}to{transform:translate(10vmax,7vmax)}}
+  @keyframes drift2{from{transform:translate(0,0)}to{transform:translate(-9vmax,-6vmax)}}
+  #wires{position:absolute; inset:0; width:100%; height:100%}
+  #wires line{stroke:#b9c4cd; stroke-width:1.6; opacity:0; transition:opacity .5s ease}
+  #wires line.on{opacity:.85}
+  #nodes{position:absolute; inset:0}
+
+  .nd{position:absolute; transform:translate(-50%,-50%); cursor:pointer;
+    transition:transform .55s cubic-bezier(.2,.8,.25,1), opacity .45s ease, box-shadow .15s ease;
+    text-align:center; user-select:none}
+  .nd.leaving{opacity:0 !important; transform:translate(-50%,-50%) scale(.4) !important; pointer-events:none}
+
+  .nd.center{width:168px; height:168px; border-radius:50%;
+    background:#1A1A1F; color:#fff; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:4px; z-index:5;
+    box-shadow:0 0 0 3px rgba(236,0,79,.25), 0 0 46px rgba(236,0,79,.45), 0 14px 36px rgba(0,0,0,.22);
+    animation:glow 3.2s ease-in-out infinite}
+  .nd.center::after{content:""; position:absolute; inset:-7px; border-radius:50%;
+    border:2px solid rgba(236,0,79,.5); animation:ring 2.6s ease-out infinite}
+  .nd.center .t em{font-style:normal; color:#FF3D77}
+  @keyframes glow{0%,100%{box-shadow:0 0 0 3px rgba(236,0,79,.22),0 0 34px rgba(236,0,79,.35),0 14px 36px rgba(0,0,0,.22)}
+    50%{box-shadow:0 0 0 3px rgba(236,0,79,.4),0 0 66px rgba(236,0,79,.6),0 14px 36px rgba(0,0,0,.22)}}
+  @keyframes ring{0%{transform:scale(1); opacity:.7}100%{transform:scale(1.45); opacity:0}}
+  .nd.center .t{font-family:Inter,sans-serif; font-weight:800; font-size:26px;
+    letter-spacing:.06em; line-height:1}
+  .nd.center .t2{font-family:Inter,sans-serif; font-weight:700; font-size:13.5px; color:#FF3D77;
+    line-height:1.15; padding:0 14px}
+  .nd.center .h{font-size:11.5px; opacity:.82}
+  .nd.center:hover{filter:brightness(1.12)}
+
+  .nd.cat{width:132px; height:132px; border-radius:50%;
+    background:var(--surface); border:2px solid var(--azure);
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    padding:12px; gap:5px; z-index:4}
+  .nd.cat:hover{box-shadow:0 10px 26px rgba(23,33,43,.16)}
+  .nd.cat .t{font-family:Inter,sans-serif; font-weight:700; font-size:14.5px; line-height:1.15}
+  .nd.cat .h{font-size:10.5px; color:var(--sub)}
+
+  .nd.awf{width:172px; background:var(--surface); border:1.5px solid var(--line);
+    border-radius:13px; padding:11px 13px 10px; z-index:4; text-align:left}
+  .nd.awf.sm{width:152px; padding:9px 11px 8px}
+  .nd.awf.sm .t{font-size:11.5px; margin:2px 0 6px}
+  .nd.awf.sm .num{font-size:10px}
+  .nk{display:inline-block; font-size:10px; font-weight:500; color:#8a95a0;
+    background:#f2f4f6; border:1px solid var(--line2); border-radius:20px; padding:2px 8px}
+  .nd.awf:hover{border-color:var(--azure); box-shadow:0 10px 24px rgba(23,33,43,.14)}
+  .nd.awf .num{font-family:Inter,sans-serif; font-size:10.5px; color:var(--bearb)}
+  .nd.awf .t{font-family:Inter,sans-serif; font-weight:700; font-size:13.5px;
+    line-height:1.2; margin:2px 0 7px}
+  .st{display:inline-flex; align-items:center; gap:6px; font-size:10.5px; font-weight:600;
+    padding:2px 8px; border-radius:20px; white-space:nowrap}
+  .st::before{content:""; width:6px; height:6px; border-radius:50%}
+  .st.f{color:var(--frei); background:#e8f3ec}.st.f::before{background:var(--frei)}
+  .st.g{color:var(--gep); background:#f7efdf}.st.g::before{background:var(--gep)}
+  .st.b{color:var(--bearb); background:#eef1f4}.st.b::before{background:var(--bearb)}
+
+  /* Legende */
+  #legend{position:fixed; left:20px; bottom:18px; z-index:25; background:var(--surface);
+    border:1px solid var(--line); border-radius:12px; padding:12px 16px; max-width:330px;
+    font-size:12.5px; color:var(--sub); box-shadow:0 8px 24px rgba(23,33,43,.08)}
+  #legend .row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:7px}
+  #legend .gov{border-top:1px solid var(--line2); padding-top:7px; font-size:12px}
+  #legend .gov b{color:var(--steel)}
+  #legend .sys{font-family:Inter,sans-serif; font-size:10.5px; margin-top:6px; color:var(--bearb)}
+  #legend.mini{padding:9px 12px; max-width:none}
+  #legend.mini .row{margin-bottom:0}
+  #legend.mini .gov, #legend.mini .sys{display:none}
+
+  /* Seitenpanel */
+  #panel{position:fixed; top:58px; right:0; bottom:0; width:min(400px,92vw); z-index:28;
+    background:var(--surface); border-left:1px solid var(--line);
+    box-shadow:-14px 0 34px rgba(23,33,43,.12);
+    transform:translateX(105%); transition:transform .38s cubic-bezier(.2,.8,.25,1);
+    display:flex; flex-direction:column}
+  #panel.open{transform:translateX(0)}
+  #panel .ph{display:flex; align-items:flex-start; gap:10px; padding:18px 20px 12px;
+    border-bottom:1px solid var(--line2)}
+  #panel .ph h3{font-family:Inter,sans-serif; font-size:19px; margin:0; flex:1; line-height:1.2}
+  #panel .ph .x{border:none; background:var(--chipbg); border-radius:8px; width:30px; height:30px;
+    cursor:pointer; font-size:15px; color:var(--sub); font-family:inherit}
+  #panel .pb{padding:16px 20px 24px; overflow:auto}
+  #panel h4{font-family:Inter,sans-serif; font-size:12.5px; margin:16px 0 8px; color:var(--azure-d); text-transform:uppercase; letter-spacing:.05em}
+  #panel p{margin:0 0 10px; font-size:13.5px}
+  #panel ul{margin:0 0 10px; padding-left:18px; font-size:13.5px}
+  #panel li{margin-bottom:6px}
+  .chips{display:flex; flex-wrap:wrap; gap:6px; margin:4px 0 6px}
+  .chip{font-family:Inter,sans-serif; font-size:11px; color:var(--steel);
+    background:var(--chipbg); border:1px solid var(--line2); border-radius:6px; padding:3px 8px}
+  .pipe{display:flex; border:1px solid var(--line); border-radius:9px; overflow:hidden; margin:6px 0 4px}
+  .pipe span{flex:1; text-align:center; padding:7px 4px; font-size:11px; color:var(--bearb); font-weight:500}
+  .pipe span + span{border-left:1px solid var(--line)}
+  .pipe span.done{color:var(--frei); background:#eef6f0}
+  .pipe span.cur{color:#fff; background:var(--frei)}
+  .pipe span.cur.g{background:var(--gep)}
+  .pipe span.cur.b{background:var(--bearb)}
+  .flink{display:block; padding:9px 12px; border:1px solid var(--line); border-radius:9px;
+    margin-bottom:7px; font-size:13px; cursor:pointer; background:var(--surface)}
+  .flink:hover{border-color:var(--azure)}
+  .flink .m{font-family:Inter,sans-serif; font-size:10.5px; color:var(--bearb); margin-right:8px}
+  a.flink{text-decoration:none; color:var(--ink); display:grid; grid-template-columns:auto 1fr auto; gap:8px 10px; align-items:center}
+  a.flink .lt{font-weight:600; font-size:13px}
+  a.flink .lx{grid-column:2; font-size:12px; color:var(--sub); line-height:1.4}
+  a.flink .go{color:var(--azure-d); font-size:12px; font-weight:700}
+  a.flink .m{display:inline-block; min-width:52px; text-align:center; background:var(--chipbg); border-radius:6px; padding:3px 7px; margin:0; color:var(--ink)}
+  .nolinks{font-size:12.5px; color:var(--sub); border:1.5px dashed var(--line); border-radius:9px; padding:9px 12px}
+  .nolinks code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11.5px; background:var(--chipbg); padding:1px 5px; border-radius:4px}
+  .govnote{margin-top:14px; padding:10px 12px; background:#f4f7f9; border-radius:9px;
+    font-size:12.5px; color:var(--sub)}
+  .govnote b{color:var(--steel)}
+
+  /* KI-Agenten Suche */
+  #kiSearch{display:none; align-items:center; gap:8px}
+  #kiSearch input{font:inherit; font-size:13px; width:min(320px,40vw); padding:7px 12px 7px 32px;
+    border:1.5px solid var(--line); border-radius:8px; background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236B6B79' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") 10px 50% no-repeat; color:var(--ink)}
+  #kiSearch input:focus{border-color:var(--azure); outline:none}
+  #kiSearch input::placeholder{color:#9aa0aa}
+  @media(max-width:700px){#kiSearch input{width:44vw}}
+  .nd.cat.ki{border-color:#E07A12}
+  .nd.cat.ki .h{color:#8C4A05}
+  /* Bereichs-Knoten unter ONE Digitales Planen */
+  .nd.cat.dom{width:150px; height:150px; border-width:2.5px; border-color:#1A1A1F}
+  .nd.cat.dom .t{font-size:18px; font-weight:800; letter-spacing:.02em}
+  .nd.cat.dom .t em{font-style:normal; color:var(--azure)}
+  .nd.cat.dom.soon{border-style:dashed; border-color:#b9c4cd}
+  .nd.cat.dom.soon .t em{color:#8a95a0}
+  .nd.cat.dom.soon .h{color:#8a95a0}
+  .nd.cat.tool{border-color:#1A1A1F}
+  .nd.cat.grp{width:124px; height:124px; border-width:2px; border-color:var(--line)}
+  .nd.cat.grp:hover{border-color:var(--azure)}
+  .nd.cat.grp .rom{font-family:Inter,sans-serif; font-weight:800; font-size:11px; color:#fff; background:var(--steel);
+    border-radius:20px; padding:1px 8px; margin-bottom:2px}
+  .nd.cat.grp .t{font-size:12.5px}
+  .nd.awf .agn{display:inline-block; font-size:10px; font-weight:600; color:#8C4A05; background:#FFF2E2;
+    border:1px solid #f6dcbf; border-radius:20px; padding:2px 8px}
+  .pr{margin:4px 0 10px; padding:9px 11px; background:#f4f7f9; border-radius:9px; font-size:12.5px; color:var(--ink); white-space:pre-wrap}
+  .kw{font-size:12px; color:var(--sub); margin:0 0 6px}
+  mark{background:#ffe9c2; color:inherit; padding:0 1px; border-radius:2px}
+
+  /* ---------- Unterseite Freigabeprozess ---------- */
+  #flow{position:absolute; inset:0; overflow:auto; padding:26px 24px 46px; display:none; background:var(--paper)}
+  #flow.open{display:block}
+  #flow .fwrap{max-width:1180px; margin:0 auto}
+  #flow h2{font-size:16px; font-weight:800; margin:0 0 2px}
+  #flow .fsub{font-size:12.5px; color:var(--sub); margin:0 0 18px}
+  .fgrid{display:grid; grid-template-columns:1fr 38px 1fr 38px 1fr; gap:12px; align-items:stretch}
+  @media(max-width:900px){.fgrid{grid-template-columns:1fr} .farrow{transform:rotate(90deg); height:38px}}
+  .fcol{border:1.5px solid var(--line); border-radius:16px; background:var(--surface); overflow:hidden; display:flex; flex-direction:column; transition:box-shadow .25s, border-color .25s}
+  .fcol .fh{padding:12px 14px 10px; border-bottom:1px solid var(--line2)}
+  .fcol .fh b{display:block; font-size:14.5px; font-weight:800}
+  .fcol .fh small{display:block; font-size:11.5px; color:var(--sub); margin-top:1px}
+  .fcol.ph1 .fh{background:#F1F1F4} .fcol.ph2 .fh{background:#FBF3E4} .fcol.ph3 .fh{background:#E7F3EC}
+  .fcol.ph1 .fh b{color:var(--bearb)} .fcol.ph2 .fh b{color:var(--gep)} .fcol.ph3 .fh b{color:var(--frei)}
+  .fcol.on{border-color:var(--azure); box-shadow:0 0 0 3px rgba(236,0,79,.12)}
+  .fbody{padding:12px 14px 14px; display:flex; flex-direction:column; gap:10px; flex:1}
+  .drop{min-height:64px; border:1.5px dashed var(--line); border-radius:12px; display:flex; align-items:center; justify-content:center; padding:8px}
+  .fcol.on .drop{border-color:var(--azure)}
+  .token{width:100%; border:1.5px solid var(--line); border-left:5px solid var(--bearb); border-radius:11px; background:var(--paper); padding:9px 12px; transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+  .token .tt{font-weight:700; font-size:13px}
+  .token .tk{font-size:11px; color:var(--sub)}
+  .token.tp2{border-left-color:var(--gep)} .token.tp3{border-left-color:var(--frei)}
+  .token.pulse{animation:tpulse .8s ease}
+  @keyframes tpulse{0%{box-shadow:0 0 0 0 rgba(46,125,79,.55)} 100%{box-shadow:0 0 0 14px transparent}}
+  .rlbl{font-size:10.5px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--sub)}
+  .frole{display:grid; grid-template-columns:30px 1fr; gap:9px; align-items:center; border:1px solid var(--line2); border-radius:11px; padding:6px 9px; background:var(--paper)}
+  .frole .fa{width:30px; height:30px; border-radius:50%; display:grid; place-items:center; color:#fff; font-weight:800; font-size:10.5px}
+  .frole b{font-size:12.5px; display:block; line-height:1.2}
+  .frole span{font-size:10.8px; color:var(--sub); display:block}
+  .fchecks{display:flex; flex-direction:column; gap:6px}
+  .fc{display:grid; grid-template-columns:20px 10px 1fr; gap:8px; align-items:center; border:1px solid var(--line2); border-radius:10px; padding:6px 9px; font-size:12px; background:var(--surface); transition:background .25s, border-color .25s}
+  .fc .bx{width:17px; height:17px; border:2px solid var(--line); border-radius:5px; display:grid; place-items:center; color:#fff; font-size:10px; font-weight:800; transition:all .2s}
+  .fc.ok{border-color:var(--frei); background:#E7F3EC}
+  .fc.ok .bx{background:var(--frei); border-color:var(--frei)}
+  .fc.ok .bx::before{content:"\2713"}
+  .fc .rd{width:9px; height:9px; border-radius:50%}
+  .fc small{display:block; color:var(--sub); font-size:10.6px}
+  .fdec{border:1.5px dashed var(--azure-d); color:var(--azure-d); border-radius:10px; padding:7px 10px; font-size:11.5px; font-weight:600; background:rgba(236,0,79,.04)}
+  .farrow{display:grid; place-items:center; color:var(--sub)}
+  .farrow svg{width:26px; height:26px}
+  .freturns{display:grid; grid-template-columns:1fr 1fr; gap:12px; max-width:840px; margin:10px auto 0}
+  @media(max-width:900px){.freturns{grid-template-columns:1fr}}
+  .fret{border-top:2px dashed var(--azure-d); color:var(--azure-d); font-size:11.5px; font-weight:600; padding-top:5px; text-align:center}
+  .fbar{display:flex; gap:8px; flex-wrap:wrap; align-items:center; margin:20px 0 8px; padding:11px 13px; background:var(--surface); border:1px solid var(--line); border-radius:13px}
+  .fbar .fstat{font-size:12.5px; color:var(--sub); margin-right:auto}
+  .fbar .fstat b{color:var(--ink)}
+  .fbtn2{font:inherit; font-weight:700; font-size:13px; padding:8px 15px; border-radius:9px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink); cursor:pointer}
+  .fbtn2:hover{border-color:var(--azure)}
+  .fbtn2.prim{background:var(--azure); border-color:var(--azure); color:#fff}
+  .fbtn2.prim:hover{background:var(--azure-d)}
+  .fbtn2:disabled{opacity:.45; cursor:not-allowed}
+  .frules{display:grid; grid-template-columns:repeat(auto-fit,minmax(215px,1fr)); gap:9px; margin-top:14px}
+  .frule{border:1px solid var(--line); border-radius:11px; padding:8px 11px; background:var(--surface); font-size:11.8px; color:var(--sub)}
+  .frule b{display:block; color:var(--ink); font-size:12px}
+
+  /* ---------- Reifegrad-Karte (neben dem AwF-Panel) ---------- */
+  #reife{position:fixed; top:74px; right:416px; width:392px; max-height:calc(100vh - 92px); overflow:auto;
+    background:var(--surface); border:1.5px solid var(--line); border-radius:16px; box-shadow:0 18px 44px rgba(23,33,43,.14);
+    transform:translateX(30px); opacity:0; pointer-events:none; transition:transform .35s cubic-bezier(.2,.8,.25,1), opacity .3s; z-index:25}
+  #reife.open{transform:translateX(0); opacity:1; pointer-events:auto}
+  #reife .rh{display:flex; align-items:center; gap:8px; padding:14px 16px 10px; border-bottom:1px solid var(--line2)}
+  #reife .rh h3{font-size:14px; margin:0; flex:1; line-height:1.25}
+  #reife .rh h3 small{display:block; font-size:11px; color:var(--sub); font-weight:500; margin-top:2px}
+  #reife .rtog{display:flex; border:1.5px solid var(--line); border-radius:8px; overflow:hidden}
+  #reife .rtog button{font:inherit; font-size:11px; font-weight:700; padding:5px 9px; border:none; background:var(--surface); color:var(--sub); cursor:pointer}
+  #reife .rtog button.on{background:#1A1A1F; color:#fff}
+  #reife .rbody{padding:12px 16px 16px}
+  #reife svg{display:block; width:100%; height:auto}
+  #reife .de{fill:#F7F8FA; stroke:#1A1A1F; stroke-width:1.2}
+  #reife .city{stroke:#fff; stroke-width:1.4; cursor:default; transition:r .2s}
+  #reife .city:hover{r:9}
+  #reife .cl{font-family:Inter,sans-serif; font-size:9px; font-weight:700; fill:#1A1A1F; paint-order:stroke; stroke:#fff; stroke-width:3px; stroke-linejoin:round}
+  #reife .rleg{display:flex; flex-wrap:wrap; gap:6px 10px; margin:8px 0 12px; font-size:10.5px; color:var(--sub)}
+  #reife .rleg span::before{content:""; display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:5px; vertical-align:-1px; border:1px solid rgba(0,0,0,.08)}
+  #reife .rleg .s0::before{background:#fff; border-color:#c9ccd3} #reife .rleg .s1::before{background:#ffd6e3} #reife .rleg .s2::before{background:#ff9ab8} #reife .rleg .s3::before{background:#f5407a} #reife .rleg .s4::before{background:#C50042}
+  #reife .rsum{display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:12px}
+  #reife .rsum div{text-align:center; border:1px solid var(--line); border-radius:8px; padding:6px 2px}
+  #reife .rsum b{display:block; font-size:16px} #reife .rsum small{font-size:9.5px; color:var(--sub)}
+  #reife h4{font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--azure-d); margin:0 0 6px}
+  .exp{display:grid; grid-template-columns:auto 1fr auto; gap:2px 10px; align-items:center; border:1px solid var(--line); border-radius:10px; padding:8px 10px; margin-bottom:6px}
+  .exp .dot{width:12px; height:12px; border-radius:50%; border:1.5px solid #fff; box-shadow:0 0 0 1px rgba(0,0,0,.08); grid-row:span 2}
+  .exp .es{font-size:12.5px; font-weight:700}
+  .exp .ep{grid-column:2; font-size:11.5px; color:var(--sub)}
+  .exp .ep b{color:var(--ink); font-weight:600}
+  .exp a{grid-column:3; grid-row:span 2; font-size:11px; font-weight:700; color:var(--azure-d); text-decoration:none; border:1px solid var(--line); border-radius:7px; padding:4px 8px; white-space:nowrap}
+  .exp a:hover{border-color:var(--azure)}
+  .exp .stlab{grid-column:3; grid-row:span 2; font-size:10px; color:var(--sub); white-space:nowrap}
+  .rnone{font-size:12px; color:var(--sub); border:1.5px dashed var(--line); border-radius:9px; padding:9px 12px}
+  .rnone code{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:11px; background:var(--chipbg); padding:1px 5px; border-radius:4px}
+  /* Matrix */
+  .mx{border-collapse:separate; border-spacing:2px; font-size:10px}
+  .mx th{font-weight:600; color:var(--sub); padding:2px 3px; text-align:left; white-space:nowrap}
+  .mx th.awf{cursor:pointer; writing-mode:vertical-rl; transform:rotate(180deg); text-align:left; padding:6px 0; font-size:9.5px}
+  .mx th.awf:hover, .mx th.awf.on{color:var(--azure-d)}
+  .mx td{width:16px; height:16px; border-radius:3px; background:#fff; border:1px solid #e3e6ea; cursor:pointer}
+  .mx td.s1{background:#ffd6e3; border-color:#ffd6e3} .mx td.s2{background:#ff9ab8; border-color:#ff9ab8} .mx td.s3{background:#f5407a; border-color:#f5407a} .mx td.s4{background:#C50042; border-color:#C50042}
+  .mx td.on{outline:2px solid #1A1A1F; outline-offset:-1px}
+  @media(max-width:1180px){#reife{right:16px; top:auto; bottom:16px; max-height:52vh; width:min(392px,92vw)}}
+
+  /* ---------- Unterseite Skripte ---------- */
+  #scripts{position:absolute; inset:0; overflow:auto; padding:26px 24px 46px; display:none; background:var(--paper)}
+  #scripts.open{display:block}
+  #scripts .swrap{max-width:1180px; margin:0 auto}
+  #scripts h2{font-size:16px; font-weight:800; margin:0 0 2px}
+  #scripts .ssub{font-size:12.5px; color:var(--sub); margin:0 0 18px}
+  .sgrid{display:grid; grid-template-columns:minmax(300px,380px) 1fr; gap:18px; align-items:start}
+  @media(max-width:900px){.sgrid{grid-template-columns:1fr}}
+  .sform{border:1.5px solid var(--line); border-radius:16px; background:var(--surface); padding:16px 16px 14px; position:sticky; top:0}
+  .sform label{display:block; font-size:11px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; color:var(--sub); margin:12px 0 5px}
+  .sform label:first-of-type{margin-top:0}
+  .sform input[type=text], .sform input[type=url], .sform textarea, .sform select{width:100%; font:inherit; font-size:13px; padding:8px 10px;
+    border:1.5px solid var(--line); border-radius:9px; background:var(--paper); color:var(--ink)}
+  .sform textarea{min-height:150px; resize:vertical; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:12px; line-height:1.45}
+  .sform input:focus, .sform textarea:focus, .sform select:focus{border-color:var(--azure); outline:none}
+  .stype{display:flex; gap:6px}
+  .stype button{flex:1; font:inherit; font-size:12.5px; font-weight:700; padding:7px 8px; border-radius:9px; border:1.5px solid var(--line); background:var(--surface); color:var(--sub); cursor:pointer}
+  .stype button.on{border-color:#1A1A1F; background:#1A1A1F; color:#fff}
+  .serr{display:none; margin-top:8px; font-size:12px; color:var(--azure-d); background:rgba(236,0,79,.06); border-radius:8px; padding:7px 10px}
+  .serr.show{display:block}
+  .sbar{display:flex; gap:8px; margin-top:14px}
+  .slist{display:flex; flex-direction:column; gap:10px}
+  .sempty{border:1.5px dashed var(--line); border-radius:14px; padding:26px; text-align:center; color:var(--sub); font-size:13px}
+  .scard{border:1.5px solid var(--line); border-radius:14px; background:var(--surface); overflow:hidden}
+  .scard .sh{display:flex; align-items:center; gap:10px; padding:11px 14px; cursor:pointer}
+  .scard .sh:hover{background:#f7f8fa}
+  .scard .sh b{font-size:14px; flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .scard .kind{font-family:ui-monospace,Menlo,Consolas,monospace; font-size:10.5px; font-weight:700; padding:2px 8px; border-radius:20px; background:#1A1A1F; color:#fff}
+  .scard .kind.json{background:var(--azure)}
+  .scard .sdate{font-size:11.5px; color:var(--sub); white-space:nowrap}
+  .scard .chev{width:18px; height:18px; color:var(--sub); transition:transform .25s}
+  .scard.open .chev{transform:rotate(90deg)}
+  .scard .sb{display:none; border-top:1px solid var(--line2); padding:12px 14px 14px}
+  .scard.open .sb{display:block}
+  .scard pre{margin:0; max-height:360px; overflow:auto; background:#f4f7f9; border-radius:10px; padding:10px 12px; font-size:12px; line-height:1.45; white-space:pre-wrap; word-break:break-word; font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .scard .slink{display:inline-flex; align-items:center; gap:6px; margin:0 0 10px; font-size:12.5px; font-weight:600; color:var(--azure-d); text-decoration:none; border:1px solid var(--line); border-radius:8px; padding:5px 10px; background:var(--paper)}
+  .scard .slink:hover{border-color:var(--azure)}
+  .scard .sact{display:flex; gap:8px; margin-top:10px; flex-wrap:wrap}
+  .sfilter{display:flex; gap:8px; align-items:center; margin-bottom:12px}
+  .sfilter input{flex:1; font:inherit; font-size:13px; padding:7px 11px; border:1.5px solid var(--line); border-radius:9px; background:var(--surface)}
+  .sfilter input:focus{border-color:var(--azure); outline:none}
+  .scount{font-size:12px; color:var(--sub); white-space:nowrap}
+  .sform ol.show{margin:0; padding-left:18px; font-size:13px; color:var(--sub)}
+  .sform ol.show li{margin-bottom:6px}
+  .sform ol.show b{color:var(--ink)}
+  .sstat{font-size:12.5px; color:var(--sub); background:var(--paper); border:1px solid var(--line); border-radius:9px; padding:8px 10px}
+  .sstat.ok{color:var(--frei); border-color:#cfe6d6; background:#eef6f0}
+  .sstat.warn{color:var(--gep); border-color:#efdcb7; background:#fbf3e4}
+  .sbar a.fbtn2{text-decoration:none; display:inline-block}
+  .scard .sdesc{font-size:13px; color:var(--ink); margin:0 0 10px}
+  .scard .st{margin-left:0}
+  .scard .kind{background:#1A1A1F}
+
+  .toast{position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(20px);
+    background:var(--ink); color:#fff; padding:11px 17px; border-radius:10px; font-size:13px;
+    opacity:0; pointer-events:none; transition:opacity .2s, transform .2s; z-index:60; max-width:90vw}
+  .toast.show{opacity:1; transform:translateX(-50%) translateY(0)}
+
+  /* ---------- Reifegrad-Karte: Gesamtansicht ---------- */
+  .hbtn{font:inherit; font-weight:700; font-size:13px; cursor:pointer; border:1.5px solid var(--azure); background:var(--surface); color:var(--azure-d);
+    padding:6px 12px 6px 10px; border-radius:8px; display:inline-flex; align-items:center; gap:7px; white-space:nowrap}
+  .hbtn:hover{background:#fff0f5}
+  .hbtn i{width:10px; height:10px; border-radius:50%; background:conic-gradient(#C50042 0 25%,#f5407a 0 50%,#ff9ab8 0 75%,#ffd6e3 0)}
+  #legend .rklink{display:block; margin-top:8px; font-weight:700; font-size:12.5px; color:var(--azure-d); cursor:pointer; background:none; border:0; padding:0; font-family:inherit}
+  #legend.mini .rklink{display:none}
+
+  #rk{position:fixed; inset:58px 0 0 0; z-index:40; background:var(--paper); display:none; flex-direction:column}
+  #rk.open{display:flex}
+  #rk .rkbar{display:flex; align-items:center; gap:12px; padding:12px 20px; border-bottom:1px solid var(--line); background:var(--surface); flex-wrap:wrap}
+  #rk .rkbar h2{margin:0; font-size:18px; letter-spacing:-.01em}
+  #rk .rkbar h2 small{display:block; font-size:11.5px; color:var(--sub); font-weight:500; letter-spacing:0}
+  #rk .src{font-size:12px; border-radius:999px; padding:4px 11px; border:1px solid var(--line); color:var(--sub); background:var(--chipbg)}
+  #rk .src.ok{color:var(--frei); background:#eef7f1; border-color:#cfe7d8}
+  #rk .src.warn{color:#8C4A05; background:#fff5e8; border-color:#f3d9b5}
+  #rk .src.err{color:#fff; background:#B3261E; border-color:#B3261E}
+  #rk .src.chg{color:#fff; background:var(--azure); border-color:var(--azure)}
+  #rk .src button{font:inherit; font-weight:700; color:inherit; background:none; border:0; text-decoration:underline; cursor:pointer; padding:0; margin-left:4px}
+  #rk .grow{flex:1}
+  #rk .tbtn{font:inherit; font-size:13px; font-weight:600; cursor:pointer; border:1.5px solid var(--line); background:var(--surface); color:var(--ink); padding:6px 12px; border-radius:8px}
+  #rk .tbtn:hover{border-color:var(--azure)}
+  #rk .tbtn.on{background:var(--ink); color:#fff; border-color:var(--ink)}
+  #rk .tbtn.pri{background:var(--azure); border-color:var(--azure); color:#fff}
+  #rk .tbtn.pri:hover{background:var(--azure-d)}
+  #rk .seg{display:flex; border:1.5px solid var(--line); border-radius:9px; overflow:hidden}
+  #rk .seg button{font:inherit; font-size:13px; font-weight:600; border:0; background:var(--surface); padding:6px 12px; cursor:pointer; color:var(--sub)}
+  #rk .seg button.on{background:var(--ink); color:#fff}
+  #rk .rkx{font-size:22px; line-height:1; width:36px; height:36px; border-radius:8px; border:1.5px solid var(--line); background:var(--surface); cursor:pointer}
+  #rk .rkx:hover{border-color:var(--azure)}
+
+  #rk .rkgrid{flex:1; min-height:0; display:grid; grid-template-columns:250px minmax(0,1fr) 370px}
+  @media(max-width:1100px){#rk .rkgrid{grid-template-columns:200px minmax(0,1fr) 320px}}
+  @media(max-width:860px){#rk .rkgrid{grid-template-columns:1fr; overflow:auto} #rk .rkcol{max-height:none!important}}
+  #rk .rkcol{overflow:auto; min-height:0}
+  #rk .rkf{border-right:1px solid var(--line); background:var(--surface); padding:12px 10px}
+  #rk .rkf h4, #rk .rks h4{font-size:10.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--azure-d); margin:4px 6px 8px}
+  #rk .fb{display:grid; grid-template-columns:auto 1fr auto; gap:8px; align-items:center; width:100%; text-align:left; font:inherit; font-size:12.5px;
+    border:0; background:none; border-radius:8px; padding:6px 8px; cursor:pointer; color:var(--ink)}
+  #rk .fb:hover{background:var(--chipbg)}
+  #rk .fb.on{background:#fff0f5; box-shadow:inset 3px 0 0 var(--azure)}
+  #rk .fb .n{font-weight:800; font-size:11px; color:var(--sub); min-width:28px}
+  #rk .fb .c{font-size:11px; font-weight:700; color:var(--azure-d); background:#fff0f5; border-radius:999px; padding:0 7px}
+  #rk .fb .c.z{color:var(--sub); background:var(--chipbg)}
+  #rk .fb.all{font-weight:700; margin-bottom:6px; border:1px solid var(--line)}
+
+  #rk .rkm{padding:14px 18px; display:flex; flex-direction:column; align-items:center}
+  #rk .rkm .mh{align-self:stretch; display:flex; align-items:baseline; gap:10px; margin-bottom:6px}
+  #rk .rkm .mh b{font-size:17px}
+  #rk .rkm .mh span{font-size:12.5px; color:var(--sub)}
+  #rk .map{width:100%; max-width:560px; flex:1; min-height:320px; max-height:calc(100vh - 260px)}
+  #rk .map svg{width:100%; height:100%; display:block}
+  #rk .map .de{fill:#fff; stroke:#EC004F; stroke-opacity:.45; stroke-width:1.2}
+  #rk .map .city{cursor:pointer; transition:r .2s}
+  #rk .map .city:hover{stroke:#242429; stroke-width:1.5}
+  #rk .map .sel{fill:none; stroke:#242429; stroke-width:1.6; stroke-dasharray:3 2}
+  #rk .map text{font-family:Inter,sans-serif; font-size:8px; font-weight:700; fill:#1A1A1F; paint-order:stroke; stroke:#fff; stroke-width:2.6px; stroke-linejoin:round; pointer-events:none}
+  #rk .map text.n{font-size:7px; fill:#fff; stroke:none}
+  #rk .map text.dim{fill:#8a95a0; font-weight:600}
+  #rk .rleg{display:flex; flex-wrap:wrap; gap:6px 12px; justify-content:center; margin:8px 0 10px; font-size:11.5px; color:var(--sub)}
+  #rk .rleg span::before{content:""; display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:5px; vertical-align:-1px; border:1px solid rgba(0,0,0,.08)}
+  #rk .rleg .s0::before{background:#fff; border-color:#c9ccd3} #rk .rleg .s1::before{background:#ffd6e3} #rk .rleg .s2::before{background:#ff9ab8} #rk .rleg .s3::before{background:#f5407a} #rk .rleg .s4::before{background:#C50042}
+  #rk .rsum{display:grid; grid-template-columns:repeat(5,minmax(70px,1fr)); gap:8px; width:100%; max-width:560px}
+  #rk .rsum div{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:6px 8px; text-align:center}
+  #rk .rsum b{display:block; font-size:20px; line-height:1.2} #rk .rsum small{font-size:10.5px; color:var(--sub)}
+  #rk .hintline{font-size:12px; color:var(--sub); margin-top:8px; text-align:center}
+
+  #rk .mxwrap{align-self:stretch; overflow:auto; padding-bottom:6px}
+  #rk .mx2{border-collapse:separate; border-spacing:3px; font-size:11.5px; margin:0 auto}
+  #rk .mx2 th{font-weight:600; color:var(--sub); padding:2px 6px; text-align:left; white-space:nowrap}
+  #rk .mx2 th.cl{cursor:pointer; text-align:center; font-size:10.5px; padding:4px 2px}
+  #rk .mx2 th.cl:hover, #rk .mx2 th.cl.on{color:var(--azure-d)}
+  #rk .mx2 th.rw{cursor:pointer} #rk .mx2 th.rw:hover, #rk .mx2 th.rw.on{color:var(--azure-d)}
+  #rk .mx2 td{width:30px; height:24px; border-radius:5px; background:#fff; border:1px solid #e3e6ea; cursor:pointer; text-align:center; font-size:10.5px; font-weight:800; color:#fff}
+  #rk .mx2 td.s1{background:#ffd6e3; border-color:#ffd6e3; color:#C50042} #rk .mx2 td.s2{background:#ff9ab8; border-color:#ff9ab8; color:#5c0020}
+  #rk .mx2 td.s3{background:#f5407a; border-color:#f5407a} #rk .mx2 td.s4{background:#C50042; border-color:#C50042}
+  #rk .mx2 td.col{box-shadow:0 0 0 1.5px rgba(36,36,41,.28)} #rk .mx2 td.hit{outline:2px solid #242429; outline-offset:1px}
+  #rk .mx2 td:hover{transform:scale(1.12)}
+
+  #rk .rks{border-left:1px solid var(--line); background:var(--surface); padding:14px 16px}
+  #rk .card{border:1px solid var(--line); border-radius:12px; padding:10px 12px; margin-bottom:10px}
+  #rk .card h3{margin:0 0 2px; font-size:16px}
+  #rk .card p{margin:4px 0; font-size:12.5px; color:var(--sub)}
+  #rk .row{display:grid; grid-template-columns:auto 1fr; gap:2px 10px; align-items:start; padding:7px 0; border-top:1px solid var(--line2); font-size:12.5px}
+  #rk .row:first-of-type{border-top:0}
+  #rk .row .dot{width:12px; height:12px; border-radius:50%; margin-top:3px; box-shadow:0 0 0 1px rgba(0,0,0,.1)}
+  #rk .row b{font-size:12.5px} #rk .row small{display:block; color:var(--sub); font-size:11.5px}
+  #rk .row a{font-weight:700}
+  #rk .ppl{display:flex; flex-wrap:wrap; gap:5px; margin-top:4px}
+  #rk .ppl span{font-size:11.5px; background:var(--chipbg); border-radius:999px; padding:2px 9px}
+  #rk .quote{font-size:12.5px; color:var(--ink); border-left:3px solid var(--azure); padding:4px 0 4px 10px; margin:6px 0 10px}
+  #rk .empty{font-size:12.5px; color:var(--sub); border:1px dashed var(--line); border-radius:10px; padding:10px}
+
+  /* Editor */
+  #rk .ed label{display:block; font-size:11px; font-weight:700; letter-spacing:.05em; color:var(--sub); margin:10px 0 4px; text-transform:uppercase}
+  #rk .ed select, #rk .ed input{width:100%; font:inherit; font-size:13.5px; padding:7px 9px; border:1.5px solid var(--line); border-radius:8px; background:#fff; color:var(--ink)}
+  #rk .ed select:focus, #rk .ed input:focus{border-color:var(--azure); outline:none}
+  #rk .ed .two{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+  #rk .stsel{display:grid; grid-template-columns:repeat(5,1fr); gap:4px}
+  #rk .stsel button{font:inherit; font-size:11px; font-weight:700; border:1.5px solid var(--line); border-radius:8px; background:#fff; padding:6px 2px; cursor:pointer; line-height:1.2}
+  #rk .stsel button i{display:block; width:14px; height:14px; border-radius:50%; margin:0 auto 3px; border:1px solid rgba(0,0,0,.1)}
+  #rk .stsel button.on{border-color:var(--ink); box-shadow:0 0 0 2px var(--ink) inset}
+  #rk .stdef{font-size:11.5px; color:var(--sub); margin-top:5px; min-height:18px}
+  #rk .ed .acts{display:flex; gap:8px; flex-wrap:wrap; margin-top:12px}
+  #rk .chg{font-size:12px; border-top:1px solid var(--line2); padding:6px 0; display:flex; justify-content:space-between; gap:8px}
+  #rk .chg em{font-style:normal; color:var(--azure-d); font-weight:700}
+  #rk .exp2{margin-top:12px; background:#fff0f5; border:1px solid #ffd6e3; border-radius:12px; padding:10px 12px}
+  #rk .exp2 ol{margin:6px 0 8px 18px; padding:0; font-size:12.5px}
+  #rk .exp2 .acts{margin-top:6px}
+  body.rk-open #legend, body.rk-open #reife, body.rk-open #panel{visibility:hidden}
+
+  /* Pflege-Modus */
+  #pfBar{position:fixed;left:14px;bottom:14px;z-index:60;display:flex;gap:8px;align-items:center;background:#111114;color:#fff;border-radius:12px;padding:8px 12px;font-size:12.5px;box-shadow:0 8px 30px rgba(23,33,43,.25);max-width:calc(100vw - 28px);flex-wrap:wrap}
+  #pfBar .pf-tag{background:#EC004F;color:#fff;font-weight:800;border-radius:6px;padding:2px 7px;letter-spacing:.04em}
+  #pfBar button{font:inherit;font-size:12.5px;font-weight:600;background:#fff;color:#111114;border:0;border-radius:8px;padding:5px 10px;cursor:pointer}
+  #pfBar button:hover{background:#ffd6e3}
+  #pfModal{position:fixed;inset:0;z-index:70;background:rgba(17,17,20,.45);display:none;align-items:center;justify-content:center;padding:20px}
+  #pfModal.open{display:flex}
+  #pfModal .pf-box{background:#fff;border-radius:16px;width:min(680px,100%);max-height:90vh;overflow:auto;box-shadow:0 20px 60px rgba(23,33,43,.35)}
+  #pfModal .pf-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid #eceef2;font-size:16px}
+  #pfModal .pf-x{font:inherit;font-size:22px;background:none;border:0;cursor:pointer;color:#6B6B79}
+  #pfModal .pf-body{padding:14px 18px;font-size:13.5px;line-height:1.5;color:#111114}
+  #pfModal label{display:block;font-size:11.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:#6B6B79;margin:12px 0 4px}
+  #pfModal input,#pfModal textarea,#pfModal select{width:100%;font:inherit;font-size:13.5px;padding:8px 10px;border:1.5px solid #dfe3e8;border-radius:8px;box-sizing:border-box;background:#fff;color:#111114}
+  #pfModal textarea{min-height:70px}
+  #pfModal .pf-acts{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .pf-btn{font:inherit;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid #dfe3e8;background:#fff;color:#111114;padding:7px 12px;border-radius:8px;text-decoration:none;display:inline-block}
+  .pf-btn.pri{background:#EC004F;border-color:#EC004F;color:#fff}
+  #pfModal .pf-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid #eceef2}
+  #pfModal .pf-row small{color:#6B6B79;display:block;font-size:12px}
+  .toast{z-index:90}
+  .pf-tools{margin:8px 0 10px}
+  .pf-tools button{font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;border:1.5px dashed #EC004F;background:#fff0f5;color:#C50042;padding:6px 10px;border-radius:8px;width:100%}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="logo" aria-label="Obermeyer">OBERMEYER</div>
+  <div class="brand"><b>ONE</b><span class="bim" id="brandTag">Digitales Planen</span></div>
+  <span class="crumb" id="crumb">Start</span>
+  <div id="kiSearch"><input id="kiQ" type="search" placeholder="Agent suchen: Protokoll, AIA, ProVI, Excel …" aria-label="KI-Agenten durchsuchen" autocomplete="off"></div>
+  <div class="spacer"></div>
+  <button id="btnReife" class="hbtn" type="button" title="Reifegrad-Karte öffnen: Wer kann wobei helfen?"><i></i>Reifegrad-Karte</button>
+  <span class="claim">We design for generations ahead.</span>
+  <button id="btnBack" onclick="goBack()">Zurück</button>
+  <span class="proto-tag">Klick-Demo · Zielbild</span>
+</header>
+
+<div id="stage">
+  <div class="blob b1" aria-hidden="true"></div>
+  <div class="blob b2" aria-hidden="true"></div>
+  <svg id="wires" aria-hidden="true"></svg>
+  <div id="nodes"></div>
+</div>
+
+<div id="legend">
+  <div class="row">
+    <span class="st b">In Bearbeitung</span>
+    <span class="st g">Geprüft</span>
+    <span class="st f">Freigegeben</span>
+  </div>
+  <div class="gov"><b>Zentral gesteuert:</b> Den Status einer Karte ändert nur das Kernteam. Beitragen darf jede und jeder.</div>
+  <div class="sys">ONE Digitales Planen = ONE BIM · ONE DIM · ONE KI · ONE GIS — dahinter: SharePoint · ambersearch · Desite · Kernteam</div>
+  <button class="rklink" type="button" onclick="rkOpen()">Reifegrad-Karte: Wer kann wobei helfen? →</button>
+</div>
+
+<aside id="reife" aria-label="Reifegrad">
+  <div class="rh"><h3 id="reifeTitle">Reifegrad<small>Standorte × Anwendungsfall</small></h3>
+    <div class="rtog"><button id="rtKarte" class="on" type="button">Karte</button><button id="rtMatrix" type="button">Matrix</button></div></div>
+  <div class="rbody" id="reifeBody"></div>
+</aside>
+<aside id="panel" aria-live="polite">
+  <div class="ph"><h3 id="pTitle">—</h3><button class="x" onclick="closePanel()" aria-label="Schließen">×</button></div>
+  <div class="pb" id="pBody"></div>
+</aside>
+
+<div id="flow" aria-label="Freigabeprozess"><div class="fwrap" id="fwrap"></div></div>
+<div id="scripts" aria-label="Skripte"><div class="swrap">
+  <h2>Skripte — freigegebene Sammlung des Clusters</h2>
+  <p class="ssub">Die Skripte liegen im GitHub-Repository. Diese Seite liest die Liste <b>skripte.json</b> und zeigt Titel, Kurzbeschreibung, Typ, Datum, Status und den Link. Ansehen und Herunterladen öffnet GitHub — Änderungen laufen über den Freigabeprozess (Pull Request).</p>
+  <div class="sgrid">
+    <div class="sform" id="sInfo">
+      <label>So kommt ein Skript hinein</label>
+      <ol class="show">
+        <li>Skript-Datei im Ordner <b>skripte/</b> des Repositorys hochladen.</li>
+        <li>In <b>skripte.json</b> einen Eintrag ergänzen (Titel, Kurztext, Typ, Pfad).</li>
+        <li>Als Pull Request einreichen — Ebene 2 prüft, Ebene 3 schaltet frei.</li>
+        <li>Nach dem Merge erscheint der Eintrag hier automatisch.</li>
+      </ol>
+      <label>Status der Liste</label>
+      <div class="sstat" id="sStat">—</div>
+      <div class="sbar">
+        <a class="fbtn2 prim" id="sRepo" href="#" target="_blank" rel="noopener">Repository öffnen</a>
+        <a class="fbtn2" id="sNew" href="#" target="_blank" rel="noopener">Skript vorschlagen</a>
+      </div>
+    </div>
+    <div>
+      <div class="sfilter"><input type="search" id="sQ" placeholder="Skripte durchsuchen: Titel, Typ, Stichwort …" aria-label="Skripte durchsuchen"><span class="scount" id="sCount"></span></div>
+      <div class="slist" id="slist"></div>
+    </div>
+  </div>
+</div></div>
+
+<section id="rk" aria-label="Reifegrad-Karte" aria-hidden="true">
+  <div class="rkbar">
+    <h2>Reifegrad-Karte<small>20 Niederlassungen × 14 Anwendungsfälle · Wer kann wobei helfen?</small></h2>
+    <span class="src" id="rkSrc">Lade reifegrad.json …</span>
+    <span class="grow"></span>
+    <div class="seg" role="group" aria-label="Ansicht"><button type="button" id="rkVK" class="on">Karte</button><button type="button" id="rkVM">Matrix</button></div>
+    <button type="button" class="tbtn" id="rkEditBtn">Bearbeiten</button>
+    <a class="tbtn" id="rkMeldBtn" target="_blank" rel="noopener" style="display:none" title="Etwas gelernt? Stufe per Formular melden — die Karte aktualisiert sich nach Freigabe automatisch">Melden</a>
+    <button type="button" class="rkx" id="rkClose" aria-label="Reifegrad-Karte schließen" title="Schließen (Esc)">×</button>
+    <input type="file" id="rkFile" accept=".json,application/json" hidden>
+  </div>
+  <div class="rkgrid">
+    <nav class="rkcol rkf" id="rkFilter" aria-label="Anwendungsfall wählen"></nav>
+    <div class="rkcol rkm" id="rkMain"></div>
+    <aside class="rkcol rks" id="rkSide"></aside>
+  </div>
+</section>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+var AWFS = [
+  {id:'a010', num:'AwF 010', name:'Bestandserfassung und -modellierung', st:'f'},
+  {id:'a020', num:'AwF 020', name:'Bedarfsplanung', st:null},
+  {id:'a030', num:'AwF 030', name:'Planungsvarianten', st:null},
+  {id:'a040', num:'AwF 040', name:'Visualisierung', st:null},
+  {id:'a050', num:'AwF 050', name:'Koordination der Fachgewerke', st:'b'},
+  {id:'a060', num:'AwF 060', name:'Planungsfortschrittskontrolle und Qualitätsprüfung', st:null},
+  {id:'a070', num:'AwF 070', name:'Bemessung und Nachweisführung', st:null},
+  {id:'a080', num:'AwF 080', name:'Ableitung von Planunterlagen', st:'b'},
+  {id:'a090', num:'AwF 090', name:'Genehmigungsprozess', st:null},
+  {id:'a100', num:'AwF 100', name:'Mengen- und Kostenermittlung', st:null},
+  {id:'a110', num:'AwF 110', name:'Leistungsverzeichnis, Ausschreibung, Vergabe', st:null},
+  {id:'a120', num:'AwF 120', name:'Terminplanung der Ausführung', st:null},
+  {id:'a130', num:'AwF 130', name:'Logistikplanung', st:null},
+  {id:'a140', num:'AwF 140', name:'Baufortschrittskontrolle', st:null}
+];
+var DOMAINS = [
+  {id:'bim', name:'BIM', hint:'Anwendungsfälle, VDC Manager, Skripte, Freigabe', cls:''},
+  {id:'dim', name:'DIM', hint:'im Aufbau', cls:'soon'},
+  {id:'ki',  name:'KI',  hint:'KI-Agenten · ambersearch', cls:'ki'},
+  {id:'gis', name:'GIS', hint:'im Aufbau', cls:'soon'}
+];
+var DNAME = {bim:'BIM', dim:'DIM', ki:'KI', gis:'GIS'};
+var CATS = [
+  {id:'awf', name:'Anwendungsfälle', hint:'14 nach BIM Deutschland', kind:'children'},
+  {id:'vdc', name:'VDC Manager', hint:'Desite · Prüfung, Koordination', kind:'panel', cls:'tool'},
+  {id:'skripte', name:'Skripte', hint:'GitHub · freigegebene Skripte', kind:'scripts', cls:'tool'},
+  {id:'freigabe', name:'Freigabeprozess', hint:'3 Ebenen · 8 Rollen', kind:'flow'},
+  {id:'vorlagen', name:'Vorlagen und Standards', hint:'Kartenvorlage, Nummern', kind:'panel'},
+  {id:'software', name:'Software und Werkzeuge', hint:'ReCap, Revit, Desite …', kind:'panel'},
+  {id:'projekte', name:'Projekterfahrungen', hint:'3 Projekte', kind:'panel'},
+  {id:'team', name:'Beitragen und Kernteam', hint:'so kommt Neues rein', kind:'panel'}
+];
+var STLABEL = {f:'Freigegeben', g:'Geprüft', b:'In Bearbeitung'};
+
+/* ---------- Reifegrad je Standort und Anwendungsfall – Quelle: reifegrad.json ---------- */
+var STANDORTE=[["Hamburg",9.99,53.55],["Hannover",9.73,52.37],["Berlin",13.40,52.52],["Magdeburg",11.63,52.13],["Essen",7.01,51.46],["Düsseldorf",6.78,51.23],["Köln",6.96,50.94],["Leipzig",12.37,51.34],["Dresden",13.74,51.05],["Chemnitz",12.92,50.83],["Erfurt",11.03,50.98],["Wiesbaden",8.24,50.08],["Aschaffenburg",9.15,49.98],["Kaiserslautern",7.77,49.44],["Bexbach",7.26,49.35],["Nürnberg",11.08,49.45],["Karlsruhe",8.40,49.01],["Stuttgart",9.18,48.78],["Neu-Ulm",10.01,48.39],["München",11.58,48.14]];
+var DE_OUTLINE=[[6.0,51.8],[6.8,52.4],[7.0,53.3],[6.9,53.6],[8.0,53.7],[8.6,53.55],[8.9,53.9],[9.8,54.8],[10.9,54.4],[12.5,54.4],[13.4,54.7],[14.2,53.9],[14.1,52.8],[14.6,52.6],[14.7,52.0],[15.0,51.1],[14.8,50.9],[14.3,51.0],[13.0,50.5],[12.3,50.2],[12.5,49.9],[13.8,48.8],[13.4,48.6],[12.8,48.1],[13.0,47.6],[12.2,47.7],[11.3,47.4],[10.4,47.4],[10.2,47.3],[9.6,47.5],[8.6,47.6],[7.7,47.5],[7.6,48.3],[8.2,48.9],[6.8,49.2],[6.4,49.6],[6.1,50.1],[6.3,50.5],[5.9,51.0],[6.2,51.5]];
+var STUFEN={0:"nicht begonnen",1:"geplant",2:"Pilot",3:"im Einsatz",4:"Standard · Vorreiter"};
+var STUFE_COL={0:"#ffffff",1:"#ffd6e3",2:"#ff9ab8",3:"#f5407a",4:"#C50042"};
+var REIFE={}, reifeMode='karte', reifeAwf=null;
+var REIFE_FALLBACK={ "a010":{ "Essen":{stufe:4,hinweis:"Punktwolke → Bestandsmodell durchgängig"},"Hannover":{stufe:3},"München":{stufe:3},"Hamburg":{stufe:2},
+  "Karlsruhe":{stufe:2},"Erfurt":{stufe:1},"Dresden":{stufe:1} },
+  "a050":{ "Essen":{stufe:3},"München":{stufe:3},"Stuttgart":{stufe:2},"Nürnberg":{stufe:1} } };
+function reifeGet(awf,ort){ var a=REIFE[awf]||{}; var e=a[ort]; if(e==null) return {stufe:0}; if(typeof e==='number') return {stufe:e}; return e; }
+function reifeProj(){
+  var kx=Math.cos(51.2*Math.PI/180), lons=DE_OUTLINE.map(function(p){return p[0];}), lats=DE_OUTLINE.map(function(p){return p[1];});
+  var lo0=Math.min.apply(null,lons), lo1=Math.max.apply(null,lons), la0=Math.min.apply(null,lats), la1=Math.max.apply(null,lats);
+  var W=300, H=360, pad=18, s=Math.min((W-2*pad)/((lo1-lo0)*kx),(H-2*pad)/(la1-la0));
+  var cx=W/2-((lo0+lo1)/2)*kx*s, cy=H/2+((la0+la1)/2)*s;
+  return function(lon,lat){ return [cx+lon*kx*s, cy-lat*s]; };
+}
+function reifeShow(awf){
+  reifeAwf=awf; var a=AWFS.filter(function(x){return x.id===awf;})[0];
+  document.getElementById('reifeTitle').innerHTML='Reifegrad · '+(a?a.num+' '+a.name:awf)+'<small>20 Niederlassungen · Stand der Umsetzung</small>';
+  document.getElementById('rtKarte').classList.toggle('on',reifeMode==='karte'); document.getElementById('rtMatrix').classList.toggle('on',reifeMode==='matrix');
+  document.getElementById('reifeBody').innerHTML = (reifeMode==='karte' ? reifeKarteHTML(awf) : reifeMatrixHTML(awf))
+    +'<button type="button" class="hbtn" style="margin-top:10px" onclick="rkOpen(\''+awf+'\')"><i></i>Große Reifegrad-Karte öffnen</button>';
+  document.getElementById('reife').classList.add('open');
+}
+function reifeHide(){ document.getElementById('reife').classList.remove('open'); reifeAwf=null; }
+function reifeKarteHTML(awf){
+  var P=reifeProj(), cnt={0:0,1:0,2:0,3:0,4:0}, out='';
+  var path=DE_OUTLINE.map(function(p,i){ var q=P(p[0],p[1]); return (i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1); }).join(' ')+' Z';
+  var dots='', labels='';
+  STANDORTE.forEach(function(st){ var e=reifeGet(awf,st[0]); cnt[e.stufe]++; var q=P(st[1],st[2]);
+    dots+='<circle class="city" cx="'+q[0].toFixed(1)+'" cy="'+q[1].toFixed(1)+'" r="'+(e.stufe?7:5)+'" fill="'+STUFE_COL[e.stufe]+'"'+(e.stufe?'':' stroke="#c9ccd3"')+'><title>'+esc2(st[0])+' — '+STUFEN[e.stufe]+(e.person?' · '+esc2(e.person):'')+'</title></circle>';
+    if(e.stufe>=3) labels+='<text class="cl" x="'+(q[0]+9).toFixed(1)+'" y="'+(q[1]+3).toFixed(1)+'">'+esc2(st[0])+'</text>'; });
+  out+='<svg viewBox="0 0 300 360" role="img" aria-label="Deutschlandkarte mit Reifegrad"><path class="de" d="'+path+'"/>'+dots+labels+'</svg>';
+  out+='<div class="rleg"><span class="s4">Standard · Vorreiter</span><span class="s3">im Einsatz</span><span class="s2">Pilot</span><span class="s1">geplant</span><span class="s0">nicht begonnen</span></div>';
+  out+='<div class="rsum">'+[4,3,2,1,0].map(function(k){ return '<div><b style="color:'+(k?STUFE_COL[k]:'#8a95a0')+'">'+cnt[k]+'</b><small>'+STUFEN[k].split(' ·')[0]+'</small></div>'; }).join('')+'</div>';
+  /* Experten: Standorte mit Erfahrung (Stufe ≥ 2), beste zuerst */
+  var exp=STANDORTE.map(function(st){ var e=Object.assign({},reifeGet(awf,st[0])); e.ort=st[0]; return e; }).filter(function(e){return e.stufe>=2;}).sort(function(a,b){return b.stufe-a.stufe;});
+  out+='<h4>Ansprechpersonen — hier gibt es Erfahrung</h4>';
+  if(!exp.length) out+='<div class="rnone">Noch kein Standort mit Pilot oder Einsatz. Eintrag in <code>reifegrad.json</code> unter <code>"'+awf+'"</code> ergänzen: Standort, Stufe, Ansprechperson.</div>';
+  else out+=exp.map(function(e){ var act = '<span class="stlab">'+STUFEN[e.stufe].split(' ·')[0]+'</span>';
+    return '<div class="exp"><span class="dot" style="background:'+STUFE_COL[e.stufe]+'"></span><span class="es">'+esc2(e.ort)+'</span>'+act
+      +'<span class="ep">'+(e.person?'<b>'+esc2(e.person)+'</b>':'<b>Ansprechperson eintragen</b>')+(e.hinweis?' — '+esc2(e.hinweis):'')+'</span></div>'; }).join('');
+  return out;
+}
+function reifeMatrixHTML(awf){
+  var out='<table class="mx"><tr><th></th>'+AWFS.map(function(a){ return '<th class="awf'+(a.id===awf?' on':'')+'" onclick="reifeSwitch(\''+a.id+'\')">AwF '+a.num.replace('AwF ','')+'</th>'; }).join('')+'</tr>';
+  STANDORTE.forEach(function(st){ out+='<tr><th>'+esc2(st[0])+'</th>'+AWFS.map(function(a){ var e=reifeGet(a.id,st[0]); return '<td class="s'+e.stufe+(a.id===awf?' on':'')+'" title="'+esc2(st[0])+' · '+a.num+': '+STUFEN[e.stufe]+(e.person?' · '+esc2(e.person):'')+'" onclick="reifeSwitch(\''+a.id+'\')"></td>'; }).join('')+'</tr>'; });
+  out+='</table><div class="rleg" style="margin-top:10px"><span class="s4">Standard</span><span class="s3">im Einsatz</span><span class="s2">Pilot</span><span class="s1">geplant</span><span class="s0">nicht begonnen</span></div>';
+  return out;
+}
+function reifeSwitch(awf){ var a=AWFS.filter(function(x){return x.id===awf;})[0]; if(a) openAwfPanel(a); }
+document.getElementById('rtKarte').onclick=function(){ reifeMode='karte'; if(reifeAwf) reifeShow(reifeAwf); };
+document.getElementById('rtMatrix').onclick=function(){ reifeMode='matrix'; if(reifeAwf) reifeShow(reifeAwf); };
+
+/* ---------- Reifegrad-Karte: Gesamtansicht, Bearbeiten, Export ---------- */
+var REIFE_RAW=null, REIFE_SRC='laden', REIFE_ERR='';
+var STUFE_DEF={0:'Noch keine Anwendung am Standort.',1:'In einem Projekt vorgesehen, noch nicht umgesetzt.',2:'In einem Projekt erprobt, Erfahrungen liegen vor.',3:'In laufenden Projekten regelmäßig genutzt.',4:'Etabliert. Der Standort kann andere anleiten.'};
+var RK_LEFT=['Düsseldorf','Köln','Wiesbaden','Bexbach','Magdeburg'], RK_DY={'Düsseldorf':-1,'Köln':2,'Kaiserslautern':-3,'Bexbach':3,'Chemnitz':3,'Leipzig':-2};
+var RK={awf:'alle', ort:null, view:'karte', edit:false, changes:[], form:null};
+
+function reifeLoad(){
+  REIFE=REIFE_FALLBACK;
+  if(location.protocol==='file:'){ REIFE_SRC='lokal'; rkRefresh(); return; }
+  fetch('reifegrad.json?t='+Date.now(),{cache:'no-store'})
+    .then(function(r){ if(!r.ok) throw new Error('Datei nicht gefunden ('+r.status+')'); return r.text(); })
+    .then(function(t){
+      var d; try{ d=JSON.parse(t); }catch(e){ REIFE_SRC='fehler'; REIFE_ERR='Schreibfehler in der Datei: '+e.message; rkRefresh(); return; }
+      reifeApply(d,'online');
+    })
+    .catch(function(e){ REIFE_SRC='fehler'; REIFE_ERR=String(e&&e.message||e); rkRefresh(); });
+}
+function reifeApply(d,src){
+  REIFE_RAW=d||{}; if(!REIFE_RAW.reifegrad) REIFE_RAW.reifegrad={};
+  REIFE=REIFE_RAW.reifegrad; REIFE_SRC=src; RK.changes=[];
+  /* Neue Niederlassung: Name in "standorte" und Lage in "koordinaten": {"Rostock":[12.10,54.09]} */
+  var koo=REIFE_RAW.koordinaten||{};
+  (REIFE_RAW.standorte||[]).forEach(function(n){ if(!STANDORTE.some(function(s){return s[0]===n;}) && Array.isArray(koo[n]) && koo[n].length===2) STANDORTE.push([n,+koo[n][0],+koo[n][1]]); });
+  if(reifeAwf) reifeShow(reifeAwf);
+  rkRefresh();
+}
+function rkEnsureRaw(){
+  if(REIFE_RAW) return;
+  REIFE_RAW={ _hinweis:'Reifegrad je Anwendungsfall und Niederlassung. Stufen: 0 nicht begonnen · 1 geplant · 2 Pilot · 3 im Einsatz · 4 Standard/Vorreiter.',
+    stand:'', standorte:STANDORTE.map(function(s){return s[0];}), reifegrad:JSON.parse(JSON.stringify(REIFE)) };
+  REIFE=REIFE_RAW.reifegrad;
+}
+function rkToday(){ var d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function rkAwfName(id){ var a=AWFS.filter(function(x){return x.id===id;})[0]; return a?a.num+' · '+a.name:id; }
+function rkAwfNum(id){ var a=AWFS.filter(function(x){return x.id===id;})[0]; return a?a.num:id; }
+function rkGesamt(ort){ var max=0,n3=0,n2=0; AWFS.forEach(function(a){ var s=reifeGet(a.id,ort).stufe; if(s>max) max=s; if(s>=3) n3++; if(s>=2) n2++; }); return {max:max,n3:n3,n2:n2}; }
+function rkCount(awf){ var n=0; STANDORTE.forEach(function(s){ if(reifeGet(awf,s[0]).stufe>=2) n++; }); return n; }
+function pflegeModus(){ try{ return /(?:[?&])pflege/.test(location.search); }catch(e){ return false; } }
+function rkGhOk(){ try{ ghAuto(); }catch(e){} return !/^DEINE/i.test(GH.owner||'') && !/^DEINE/i.test(GH.repo||''); }
+
+function rkOpen(awf){
+  if(awf) RK.awf=awf;
+  var el=document.getElementById('rk'); el.classList.add('open'); el.setAttribute('aria-hidden','false');
+  document.body.classList.add('rk-open');
+  try{ if(location.hash.indexOf('#reifegrad')!==0) history.replaceState(null,'',location.pathname+location.search+'#reifegrad'+(awf?'='+awf:'')); }catch(e){}
+  rkRefresh();
+}
+function rkClose(){
+  var el=document.getElementById('rk'); el.classList.remove('open'); el.setAttribute('aria-hidden','true');
+  document.body.classList.remove('rk-open');
+  try{ if(location.hash.indexOf('#reifegrad')===0) history.replaceState(null,'',location.pathname+location.search); }catch(e){}
+}
+function rkRefresh(){
+  rkSrc();
+  if(!document.getElementById('rk').classList.contains('open')) return;
+  rkFilter(); rkMain(); rkSide();
+  document.getElementById('rkVK').classList.toggle('on',RK.view==='karte');
+  document.getElementById('rkVM').classList.toggle('on',RK.view==='matrix');
+  var eb=document.getElementById('rkEditBtn'); eb.classList.toggle('on',RK.edit); eb.textContent=RK.edit?'Bearbeiten beenden':'Bearbeiten';
+  eb.style.display=pflegeModus()?'':'none';
+  if(!pflegeModus()&&RK.edit){ RK.edit=false; }
+  var mb=document.getElementById('rkMeldBtn');
+  if(mb){ if(pflegeModus()&&rkGhOk()){ mb.style.display=''; mb.href=rkMeldUrl(RK.awf!=='alle'?RK.awf:null,RK.ort||null,null); } else mb.style.display='none'; }
+}
+function rkSrc(){
+  var s=document.getElementById('rkSrc'); if(!s) return;
+  var stand=REIFE_RAW&&REIFE_RAW.stand?' · Stand '+sFmtDate(REIFE_RAW.stand):'';
+  var cls='src', html='';
+  if(REIFE_SRC==='online'||REIFE_SRC==='datei'){ cls+=' ok'; html=(REIFE_SRC==='datei'?'Aus Datei geladen':'Quelle: reifegrad.json')+esc2(stand); }
+  else if(REIFE_SRC==='lokal'){ cls+=' warn'; html='Lokal geöffnet: Beispieldaten <button type="button" onclick="document.getElementById(\'rkFile\').click()">reifegrad.json öffnen</button>'; }
+  else if(REIFE_SRC==='fehler'){ cls+=' err'; html='reifegrad.json nicht lesbar ('+esc2(REIFE_ERR)+'). Beispieldaten werden gezeigt.'; }
+  else html='Lade reifegrad.json …';
+  if(RK.changes.length){ cls='src chg'; html=RK.changes.length+(RK.changes.length===1?' Änderung':' Änderungen')+' noch nicht gespeichert'; }
+  s.className=cls; s.innerHTML=html;
+}
+function rkFilter(){
+  var h='<button type="button" class="fb all'+(RK.awf==='alle'?' on':'')+'" onclick="rkSetAwf(\'alle\')"><span class="n">∑</span><span>Gesamtbild</span><span></span></button>';
+  h+='<h4>Anwendungsfälle</h4>';
+  h+=AWFS.map(function(a){ var c=rkCount(a.id);
+    return '<button type="button" class="fb'+(RK.awf===a.id?' on':'')+'" onclick="rkSetAwf(\''+a.id+'\')" title="'+esc2(a.num+' '+a.name)+' · '+c+' Standorte mit Erfahrung">'
+      +'<span class="n">'+a.num.replace('AwF ','')+'</span><span>'+esc2(a.name)+'</span><span class="c'+(c?'':' z')+'">'+c+'</span></button>'; }).join('');
+  document.getElementById('rkFilter').innerHTML=h;
+}
+function rkSetAwf(id){ RK.awf=id; if(RK.edit&&id!=='alle') rkFormSet(id,RK.ort); rkRefresh(); }
+function rkSetOrt(n){ RK.ort=(RK.ort===n&&!RK.edit)?null:n; if(RK.edit) rkFormSet(RK.awf!=='alle'?RK.awf:null,n); rkRefresh(); }
+function rkCell(awf,ort){ RK.awf=awf; RK.ort=ort; if(RK.edit) rkFormSet(awf,ort); rkRefresh(); }
+
+function rkMain(){
+  var h='', m=document.getElementById('rkMain');
+  var title=RK.awf==='alle'?'Gesamtbild':rkAwfName(RK.awf);
+  var sub=RK.awf==='alle'?'Farbe = höchste Stufe am Standort · Zahl = Anwendungsfälle im Einsatz':'Farbe = Stufe am Standort';
+  if(RK.view==='matrix'){ sub='Zeile = Niederlassung · Spalte = Anwendungsfall · Zelle anklicken'; }
+  h+='<div class="mh"><b>'+esc2(title)+'</b><span>'+sub+'</span></div>';
+  if(RK.view==='matrix') h+=rkMatrix(); else h+=rkMap();
+  h+='<div class="rleg"><span class="s4">4 Standard · Vorreiter</span><span class="s3">3 im Einsatz</span><span class="s2">2 Pilot</span><span class="s1">1 geplant</span><span class="s0">0 nicht begonnen</span></div>';
+  var cnt={0:0,1:0,2:0,3:0,4:0}; STANDORTE.forEach(function(st){ cnt[RK.awf==='alle'?rkGesamt(st[0]).max:reifeGet(RK.awf,st[0]).stufe]++; });
+  h+='<div class="rsum">'+[4,3,2,1,0].map(function(k){ return '<div><b style="color:'+(k?STUFE_COL[k]:'#8a95a0')+'">'+cnt[k]+'</b><small>'+STUFEN[k].split(' ·')[0]+'</small></div>'; }).join('')+'</div>';
+  h+='<div class="hintline">'+(RK.edit?'Bearbeiten aktiv: Standort oder Zelle anklicken, rechts ändern, dann „Übernehmen“.':'Standort anklicken für Details und Ansprechpersonen.')+'</div>';
+  m.innerHTML=h;
+}
+function rkMap(){
+  var P=reifeProj();
+  var path=DE_OUTLINE.map(function(p,i){ var q=P(p[0],p[1]); return (i?'L':'M')+q[0].toFixed(1)+' '+q[1].toFixed(1); }).join(' ')+' Z';
+  var dots='', labels='', sel='';
+  STANDORTE.forEach(function(st){
+    var g=RK.awf==='alle'?rkGesamt(st[0]):null, e=RK.awf==='alle'?{stufe:g.max}:reifeGet(RK.awf,st[0]);
+    var q=P(st[1],st[2]), r=e.stufe?4.5+e.stufe*1.1:3.6, x=q[0].toFixed(1), y=q[1].toFixed(1);
+    var tip=st[0]+' — '+(RK.awf==='alle'?('höchste Stufe: '+STUFEN[g.max]+' · im Einsatz: '+g.n3+' AwF'):(STUFEN[e.stufe]+(e.person?' · '+e.person:'')));
+    dots+='<circle class="city" tabindex="0" role="button" aria-label="'+esc2(tip)+'" cx="'+x+'" cy="'+y+'" r="'+r.toFixed(1)+'" fill="'+STUFE_COL[e.stufe]+'" stroke="'+(e.stufe?'#fff':'#c9ccd3')+'" stroke-width="'+(e.stufe?1:0.8)+'" onclick="rkSetOrt(\''+esc2(st[0])+'\')" onkeydown="if(event.key===\'Enter\'||event.key===\' \'){event.preventDefault();rkSetOrt(\''+esc2(st[0])+'\')}"><title>'+esc2(tip)+'</title></circle>';
+    if(RK.awf==='alle'&&g.n3>0) labels+='<text class="n" x="'+x+'" y="'+(q[1]+2.4).toFixed(1)+'" text-anchor="middle">'+g.n3+'</text>';
+    var left=RK_LEFT.indexOf(st[0])>=0, dy=(RK_DY[st[0]]||0);
+    labels+='<text class="'+(e.stufe?'':'dim')+'" text-anchor="'+(left?'end':'start')+'" x="'+(left?q[0]-r-3:q[0]+r+3).toFixed(1)+'" y="'+(q[1]+2.8+dy).toFixed(1)+'">'+esc2(st[0])+'</text>';
+    if(RK.ort===st[0]) sel='<circle class="sel" cx="'+x+'" cy="'+y+'" r="'+(r+4).toFixed(1)+'"/>';
+  });
+  return '<div class="map"><svg viewBox="0 0 300 360" role="img" aria-label="Deutschlandkarte mit Reifegrad je Niederlassung"><path class="de" d="'+path+'"/>'+dots+sel+labels+'</svg></div>';
+}
+function rkMatrix(){
+  var h='<div class="mxwrap"><table class="mx2"><thead><tr><th></th>'+AWFS.map(function(a){ return '<th class="cl'+(a.id===RK.awf?' on':'')+'" title="'+esc2(a.num+' '+a.name)+'" onclick="rkSetAwf(\''+a.id+'\')">'+a.num.replace('AwF ','')+'</th>'; }).join('')+'</tr></thead><tbody>';
+  STANDORTE.forEach(function(st){
+    h+='<tr><th class="rw'+(RK.ort===st[0]?' on':'')+'" onclick="rkSetOrt(\''+esc2(st[0])+'\')">'+esc2(st[0])+'</th>'+AWFS.map(function(a){ var e=reifeGet(a.id,st[0]);
+      var cls='s'+e.stufe+(a.id===RK.awf?' col':'')+(a.id===RK.awf&&st[0]===RK.ort?' hit':'');
+      return '<td class="'+cls+'" title="'+esc2(st[0]+' · '+a.num+': '+STUFEN[e.stufe]+(e.person?' · '+e.person:''))+'" onclick="rkCell(\''+a.id+'\',\''+esc2(st[0])+'\')">'+(e.stufe||'')+'</td>'; }).join('')+'</tr>';
+  });
+  return h+'</tbody></table></div>';
+}
+function rkPersonRow(e,label){
+  return '<div class="row"><span class="dot" style="background:'+STUFE_COL[e.stufe]+'"></span><div><b>'+esc2(label)+'</b> · '+STUFEN[e.stufe].split(' ·')[0]
+    +'<small>'+(e.person?esc2(e.person)+' — im Firmenverzeichnis (Outlook/Teams) erreichbar':'Ansprechperson noch nicht eingetragen')+'</small>'
+    +(e.hinweis?'<small>'+esc2(e.hinweis)+'</small>':'')+'</div></div>';
+}
+function rkSide(){
+  var s=document.getElementById('rkSide');
+  if(RK.edit){ s.innerHTML=rkEditorHTML(); rkEditorWire(); return; }
+  var h='';
+  if(RK.ort){
+    var rows=AWFS.map(function(a){ var e=reifeGet(a.id,RK.ort); e=Object.assign({},e); e.id=a.id; return e; }).filter(function(e){return e.stufe>0;}).sort(function(a,b){return b.stufe-a.stufe;});
+    var cl=(REIFE_RAW&&REIFE_RAW.cluster&&REIFE_RAW.cluster[RK.ort])||[];
+    h+='<div class="card"><h3>'+esc2(RK.ort)+'</h3><p>'+rows.filter(function(r){return r.stufe>=3;}).length+' Anwendungsfälle im Einsatz · '+rows.length+' mit Eintrag</p>'
+      +(cl.length?'<p><b>BIM-Cluster am Standort</b></p><div class="ppl">'+cl.map(function(p){return '<span>'+esc2(p)+'</span>';}).join('')+'</div>':'')+'</div>';
+    h+='<h4>Anwendungsfälle am Standort</h4>';
+    h+=rows.length?'<div class="card">'+rows.map(function(e){ return rkPersonRow(e,rkAwfNum(e.id)+' '+AWFS.filter(function(a){return a.id===e.id;})[0].name); }).join('')+'</div>'
+      :'<div class="empty">Noch keine Einträge für '+esc2(RK.ort)+'. Über „Bearbeiten“ ergänzen.</div>';
+    h+='<button type="button" class="tbtn" onclick="rkStartEdit(null,\''+esc2(RK.ort)+'\')">'+esc2(RK.ort)+' bearbeiten</button>';
+  } else if(RK.awf!=='alle'){
+    var exp=STANDORTE.map(function(st){ var e=Object.assign({},reifeGet(RK.awf,st[0])); e.ort=st[0]; return e; }).filter(function(e){return e.stufe>=1;}).sort(function(a,b){return b.stufe-a.stufe;});
+    h+='<h4>Hier gibt es Erfahrung</h4>';
+    h+=exp.length?'<div class="card">'+exp.map(function(e){ return rkPersonRow(e,e.ort); }).join('')+'</div>'
+      :'<div class="empty">Noch kein Standort eingetragen. Über „Bearbeiten“ den ersten Eintrag anlegen.</div>';
+    h+='<button type="button" class="tbtn" onclick="rkStartEdit(\''+RK.awf+'\',null)">'+esc2(rkAwfNum(RK.awf))+' bearbeiten</button>';
+  } else {
+    var top=STANDORTE.map(function(st){ var g=rkGesamt(st[0]); g.ort=st[0]; return g; }).filter(function(g){return g.n2>0;}).sort(function(a,b){return b.n3-a.n3||b.max-a.max||b.n2-a.n2;});
+    h+='<h4>Wo gibt es Erfahrung?</h4>';
+    h+=top.length?'<div class="card">'+top.map(function(g){ return '<div class="row"><span class="dot" style="background:'+STUFE_COL[g.max]+'"></span><div><b><a href="#" onclick="rkSetOrt(\''+esc2(g.ort)+'\');return false">'+esc2(g.ort)+'</a></b><small>'+g.n3+' im Einsatz · '+g.n2+' mit Pilot oder mehr · höchste Stufe: '+STUFEN[g.max].split(' ·')[0]+'</small></div></div>'; }).join('')+'</div>'
+      :'<div class="empty">Noch keine Einträge.</div>';
+    var qm=REIFE_RAW&&REIFE_RAW.qualitaetsmonitoring;
+    if(qm){ h+='<h4>Qualitätsmonitoring</h4><div class="card"><p><b>'+esc2(qm.person||'')+'</b>'+(qm.rolle?' · '+esc2(qm.rolle):'')+'</p>'+(qm.grundsatz?'<div class="quote">'+esc2(qm.grundsatz)+'</div>':'')+'</div>'; }
+    h+='<div class="empty">Tipp: Anwendungsfall links wählen oder einen Standort auf der Karte anklicken.</div>';
+  }
+  s.innerHTML=h;
+}
+
+/* ---------- Bearbeiten ---------- */
+function rkStartEdit(awf,ort){ RK.edit=true; rkFormSet(awf||(RK.awf!=='alle'?RK.awf:AWFS[0].id), ort||RK.ort||STANDORTE[0][0]); rkRefresh(); }
+function rkFormSet(awf,ort){
+  var f=RK.form||{};
+  if(awf) f.awf=awf; if(!f.awf) f.awf=AWFS[0].id;
+  if(ort) f.ort=ort; if(!f.ort) f.ort=STANDORTE[0][0];
+  var e=reifeGet(f.awf,f.ort);
+  f.stufe=e.stufe||0; f.person=e.person||''; f.hinweis=e.hinweis||'';
+  RK.form=f; RK.awf=f.awf; RK.ort=f.ort;
+}
+function rkEditorHTML(){
+  var f=RK.form; if(!f){ rkFormSet(); f=RK.form; }
+  var h='<div class="ed"><h4>Eintrag ändern</h4>';
+  h+='<label for="rkfA">Anwendungsfall</label><select id="rkfA">'+AWFS.map(function(a){ return '<option value="'+a.id+'"'+(a.id===f.awf?' selected':'')+'>'+esc2(a.num+' · '+a.name)+'</option>'; }).join('')+'</select>';
+  h+='<label for="rkfO">Niederlassung</label><select id="rkfO">'+STANDORTE.map(function(s){ return '<option'+(s[0]===f.ort?' selected':'')+'>'+esc2(s[0])+'</option>'; }).join('')+'</select>';
+  h+='<label>Stufe</label><div class="stsel" id="rkfS">'+[0,1,2,3,4].map(function(k){ return '<button type="button" data-s="'+k+'" class="'+(k===f.stufe?'on':'')+'"><i style="background:'+STUFE_COL[k]+'"></i>'+k+' '+STUFEN[k].split(' ·')[0]+'</button>'; }).join('')+'</div>';
+  h+='<div class="stdef" id="rkfDef">'+STUFE_DEF[f.stufe]+'</div>';
+  h+='<label for="rkfP">Ansprechperson</label><input id="rkfP" value="'+esc2(f.person)+'" placeholder="Vorname Nachname · weitere mit · (nur mit Einverständnis)">';
+  h+='<label for="rkfH">Hinweis</label><input id="rkfH" value="'+esc2(f.hinweis)+'" placeholder="Was wurde gelernt? Keine Kunden- oder Projektnamen">';
+  h+='<div class="acts"><button type="button" class="tbtn pri" id="rkfOk">Übernehmen</button><button type="button" class="tbtn" id="rkfEnd">Fertig</button></div></div>';
+  if(RK.changes.length){
+    h+='<div class="exp2"><b>'+RK.changes.length+(RK.changes.length===1?' Änderung':' Änderungen')+' vorbereitet</b>';
+    h+=RK.changes.map(function(c){ return '<div class="chg"><span>'+esc2(rkAwfNum(c.awf))+' · '+esc2(c.ort)+'</span><em>'+esc2(STUFEN[c.von].split(' ·')[0])+' → '+esc2(STUFEN[c.zu].split(' ·')[0])+'</em></div>'; }).join('');
+    if(rkGhOk()){
+      h+='<p style="margin:8px 0 4px">Jetzt als Meldung senden: Die Automatik prüft sie, das Kernteam gibt frei, dann steht sie für alle auf der Karte.</p>'
+        +'<div class="acts"><a class="tbtn pri" href="'+esc2(rkIssueUrl())+'" target="_blank" rel="noopener" onclick="return pflegeReifeSenden(event)">Als Meldung senden</a>'
+        +'<button type="button" class="tbtn" id="rkfUndo">Verwerfen</button></div>'
+        +'<details style="margin-top:8px"><summary style="cursor:pointer;font-size:12px;color:#6B6B79">Nur für das Kernteam: direkt in GitHub speichern</summary>'
+        +'<div class="acts" style="margin-top:6px"><button type="button" class="tbtn" id="rkfCopy">Kopieren</button><a class="tbtn" href="'+esc2(ghBase()+'/edit/'+GH.branch+'/reifegrad.json')+'" target="_blank" rel="noopener">GitHub öffnen</a><button type="button" class="tbtn" id="rkfDl">Herunterladen</button></div></details></div>';
+    } else {
+      h+='<b style="display:block;margin-top:8px">So speicherst du sie</b><ol><li><b>Herunterladen</b> klicken</li><li>Die Datei im GitHub-Repository als <code>reifegrad.json</code> hochladen (Add file › Upload files) und bestätigen</li></ol>'
+        +'<div class="acts"><button type="button" class="tbtn pri" id="rkfCopy">Kopieren</button><button type="button" class="tbtn" id="rkfDl">Herunterladen</button><button type="button" class="tbtn" id="rkfUndo">Verwerfen</button></div></div>';
+    }
+  }
+  h+='<div class="empty" style="margin-top:12px">Stufen werden gemeinsam bestätigt: Der Standort schlägt vor, das Kernteam gibt frei (4·2·2).</div>';
+  return h;
+}
+function rkEditorWire(){
+  var f=RK.form, $=function(id){return document.getElementById(id);};
+  $('rkfA').onchange=function(){ rkFormSet(this.value,f.ort); rkRefresh(); };
+  $('rkfO').onchange=function(){ rkFormSet(f.awf,this.value); rkRefresh(); };
+  Array.prototype.forEach.call(document.querySelectorAll('#rkfS button'),function(b){ b.onclick=function(){ f.stufe=+b.dataset.s;
+    Array.prototype.forEach.call(document.querySelectorAll('#rkfS button'),function(x){ x.classList.toggle('on',x===b); }); $('rkfDef').textContent=STUFE_DEF[f.stufe]; }; });
+  ['P','H'].forEach(function(k){ $('rkf'+k).oninput=function(){ f[{P:'person',H:'hinweis'}[k]]=this.value; }; });
+  $('rkfOk').onclick=rkApply;
+  $('rkfEnd').onclick=function(){ RK.edit=false; rkRefresh(); };
+  if($('rkfCopy')){
+    $('rkfCopy').onclick=rkCopy; $('rkfDl').onclick=rkDownload;
+    $('rkfUndo').onclick=function(){ if(confirm('Alle vorbereiteten Änderungen verwerfen?')){ RK.changes=[]; REIFE_RAW=null; REIFE_SRC='laden'; RK.form=null; rkFormSet(RK.awf!=='alle'?RK.awf:null,RK.ort); reifeLoad(); } };
+  }
+}
+function rkApply(){
+  var f=RK.form; rkEnsureRaw();
+  var map=REIFE_RAW.reifegrad[f.awf]||(REIFE_RAW.reifegrad[f.awf]={});
+  var old=map[f.ort], von=reifeGet(f.awf,f.ort).stufe;
+  var e=(old&&typeof old==='object')?JSON.parse(JSON.stringify(old)):{};
+  e.stufe=f.stufe;
+  [['person',f.person],['hinweis',f.hinweis]].forEach(function(p){ var v=String(p[1]||'').trim(); if(v) e[p[0]]=v; else delete e[p[0]]; });
+  var extra=Object.keys(e).filter(function(k){return k!=='stufe';});
+  var before=JSON.stringify(old===undefined?null:old);
+  if(f.stufe===0&&!extra.length) delete map[f.ort];
+  else if(!extra.length) map[f.ort]=f.stufe;
+  else { var o={stufe:f.stufe}; extra.forEach(function(k){o[k]=e[k];}); map[f.ort]=o; }
+  var after=JSON.stringify(map[f.ort]===undefined?null:map[f.ort]);
+  if(before===after){ toast('Keine Änderung'); return; }
+  REIFE=REIFE_RAW.reifegrad;
+  RK.changes=RK.changes.filter(function(c){ return !(c.awf===f.awf&&c.ort===f.ort); });
+  RK.changes.push({awf:f.awf, ort:f.ort, von:von, zu:f.stufe});
+  if(reifeAwf) reifeShow(reifeAwf);
+  toast(rkAwfNum(f.awf)+' · '+f.ort+': '+STUFEN[f.stufe].split(' ·')[0]+' übernommen');
+  rkRefresh();
+}
+function rkJSON(){ var d=JSON.parse(JSON.stringify(REIFE_RAW)); d.stand=rkToday(); return JSON.stringify(d,null,2)+'\n'; }
+function rkCopy(){
+  var t=rkJSON();
+  function fallback(){ var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0'; document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); toast('Neue reifegrad.json kopiert'); }catch(e){ toast('Kopieren nicht möglich. Bitte „Herunterladen“ nutzen.'); } ta.remove(); }
+  if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(t).then(function(){ toast('Neue reifegrad.json kopiert. Jetzt in GitHub einfügen.'); },fallback); else fallback();
+}
+function rkDownload(){
+  var a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([rkJSON()],{type:'application/json'})); a.download='reifegrad.json';
+  document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },500); toast('reifegrad.json heruntergeladen');
+}
+var STUFEN_FORM={0:"0 \u00b7 nicht begonnen \u2014 Eintrag zur\u00fccksetzen",1:"1 \u00b7 geplant \u2014 in einem Projekt vorgesehen, noch nicht umgesetzt",2:"2 \u00b7 Pilot \u2014 in einem Projekt erprobt, Erfahrungen liegen vor",3:"3 \u00b7 im Einsatz \u2014 in laufenden Projekten regelm\u00e4\u00dfig genutzt",4:"4 \u00b7 Standard / Vorreiter \u2014 etabliert, der Standort kann andere anleiten"};
+function rkMeldUrl(awf,ort,c){
+  var q="template=reifegrad-meldung.yml";
+  function add(k,v){ if(v) q+="&"+k+"="+encodeURIComponent(v); }
+  var a=awf?AWFS.filter(function(x){return x.id===awf;})[0]:null;
+  if(a) add("awf",a.id+" \u00b7 "+a.name);
+  add("standort",ort||"");
+  if(c){ add("stufe",STUFEN_FORM[c.zu]);
+    var e=reifeGet(awf,ort); add("person",e.person); add("hinweis",e.hinweis);
+    add("title","Reifegrad: "+rkAwfNum(awf)+" "+ort+" \u2192 Stufe "+c.zu); }
+  else if(a&&ort) add("title","Reifegrad: "+rkAwfNum(awf)+" "+ort);
+  return ghBase()+"/issues/new?"+q;
+}
+function rkIssueUrl(){
+  if(RK.changes.length===1){ var c1=RK.changes[0]; return rkMeldUrl(c1.awf,c1.ort,c1); }
+  var lines=RK.changes.map(function(c){ var e=reifeGet(c.awf,c.ort);
+    return '- '+rkAwfNum(c.awf)+' · '+c.ort+': '+STUFEN[c.von]+' → '+STUFEN[c.zu]+(e.person?' · '+e.person:''); });
+  var snip={}; RK.changes.forEach(function(c){ (snip[c.awf]=snip[c.awf]||{})[c.ort]=(REIFE_RAW.reifegrad[c.awf]||{})[c.ort]===undefined?0:REIFE_RAW.reifegrad[c.awf][c.ort]; });
+  var body='Vorschlag für die Reifegrad-Karte\n\n'+lines.join('\n')+'\n\nBegründung (keine Kunden- oder Projektnamen):\n\n\nEintrag für reifegrad.json:\n```json\n'+JSON.stringify(snip,null,2)+'\n```';
+  return ghBase()+'/issues/new?title='+encodeURIComponent('Reifegrad: '+RK.changes.map(function(c){return rkAwfNum(c.awf)+' '+c.ort;}).join(', '))+'&body='+encodeURIComponent(body);
+}
+
+/* ---------- Bedienung ---------- */
+document.getElementById('btnReife').onclick=function(){ rkOpen(); };
+document.getElementById('rkClose').onclick=rkClose;
+document.getElementById('rkVK').onclick=function(){ RK.view='karte'; rkRefresh(); };
+document.getElementById('rkVM').onclick=function(){ RK.view='matrix'; rkRefresh(); };
+document.getElementById('rkEditBtn').onclick=function(){ if(RK.edit){ RK.edit=false; rkRefresh(); } else rkStartEdit(); };
+document.getElementById('rkFile').onchange=function(){ var file=this.files&&this.files[0]; if(!file) return; var rd=new FileReader();
+  rd.onload=function(){ try{ reifeApply(JSON.parse(rd.result),'datei'); toast('reifegrad.json geladen'); }catch(e){ REIFE_SRC='fehler'; REIFE_ERR='Schreibfehler in der Datei: '+e.message; rkRefresh(); } };
+  rd.readAsText(file,'utf-8'); this.value=''; };
+document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&document.getElementById('rk').classList.contains('open')&&!/INPUT|SELECT|TEXTAREA/.test((e.target||{}).tagName||'')) rkClose(); });
+window.addEventListener('beforeunload',function(e){ if(RK.changes.length){ e.preventDefault(); e.returnValue=''; } });
+window.addEventListener('hashchange',function(){ if(location.hash.indexOf('#reifegrad')===0) rkOpen(location.hash.split('=')[1]||null); });
+
+/* ---------- Inhalte (Titel, Text, Link) je Knoten – Quelle: inhalte.json ---------- */
+var INHALTE = {};
+function inhalteLoad(cb){
+  if(location.protocol==='file:'){ if(cb) cb(); return; }
+  fetch('inhalte.json?t='+Date.now(),{cache:'no-store'})
+    .then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function(d){ INHALTE=(d&&d.inhalte)||d||{}; inhalteApplyStatus(); if(cb) cb(); })
+    .catch(function(){ if(cb) cb(); });
+}
+function inhalteEntry(id){ var v=INHALTE[id]; if(!v) return {links:[],beschreibung:''}; if(Array.isArray(v)) return {links:v,beschreibung:''}; return {status:v.status||null, links:v.links||[], beschreibung:v.beschreibung||''}; }
+function inhalteApplyStatus(){
+  AWFS.forEach(function(a){ var e=inhalteEntry(a.id); if(e.status && STLABEL[e.status]) a.st=e.status; });
+  AGENTS.forEach(function(a){ var e=inhalteEntry(a.id); if(e.status && STLABEL[e.status]) a.st=e.status; });
+}
+function linkKind(l){
+  if(l.typ) return l.typ;
+  var u=(l.link||'').toLowerCase();
+  var m=/\.(md|drawio|docx|xlsx|pptx|pdf|json|py|txt|csv|ifc)(\?|#|$)/.exec(u);
+  if(m) return '.'+m[1];
+  if(u.indexOf('sharepoint')>=0) return 'SharePoint';
+  if(u.indexOf('github')>=0) return 'GitHub';
+  if(u.indexOf('teams.microsoft')>=0) return 'Teams';
+  return 'Link';
+}
+function pflegeToolHTML(id){ return (typeof pflegeModus==='function'&&pflegeModus())?'<div class="pf-tools"><button type="button" onclick="pfInhaltDialog(\''+esc2(id)+'\')">Link, Status oder Beschreibung melden</button></div>':''; }
+function linksHTML(id, title){
+  var e=inhalteEntry(id), out='';
+  if(e.beschreibung) out+='<h4>Beschreibung</h4><p>'+esc2(e.beschreibung)+'</p>';
+  out+='<h4>'+(title||'Dateien und Links')+'</h4>';
+  if(!e.links.length){
+    return out+'<div class="nolinks">Noch nichts verlinkt.</div>'+pflegeToolHTML(id);
+  }
+  return out+pflegeToolHTML(id)+e.links.map(function(l){
+    var href=l.link||'#';
+    return '<a class="flink" href="'+esc2(href)+'" target="_blank" rel="noopener">'
+      +'<span class="m">'+esc2(linkKind(l))+'</span>'
+      +'<span class="lt">'+esc2(l.titel||href)+'</span>'
+      +'<span class="go">↗</span>'
+      +(l.text?'<span class="lx">'+esc2(l.text)+'</span>':'')
+      +'</a>';
+  }).join('');
+}
+function esc2(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+/* ---------- KI-Agenten (ambersearch) ---------- */
+var KI_GROUPS = [
+  {id:'ps',  name:'Projektsteuerung', hint:'PM / PL'},
+  {id:'fp',  name:'Fachplaner', hint:'Verkehr, Bahn, Straße'},
+  {id:'bim', name:'BIM / DIM', hint:'Koordination, Daten'}
+];
+var KI_CATS = [
+  {id:1, rom:'I',   name:'Vertrag', hint:'Was ist geschuldet?'},
+  {id:2, rom:'II',  name:'Datenanalyse und Aufbereitung', hint:'Tabellen, Formate'},
+  {id:3, rom:'III', name:'Thematische und historische Analyse', hint:'über Dokumente hinweg'},
+  {id:4, rom:'IV',  name:'Erstellung und Fortschreibung', hint:'Protokolle, Handbuch'},
+  {id:5, rom:'V',   name:'Planungsgrundlagen', hint:'Datenmanagement, Stände'},
+  {id:6, rom:'VI',  name:'Spezial', hint:'AwF-Auskunft, Skripte'}
+];
+var AGENTS = [
+  {id:'ps-vertrag', g:'ps', c:[1], st:null, name:'Vertragssicht', tags:['Vertrag','AIA','BAP','Leistungsumfang','Fristen'],
+   purpose:'Beantwortet Fragen zu Leistungsumfang, Fristen, Lieferobjekten und BIM-Pflichten aus Vertrag, AIA und BAP, immer mit Fundstelle.',
+   sources:'Vertrag, AIA, BAP des Projekts (pdf/docx-Upload oder Projektordner als Wissensdatenbank). Ein Agent pro Projekt.',
+   config:'Modell GPT-5.6 Sol oder Claude Opus 5. Deep Research aus. Regel: Fundstelle nennen, keine Rechtsberatung.',
+   prompt:'Welche BIM-Leistungen schulden wir laut AIA für die Leistungsphase 3? Nenne Kapitel und Seite.'},
+  {id:'ps-fertig', g:'ps', c:[2], st:null, name:'Fertigstellungsgrade', tags:['Leistungsstand','Abrechnung','Excel','Gewerk','kaufmännisch','technisch'],
+   purpose:'Führt Leistungsstand (technisch) und Abrechnungsstand (kaufmännisch) zusammen und zeigt Abweichungen je Gewerk.',
+   sources:'Leistungsstandstabellen, Rechnungsplan, Terminplan-Export (xlsx/csv).',
+   config:'Modell GPT-5.6 Terra oder Gemini 3.1 Pro bei langen Tabellen. Ausgabe als Tabelle, Download als .xlsx.',
+   prompt:'Vergleiche technischen und kaufmännischen Fertigstellungsgrad je Gewerk und markiere Abweichungen über 10 Prozentpunkten.'},
+  {id:'ps-monitor', g:'ps', c:[2], st:null, name:'Monitoring', tags:['ERP','PEP','Budget','Stunden','Wochenstatus','Historie'],
+   purpose:'Wöchentlicher Statusbericht aus Budget-, Stunden- und Terminständen mit Trend zur Vorwoche.',
+   sources:'Exporte aus ERP und PEP (xlsx) in einem geteilten Bibliotheks-Ordner. Später SQL-Konnektor über die IT.',
+   config:'Funktion „Geplant“: montags 7:00 automatisch, Bericht per Mail. Ohne API-Zugriff zunächst manuelle Exporte.',
+   prompt:'Erstelle den Wochenstatus für Projekt X: Budgetverbrauch, Stunden je Phase, Terminabweichungen, Veränderung zur Vorwoche.'},
+  {id:'ps-analyse', g:'ps', c:[3,2], st:null, name:'Themenanalyse', tags:['Analyse','Dashboard','Deep Research','Protokolle','Auswertung'],
+   purpose:'Beantwortet eine Fragestellung über mehrere Dokumente und Projekte hinweg, schriftlich, als Tabelle oder Diagramm.',
+   sources:'Projektordner mehrerer Projekte, Protokolle, Berichte (Wissensdatenbank).',
+   config:'Deep Research an, Export als Word. Diagramme direkt im Chat oder als Excel-Datei.',
+   prompt:'Analysiere alle Protokolle 2025–2026 nach wiederkehrenden Ursachen für Terminverschiebungen und ordne sie nach Häufigkeit.'},
+  {id:'ps-praes', g:'ps', c:[4], st:null, name:'Präsentationen', tags:['PowerPoint','Folien','Lenkungskreis','Status'],
+   purpose:'Baut aus Stichpunkten und vorhandenen Folien einen Präsentationsentwurf im Hausformat.',
+   sources:'Foliensammlung (pptx), Projektsteckbrief, aktuelle Statusdaten.',
+   config:'Dateierstellung PowerPoint an. Regel: Titel, Kernaussage, Beleg je Folie.',
+   prompt:'Erstelle einen 8-Folien-Entwurf für das Lenkungskreis-Update Projekt X aus folgenden Stichpunkten: …'},
+  {id:'ps-proto', g:'ps', c:[4], st:'b', name:'Protokolle', tags:['Protokoll','Transkript','Besprechung','Aufgaben','Gesprächsnotiz','Word'],
+   purpose:'Macht aus Transkript, Diktat oder Stichpunkten ein Protokoll im Obermeyer-Format mit Beschlüssen, Aufgaben, Zuständigen und Terminen.',
+   sources:'Protokollvorlage (docx), Teilnehmerliste, Transkript als txt/md im Chat.',
+   config:'Modell GPT-5.6 Terra. Regel: nichts ergänzen, was nicht gesagt wurde; offene Punkte kennzeichnen.',
+   prompt:'Erstelle aus diesem Transkript das Besprechungsprotokoll nach unserer Vorlage. Aufgaben als Tabelle: Thema | Zuständig | Termin | Status.'},
+  {id:'fp-handbuch', g:'fp', c:[4], st:null, name:'Projekthandbuch / DAP', tags:['Projekthandbuch','DAP','Datenaustausch','Formate','Fristen','Projektübersicht'],
+   purpose:'Auskunft und Fortschreibung zu Projekthandbuch und Datenaustauschplan: Wer liefert was, wann, in welchem Format?',
+   sources:'Projekthandbuch, DAP, Organigramm, Adressliste (docx/xlsx).',
+   config:'Canvas an für Fortschreibungen. Regel: Änderungsvorschläge immer mit Bezug auf den bestehenden Abschnitt.',
+   prompt:'Welche Austauschformate und Fristen gelten laut DAP für die Übergabe der Trassierung an die Fachplanung Oberleitung?'},
+  {id:'fp-grundlagen', g:'fp', c:[5], st:null, name:'Planungsgrundlagen', tags:['Bestand','Vermessung','Version','Planungsstand','Grundlagen','Änderungen'],
+   purpose:'Sagt, welche Grundlage in welcher Version gilt und was sich seit dem letzten Stand geändert hat.',
+   sources:'Geteilter Bibliotheks-Ordner „Planungsgrundlagen“ mit Versionen im Dateinamen. Arup-SharePoint ist nicht anbindbar, daher bewusste Ablage.',
+   config:'Regel: immer Datum und Version nennen. „Geplant“: tägliche Zusammenfassung neuer Dokumente.',
+   prompt:'Welche Version der Bestandsvermessung gilt aktuell für Bf. Dettingen und was hat sich gegenüber der Vorversion geändert?'},
+  {id:'fp-leistung', g:'fp', c:[1], st:null, name:'Leistungsbilder', tags:['Vertrag','Leistungsbild','HOAI','Zusatzleistung','AIA'],
+   purpose:'Übersetzt Vertrag und AIA in das Leistungsbild der eigenen Fachplanung: Was ist drin, was ist Zusatzleistung?',
+   sources:'Vertrag, Leistungsbeschreibung, AIA, HOAI-Leistungsbild als Referenz (pdf).',
+   config:'Modell Claude Opus 5. Tabelle Leistung | im Vertrag? | Fundstelle | Anmerkung. Unklares als „zu klären“ markieren.',
+   prompt:'Liste alle Leistungen der Fachplanung Verkehrsanlagen aus dem Vertrag und markiere, welche über das Standard-Leistungsbild hinausgehen.'},
+  {id:'bim-awf', g:'bim', c:[6], st:'b', name:'AwF-Auskunft', tags:['Visualisierung','AwF','AIA','BAP','LOD','Anforderungen','Kollisionsprüfung'],
+   purpose:'Beantwortet für einen Anwendungsfall (z. B. Visualisierung) die Anforderungen aus AIA und BAP: LOD, Formate, Lieferzeitpunkte, Verantwortliche.',
+   sources:'AIA, BAP, Vertrag, AwF-Karten aus ONE BIM (pdf/docx/md). Ein Agent pro Projekt.',
+   config:'Modell GPT-5.6 Sol. Beispielprompts je AwF. Regel: Fundstelle mit Kapitel; fehlende Festlegung ausdrücklich benennen.',
+   prompt:'Welche Anforderungen gelten für den AwF Visualisierung: Detaillierungsgrad, Formate, Zeitpunkt, wer liefert? Nenne die Kapitel in AIA und BAP.'},
+  {id:'bim-workflow', g:'bim', c:[2,3,4], st:null, name:'Modellieferliste / Kollisionsmatrix', tags:['Modellieferliste','Kollisionsmatrix','Issue','Semantik','Geometrie','Projektbedarf','BIMcollab'],
+   purpose:'Leitet aus AIA und Projektbedarf die Modellieferliste ab, daraus die Informations- und Kollisionsmatrix, und formuliert Issue-Texte.',
+   sources:'AIA, BAP, Vorlagen für Modellieferliste und Kollisionsmatrix (xlsx), Issue-Exporte (csv).',
+   config:'Drei Agenten in Serie: Lieferliste, Matrix, Issues. Ausgabe je als xlsx. Kein API-Zugriff auf das Issue-Tool, daher Text-Export.',
+   prompt:'Erstelle aus der AIA einen Entwurf der Modellieferliste: Modell | Fachdisziplin | LOD je Phase | Format | Liefertermin.'},
+  {id:'bim-daten', g:'bim', c:[2,1], st:'b', name:'Datenaufbereitung (ProVI)', tags:['ProVI','cfg','Excel','Konvertierung','Tabelle','Fortschreibung'],
+   purpose:'Wandelt Konfigurations- und Exportdateien in saubere Tabellen um, z. B. ProVI-.cfg nach Excel, und schreibt Bestandsdaten fort.',
+   sources:'Datei im Chat hochladen; .cfg vorher in .txt umbenennen (erlaubte Formate). Beispiel-cfg und Ziel-Excel als Vorlage im Agenten.',
+   config:'Modell Claude Opus 5. Anweisung enthält Spaltenschema und Vorher/Nachher-Beispiel. Tabelle als .xlsx herunterladen.',
+   prompt:'Wandle diese ProVI-Konfiguration in eine Excel-Tabelle mit den Spalten Parameter | Wert | Einheit | Abschnitt um. Fehlende Werte leer lassen.'},
+  {id:'bim-skript', g:'bim', c:[6], st:null, name:'Skript-Werkstatt', tags:['Python','Dynamo','VBA','Skript','IFC','Automatisierung','Code'],
+   purpose:'Schreibt und erklärt Skripte (Python, Dynamo, Excel-VBA) für Modell- und Datenaufgaben; die Ausführung bleibt lokal.',
+   sources:'Code-Richtlinien des Clusters (md), Beispielskripte, IFC-Schema-Auszüge.',
+   config:'Modell Claude Opus 5. Canvas an. Regel: Kommentare, Ein-/Ausgabe-Beschreibung, Testdatei. Keine API-Keys im Code.',
+   prompt:'Schreibe ein Python-Skript, das aus einer IFC-Datei alle IfcBuildingElementProxy mit Name, GUID und Klassifikation als CSV exportiert.'},
+  {id:'bim-prozess', g:'bim', c:[4], st:null, name:'Prozessdarstellung', tags:['Prozess','Swimlane','draw.io','Mermaid','Automatisierung','Freigabe'],
+   purpose:'Erstellt Prozessdiagramme (Mermaid, draw.io-XML) aus Textbeschreibungen und schlägt Automatisierungsschritte vor.',
+   sources:'BAP-Prozesskapitel, Swimlane-Vorlagen, Rollenliste.',
+   config:'Ausgabe als Mermaid oder draw.io-XML zum Import. Später: amber-Aktionen (Teams-Nachricht, Aufgabe) an Prozessschritte koppeln.',
+   prompt:'Stelle den Freigabeprozess Modell → Prüfung → Kollisionsbericht → Issue als Swimlane dar (Rollen: FK, GK, AG). Ausgabe als draw.io-XML.'},
+  {id:'bim-ifc', g:'bim', c:[2,6], st:null, name:'IFC-Klassifikation', tags:['IFC','FacilityType','ElementProxy','Klassifikation','SOM','buildingSMART','2x3'],
+   purpose:'Schlägt Zuordnungen für Proxy-Elemente und Facility-Typen zu Klassifikationssystemen vor, auf Basis öffentlicher Quellen.',
+   sources:'Websuche mit bis zu fünf URLs (buildingSMART, SOM, Klassifikationsstandards). Kein internes Wissen nötig, daher auch mit externer Lizenz zulässig.',
+   config:'Websuche an (dann kein internes Wissen im selben Agenten). Tabelle Element | Vorschlag | Quelle | Sicherheit.',
+   prompt:'Welche Klassifikation passt für IfcBuildingElementProxy-Elemente einer Oberleitungsanlage? Quelle nennen.'}
+];
+var GNAME = {ps:'Projektsteuerung', fp:'Fachplaner', bim:'BIM / DIM'};
+var ROM = {1:'I',2:'II',3:'III',4:'IV',5:'V',6:'VI'};
+
+var stage=document.getElementById('stage'), wires=document.getElementById('wires'),
+    nodesL=document.getElementById('nodes'), crumb=document.getElementById('crumb'),
+    btnBack=document.getElementById('btnBack'), kiSearch=document.getElementById('kiSearch'),
+    kiQ=document.getElementById('kiQ');
+var level=0, liveNodes=[], nav=[], curView=null, domain=null; /* nav: Stack der Ansichten für Zurück */
+
+function cxy(){ var r=stage.getBoundingClientRect(); return {x:r.width/2, y:r.height*0.5}; }
+function radius(f){ var r=stage.getBoundingClientRect(); return Math.min(r.width,r.height)*f; }
+
+function closeFlow(){ var f=document.getElementById('flow'); if(f) f.classList.remove('open');
+  var sc=document.getElementById('scripts'); if(sc) sc.classList.remove('open'); }
+function clearRing(){ closeFlow();
+  liveNodes.forEach(function(n){ n.el.classList.add('leaving'); if(n.ln)n.ln.classList.remove('on');
+    setTimeout(function(){ n.el.remove(); if(n.ln)n.ln.remove(); },520); });
+  liveNodes=[];
+}
+function addNode(html, cls, angle, rx, ry, onclick, dataId, delay){
+  delay = delay||0;
+  var c=cxy(), dx=Math.cos(angle)*rx, dy=Math.sin(angle)*ry;
+  var el=document.createElement('button');
+  el.className='nd '+cls; el.innerHTML=html; el.setAttribute('data-id',dataId||'');
+  el.style.left=c.x+'px'; el.style.top=c.y+'px';
+  el.style.opacity='0';
+  el.style.transform='translate(-50%,-50%) scale(.25)';
+  el.onclick=onclick;
+  nodesL.appendChild(el);
+  var ln=document.createElementNS('http://www.w3.org/2000/svg','line');
+  ln.setAttribute('x1',c.x); ln.setAttribute('y1',c.y);
+  ln.setAttribute('x2',c.x+dx); ln.setAttribute('y2',c.y+dy);
+  wires.appendChild(ln);
+  el.style.transitionDelay=delay+'ms';
+  requestAnimationFrame(function(){ requestAnimationFrame(function(){
+    el.style.opacity='1';
+    el.style.transform='translate(-50%,-50%) translate('+dx+'px,'+dy+'px) scale(1)';
+    setTimeout(function(){ ln.classList.add('on'); },260+delay);
+    setTimeout(function(){ el.style.transitionDelay='0ms'; },700+delay);
+  });});
+  liveNodes.push({el:el, ln:ln, angle:angle, rx:rx, ry:ry});
+  return el;
+}
+
+function centerNode(){
+  var c=cxy();
+  var el=document.createElement('button');
+  el.className='nd center'; el.id='nodeCenter';
+  el.innerHTML='<span class="t">ONE</span><span class="t2" id="centerT2">Digitales Planen</span><span class="h" id="centerHint">anklicken</span>';
+  el.style.left=c.x+'px'; el.style.top=c.y+'px';
+  el.onclick=function(){
+    if(level===0){ showDomains(); }
+    else if(level===1){ goHome(); }
+    else if(domain==='bim'){ showCats(); }
+    else if(domain==='ki'){ showKiGroups(); }
+    else { showDomains(); }
+  };
+  nodesL.appendChild(el);
+}
+function setDomain(d){
+  domain=d;
+  document.getElementById('centerT2').textContent = d ? DNAME[d] : 'Digitales Planen';
+  document.getElementById('brandTag').textContent = d ? DNAME[d] : 'Digitales Planen';
+}
+/* Ebene 1: die vier Bereiche unter ONE Digitales Planen */
+function showDomains(){
+  closePanel(); clearRing(); level=1; nav=[]; setSearch(false); setDomain(null);
+  document.getElementById('legend').classList.remove('mini');
+  setCrumb('<b>ONE Digitales Planen</b> — Bereiche', false);
+  document.getElementById('centerHint').textContent='Start';
+  var n=DOMAINS.length, start=-Math.PI/2, r0=radius(0.30);
+  DOMAINS.forEach(function(d,i){
+    var ang=start+i*(2*Math.PI/n);
+    addNode('<span class="t">ONE <em>'+d.name+'</em></span><span class="h">'+d.hint+'</span>',
+      'cat dom '+d.cls, ang, r0, r0, function(){ enterDomain(d.id); }, 'dom-'+d.id, i*110);
+  });
+}
+function enterDomain(id){
+  if(id==='bim'){ showCats(); }
+  else if(id==='ki'){ showKiGroups(); }
+  else { openDomainPanel(id); }
+}
+function openDomainPanel(id){
+  var t = id==='dim' ? 'ONE DIM' : 'ONE GIS';
+  var what = id==='dim' ? 'Digitales Informationsmanagement: Daten, Formate, Schnittstellen und Lebenszyklus der Informationen.' : 'Geoinformation: Bestandsdaten, Koordinatensysteme, Kartengrundlagen und die Verbindung zum BIM-Modell.';
+  openPanel(t,
+    '<p class="kw"><span class="nk">im Aufbau</span></p>'
+    +'<h4>Was hier entsteht</h4><p>'+what+'</p>'
+    +'<h4>Stand</h4><p>Dieser Bereich ist angelegt, aber noch ohne Inhalte. Struktur und Freigabeprozess gelten wie in ONE BIM: Inhalte durchlaufen Erstellung, Prüfung und Freigabe, bevor sie hier erscheinen.</p>'
+    +'<p>Wer Themen für diesen Bereich hat: über das Formular einreichen oder eine Datei in den Eingang-Ordner legen.</p>'
+    +linksHTML(id)+govHTML());
+}
+function setCrumb(t,back){ crumb.innerHTML=t; btnBack.style.display=back?'inline-block':'none'; }
+function setSearch(on){ kiSearch.style.display = on ? 'flex' : 'none'; if(!on){ kiQ.value=''; } }
+function push(view){ nav.push(view); }
+
+function showCats(){
+  closePanel(); clearRing(); level=2; nav=[{f:showDomains}]; setSearch(false); setDomain('bim');
+  document.getElementById('legend').classList.remove('mini');
+  setCrumb('ONE Digitales Planen › <b>ONE BIM</b> — Hauptbereiche', true);
+  document.getElementById('centerHint').textContent='ONE BIM';
+  var n=CATS.length, start=-Math.PI/2;
+  CATS.forEach(function(cat,i){
+    var ang=start+i*(2*Math.PI/n);
+    var r0=radius(0.31);
+    addNode('<span class="t">'+cat.name+'</span><span class="h">'+cat.hint+'</span>',
+      'cat'+(cat.cls?' '+cat.cls:''), ang, r0, r0,
+      function(){ if(cat.kind==='children'){showAwfs();} else if(cat.kind==='flow'){showFlow();} else if(cat.kind==='scripts'){showScripts();} else {openCatPanel(cat.id);} }, cat.id, i*100);
+  });
+}
+function showAwfs(){
+  closePanel(); clearRing(); level=3; nav=[{f:showDomains},{f:showCats}]; setSearch(false); setDomain('bim');
+  setCrumb('ONE BIM › <b>Anwendungsfälle</b> (Liste BIM Deutschland)', true);
+  document.getElementById('legend').classList.add('mini');
+  var r=stage.getBoundingClientRect();
+  var rx=Math.min(r.width*0.36, 470), ry=r.height*0.375;
+  var n=AWFS.length, start=-Math.PI/2;
+  AWFS.forEach(function(a,i){
+    var ang=start+i*(2*Math.PI/n);
+    var badge=a.st ? '<span class="st '+a.st+'">'+STLABEL[a.st]+'</span>'
+                   : '<span class="nk">noch keine Karte</span>';
+    addNode('<span class="num">'+a.num+'</span><div class="t">'+a.name+'</div>'+badge,
+      'awf sm', ang, rx, ry, function(){ openAwfPanel(a); }, a.id, i*90);
+  });
+}
+
+/* ---------- KI-Agenten: Zielgruppen › Agenten-Gruppen › Agenten ---------- */
+function showKiGroups(){
+  closePanel(); clearRing(); level=2; nav=[{f:showDomains}]; setSearch(true); curView=showKiGroups; setDomain('ki');
+  setCrumb('ONE Digitales Planen › <b>ONE KI</b> — KI-Agenten (ambersearch) — Zielgruppe wählen', true);
+  document.getElementById('centerHint').textContent='ONE KI';
+  document.getElementById('legend').classList.add('mini');
+  var n=KI_GROUPS.length, start=-Math.PI/2, r0=radius(0.30);
+  KI_GROUPS.forEach(function(g,i){
+    var cnt=AGENTS.filter(function(a){return a.g===g.id;}).length;
+    var ang=start+i*(2*Math.PI/n);
+    addNode('<span class="t">'+g.name+'</span><span class="h">'+g.hint+' · '+cnt+' Agenten</span>',
+      'cat', ang, r0, r0, function(){ showKiCats(g); }, 'kg-'+g.id, i*110);
+  });
+}
+function showKiCats(g){
+  closePanel(); clearRing(); level=3; nav=[{f:showDomains},{f:showKiGroups}]; setSearch(true); curView=function(){showKiCats(g);}; setDomain('ki');
+  setCrumb('ONE KI › KI-Agenten › <b>'+g.name+'</b> — Agenten-Gruppe wählen', true);
+  var cats=KI_CATS.filter(function(c){ return AGENTS.some(function(a){return a.g===g.id && a.c.indexOf(c.id)>=0;}); });
+  var n=cats.length, start=-Math.PI/2, r0=radius(0.31);
+  cats.forEach(function(c,i){
+    var cnt=AGENTS.filter(function(a){return a.g===g.id && a.c.indexOf(c.id)>=0;}).length;
+    var ang=start+i*(2*Math.PI/n);
+    addNode('<span class="rom">'+c.rom+'</span><span class="t">'+c.name+'</span><span class="h">'+cnt+(cnt===1?' Agent':' Agenten')+'</span>',
+      'cat grp', ang, r0, r0, function(){ showKiAgents(g,c); }, 'kc-'+c.id, i*100);
+  });
+}
+function agentNodeHTML(a, q){
+  var badge=a.st ? '<span class="st '+a.st+'">'+STLABEL[a.st]+'</span>' : '<span class="nk">noch kein Agent</span>';
+  var name = q ? hl(a.name,q) : a.name;
+  return '<span class="agn">'+GNAME[a.g]+' · '+a.c.map(function(c){return ROM[c];}).join(', ')+'</span><div class="t">'+name+'</div>'+badge;
+}
+function ringAgents(list, q){
+  var r=stage.getBoundingClientRect();
+  var n=list.length, start=-Math.PI/2;
+  var rx = n<=4 ? radius(0.30) : Math.min(r.width*0.36, 470);
+  var ry = n<=4 ? radius(0.30) : r.height*0.375;
+  list.forEach(function(a,i){
+    var ang=start+i*(2*Math.PI/n);
+    addNode(agentNodeHTML(a,q), 'awf sm', ang, rx, ry, function(){ openAgentPanel(a); }, a.id, i*90);
+  });
+}
+function showKiAgents(g,c){
+  closePanel(); clearRing(); level=4; nav=[{f:showDomains},{f:showKiGroups},{f:function(){showKiCats(g);}}]; setSearch(true); curView=function(){showKiAgents(g,c);}; setDomain('ki');
+  setCrumb('ONE KI › KI-Agenten › '+g.name+' › <b>'+c.rom+' '+c.name+'</b>', true);
+  ringAgents(AGENTS.filter(function(a){return a.g===g.id && a.c.indexOf(c.id)>=0;}));
+}
+
+/* Suche nach Stichwörtern über alle Agenten */
+function esc(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+function hl(t,q){ return t.replace(new RegExp('('+esc(q)+')','ig'),'<mark>$1</mark>'); }
+function matches(a,q){
+  var hay=(a.name+' '+a.tags.join(' ')+' '+a.purpose+' '+a.sources+' '+a.config+' '+GNAME[a.g]).toLowerCase();
+  return q.toLowerCase().split(/\s+/).filter(Boolean).every(function(w){ return hay.indexOf(w)>=0; });
+}
+var searchT, lastNonSearch=null;
+kiQ.addEventListener('input', function(){
+  clearTimeout(searchT);
+  searchT=setTimeout(function(){
+    var q=kiQ.value.trim();
+    if(q.length<2){ if(level===5 && lastNonSearch){ var f=lastNonSearch; lastNonSearch=null; f(); } return; }
+    showSearch(q);
+  },160);
+});
+kiQ.addEventListener('keydown', function(e){ if(e.key==='Escape'){ kiQ.value=''; kiQ.dispatchEvent(new Event('input')); } });
+function showSearch(q){
+  if(level!==5){ lastNonSearch = curView || showKiGroups; }
+  closePanel(); clearRing(); level=5; setSearch(true);
+  nav=[{f:showDomains},{f:showKiGroups}]; setDomain('ki');
+  var list=AGENTS.filter(function(a){return matches(a,q);});
+  setCrumb('ONE KI › KI-Agenten › <b>Suche „'+q.replace(/</g,'&lt;')+'“</b> — '+list.length+(list.length===1?' Treffer':' Treffer'), true);
+  if(!list.length){
+    openPanel('Kein Agent gefunden',
+      '<p>Zu <b>'+q.replace(/</g,'&lt;')+'</b> gibt es noch keinen Agenten.</p>'
+      +'<p>Stichwörter, die Treffer liefern: Protokoll, AIA, BAP, ProVI, Excel, IFC, Vertrag, Modellieferliste, Budget, Skript.</p>'
+      +'<p>Fehlt ein Anwendungsfall? Über das ONE-BIM-Formular einen Agent-Steckbrief einreichen, das Kernteam legt ihn an.</p>'+govAgentHTML());
+    return;
+  }
+  ringAgents(list, q);
+}
+
+function goBack(){
+  if(level===5){ var f=lastNonSearch||showKiGroups; lastNonSearch=null; kiQ.value=''; f(); return; }
+  if(nav.length){ var v=nav[nav.length-1]; v.f(); } else { goHome(); }
+}
+function goHome(){
+  closePanel(); clearRing(); level=0; nav=[]; setSearch(false); setDomain(null);
+  document.getElementById('legend').classList.remove('mini');
+  setCrumb('Start', false);
+  document.getElementById('centerHint').textContent='anklicken';
+}
+
+/* ---------- Panels ---------- */
+var panel=document.getElementById('panel'), pT=document.getElementById('pTitle'), pB=document.getElementById('pBody');
+function openPanel(title, html){ pT.textContent=title; pB.innerHTML=html; panel.classList.add('open'); }
+function closePanel(){ panel.classList.remove('open'); reifeHide(); }
+
+function pipeHTML(st){
+  if(st==='f') return '<div class="pipe"><span class="done">In Bearbeitung</span><span class="done">Geprüft</span><span class="cur">Freigegeben</span></div>';
+  if(st==='g') return '<div class="pipe"><span class="done">In Bearbeitung</span><span class="cur g">Geprüft</span><span>Freigegeben</span></div>';
+  return '<div class="pipe"><span class="cur b">In Bearbeitung</span><span>Geprüft</span><span>Freigegeben</span></div>';
+}
+function govHTML(){ return '<div class="govnote"><b>Zentrale Steuerung:</b> Den Status ändern nur Ebene 2 (Prüfung) und Ebene 3 (Freigabe). Erst Freigegebenes gilt als Standard.</div>'; }
+function govAgentHTML(){ return '<div class="govnote"><b>Freigabe von Agenten:</b> Ebene 2 prüft Steckbrief und Testfragen, Ebene 3 schaltet frei. Erst freigegebene Agenten werden mit der Gruppe „BIM Cluster“ in ambersearch geteilt.</div>'; }
+
+function openAgentPanel(a){
+  var chips=a.tags.map(function(t){return '<span class="chip">'+t+'</span>';}).join('');
+  var groups=a.c.map(function(c){ var k=KI_CATS.filter(function(x){return x.id===c;})[0]; return k.rom+' '+k.name; }).join(' · ');
+  openPanel(a.name,
+    (a.st ? pipeHTML(a.st) : '<p class="kw"><span class="nk">noch kein Agent</span></p>')
+    +'<p class="kw">'+GNAME[a.g]+' · '+groups+'</p>'
+    +'<h4>Stichwörter</h4><div class="chips">'+chips+'</div>'
+    +'<h4>Was der Agent tut</h4><p>'+a.purpose+'</p>'
+    +'<h4>Wissensquellen</h4><p>'+a.sources+'</p>'
+    +'<h4>Einstellungen in ambersearch</h4><p>'+a.config+'</p>'
+    +'<h4>Beispielprompt</h4><div class="pr">'+a.prompt+'</div>'
+    +linksHTML(a.id, 'Hinterlegte Dateien und Links')
+    +govAgentHTML());
+}
+
+function openAwfPanel(a){
+  var intro = a.id==='a010'
+    ? '<h4>Themen in dieser Karte</h4>'
+      +'<div class="chips"><span class="chip">Punktwolke</span><span class="chip">GIS</span><span class="chip">BAP/PBP</span><span class="chip">Vermessung</span></div>'
+      +'<h4>Worum es geht</h4>'
+      +'<p>Aus der vermessenen Punktwolke entsteht das Bestandsmodell — die verlässliche Grundlage der Planung.</p>'
+      +'<h4>Erwartete Formate</h4>'
+      +'<p>Geometrie als <span class="chip">E57</span> <span class="chip">RCP</span>, mit Klassifikation als <span class="chip">LAS</span> <span class="chip">LAZ</span> <span class="chip">RCP</span>. E57 kann keine Klassifikation tragen.</p>'
+    : (a.st
+      ? '<h4>Stand</h4><p>Diese Karte ist in Arbeit. Sie folgt derselben Struktur wie AwF 010: Zweck, erwartete Dateien mit Format, Aufgabe der Koordination, Prüfpunkte und was zu tun ist, wenn etwas fehlt.</p>'
+      : '<h4>Stand</h4><p>Für diesen Anwendungsfall gibt es noch keine ONE-BIM-Karte. Wer hier Wissen aus einem Projekt hat: über das ONE-BIM-Formular beitragen, das dauert rund fünf Minuten.</p>');
+  var akt=STANDORTE.filter(function(st){ return reifeGet(a.id,st[0]).stufe>=2; }).length;
+  openPanel(a.num+' — '+a.name,
+    (a.st ? pipeHTML(a.st) : '')
+    +intro
+    +'<h4>Reifegrad in den Niederlassungen</h4><p>'+(akt?akt+' von 20 Niederlassungen mit Pilot oder Einsatz — Karte und Ansprechpersonen links neben diesem Panel.':'Noch keine Niederlassung mit Pilot oder Einsatz gemeldet — Karte links neben diesem Panel.')+'</p>'
+    +linksHTML(a.id, 'Hinterlegte Dateien und Links')
+    +govHTML());
+  reifeShow(a.id);
+}
+function openCatPanel(id){
+  if(id==='vdc'){
+    openPanel('VDC Manager',
+      '<p class="kw">Desite · Modellprüfung und Koordination</p>'
+      +'<h4>Wofür wir ihn nutzen</h4>'
+      +'<ul><li>Zusammenführen der Fachmodelle (IFC) zum Koordinationsmodell</li>'
+      +'<li>Regelbasierte Prüfungen: Attribute, Klassifikation, Geometrie</li>'
+      +'<li>Kollisions- und Schnittstellenprüfung zwischen den Gewerken</li>'
+      +'<li>Auswertungen und Berichte als Grundlage für Issues</li></ul>'
+      +'<h4>Skripte und Automatisierung</h4>'
+      +'<p>Prüfregeln und Auswertungen werden als Skripte hinterlegt. Freigegebene Skripte liegen im GitHub-Repository und werden unter <b>ONE BIM › Skripte</b> mit Titel, Kurztext, Typ und Link angezeigt.</p>'
+      +'<div class="flink" onclick="showScripts()"><span class="m">→</span>Zum Bereich Skripte</div>'
+      +'<h4>Bezug zu den Anwendungsfällen</h4>'
+      +'<p>AwF 050 Koordination der Fachgewerke, AwF 060 Planungsfortschrittskontrolle und Qualitätsprüfung.</p>'
+      +linksHTML('vdc')+govHTML());
+  } else if(id==='vorlagen'){
+    openPanel('Vorlagen und Standards',
+      '<ul><li>Kartenvorlage für neue Anwendungsfälle (Markdown mit festem Kopf)</li>'
+      +'<li>Steckbrief-Vorlage für KI-Agenten (Markdown: Rolle, Aufgabe, Regeln, Quellen, Beispielprompts, Tests)</li>'
+      +'<li>Offizielle Anwendungsfall-Nummern nach der Liste von BIM Deutschland, gezählt in Zehnerschritten</li>'
+      +'<li>Namenskonvention für Dateien, damit alles auffindbar bleibt</li></ul>'+linksHTML('vorlagen')+govHTML());
+  } else if(id==='software'){
+    openPanel('Software und Werkzeuge',
+      '<ul><li><b>ReCap</b> — Punktwolken ansehen und aufbereiten</li>'
+      +'<li><b>Revit</b> — Modellierung</li>'
+      +'<li><b>Desite</b> — Prüfung und Koordination</li>'
+      +'<li><b>ProVI</b> — Trassierung</li>'
+      +'<li><b>BIMcollab</b> — Issue-Management</li>'
+      +'<li><b>ambersearch</b> — KI-Agenten, Suche im Firmenwissen</li></ul>'
+      +'<p>Je Anwendungsfall steht in der Karte, welche Werkzeuge dort im Einsatz sind.</p>'+linksHTML('software'));
+  } else if(id==='projekte'){
+    openPanel('Projekterfahrungen',
+      '<ul><li><b>Bad Bevensen</b> (Bahn) — Punktwolken, Projektbasispunkt auf dem VA-System</li>'
+      +'<li><b>Leverkusen</b> (Straße, INGE) — CDE-Ökosystem, LoG-Anforderungen</li>'
+      +'<li><b>Dettingen</b> — Referenz für spätere Leistungsphasen</li></ul>'
+      +'<p>Erfahrungen fließen als Abschnitt in die jeweilige Karte ein, mit Projektnamen als Erfahrungsbasis.</p>'+linksHTML('projekte'));
+  } else if(id==='team'){
+    openPanel('Beitragen und Kernteam',
+      '<h4>Drei Wege zum Beitragen</h4>'
+      +'<ul><li>Formular ausfüllen, rund fünf Minuten. Daraus entsteht automatisch eine Karte.</li>'
+      +'<li>Vorhandene Datei in den Eingang-Ordner legen, Ebene 1 macht die Karte daraus.</li>'
+      +'<li>KI-Agent vorschlagen: Steckbrief (.md) einreichen, die KI-Koordination legt den Agenten in ambersearch an und teilt ihn nach Freigabe.</li></ul>'
+      +'<h4>Das Team — schlank, 8 Rollen</h4>'
+      +'<ul><li><b>Ebene 1 · Erstellung (4):</b> KI-Koordination, Wissens- &amp; Datenmanagement, BIM Controller, Prozess- &amp; QS-Koordination</li>'
+      +'<li><b>Ebene 2 · Prüfung (2):</b> fachliche Prüfung und Konsistenzprüfung</li>'
+      +'<li><b>Ebene 3 · Freigabe (2):</b> finale Prüfung und offizielle Freischaltung</li></ul>'
+      +'<h4>Der Weg jedes Inhalts</h4>'
+      +pipeHTML('b')
+      +'<p>Details mit Klick-Demo unter <b>ONE BIM › Freigabeprozess</b>.</p>'
+      +linksHTML('team')+govHTML());
+  }
+}
+
+var toastT;
+function toast(msg){
+  var el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  clearTimeout(toastT); toastT=setTimeout(function(){el.classList.remove('show')},2400);
+}
+
+window.addEventListener('resize', function(){
+  var c=cxy(); var ctr=document.getElementById('nodeCenter');
+  if(ctr){ ctr.style.left=c.x+'px'; ctr.style.top=c.y+'px'; }
+  liveNodes.forEach(function(n){
+    var dx=Math.cos(n.angle)*n.rx, dy=Math.sin(n.angle)*n.ry;
+    n.el.style.left=c.x+'px'; n.el.style.top=c.y+'px';
+    n.el.style.transform='translate(-50%,-50%) translate('+dx+'px,'+dy+'px) scale(1)';
+    n.ln.setAttribute('x1',c.x); n.ln.setAttribute('y1',c.y);
+    n.ln.setAttribute('x2',c.x+dx); n.ln.setAttribute('y2',c.y+dy);
+  });
+});
+
+
+/* ---------- Unterseite: Freigabeprozess ---------- */
+var FROLES = {
+  ki:{n:'KI-Koordination', s:'ambersearch: Agenten, Prompts, Tests', i:'KI', c:'#E07A12'},
+  wd:{n:'Wissens- & Datenmanagement', s:'weiß, wo alles liegt: Quellen, Ablage, Links', i:'WD', c:'#1E5AA8'},
+  bc:{n:'BIM Controller', s:'fachlicher Inhalt: AwF, AIA, BAP, Modelle', i:'BC', c:'#2A8A47'},
+  qs:{n:'Prozess- & QS-Koordination', s:'Vorlagen, Vollständigkeit, Vorprüfung', i:'QS', c:'#6B46C1'},
+  pf:{n:'Fachliche Prüfung', s:'Richtigkeit gegen AIA, BAP, Normen', i:'P1', c:'#0F7A8A'},
+  pk:{n:'Konsistenzprüfung', s:'Abgleich mit dem freigegebenen Bestand', i:'P2', c:'#0F7A8A'},
+  f1:{n:'Freigabe A · Clusterleitung', s:'finale Prüfung aller Punkte', i:'F1', c:'#C50042'},
+  f2:{n:'Freigabe B · BIM-Management', s:'offizielle Freischaltung', i:'F2', c:'#C50042'}
+};
+var FPH = [
+  {name:'In Bearbeitung', lvl:'Ebene 1 · Erstellung — 4 Rollen', roles:['ki','wd','bc','qs'], checks:[
+    {p:'bc', t:'Inhalt erstellt', s:'Karte, Agent oder Vorlage nach ONE-BIM-Struktur'},
+    {p:'wd', t:'Quellen und Ablage dokumentiert', s:'richtiger Ordner, Links gesetzt, Version im Namen'},
+    {p:'ki', t:'KI-Anteil getestet', s:'Agent konfiguriert, fünf Testfragen bestanden'},
+    {p:'qs', t:'Vorprüfung abgeschlossen', s:'Vorlage eingehalten, Pflichtfelder vollständig'}]},
+  {name:'In Prüfung', lvl:'Ebene 2 · Prüfung — 2 Rollen', roles:['pf','pk'], dec:true, checks:[
+    {p:'pf', t:'Fachlich richtig?', s:'stimmt mit AIA, BAP, Normen und Projektpraxis überein'},
+    {p:'pk', t:'Konsistent mit dem Bestand?', s:'keine Dopplung, gleiche Begriffe und Struktur'},
+    {p:'pk', t:'Quellen nachvollziehbar?', s:'Links funktionieren, Version und Datum vorhanden'}]},
+  {name:'Freigeschaltet', lvl:'Ebene 3 · Freigabe — 2 Rollen', roles:['f1','f2'], back2:true, checks:[
+    {p:'f1', t:'Prüfprotokoll vollständig', s:'alle Punkte der Ebene 2 erledigt, Rückfragen geklärt'},
+    {p:'f1', t:'Freigabe A erteilt', s:''},
+    {p:'f2', t:'Freigabe B erteilt — freigeschaltet', s:'Status in ONE BIM: Freigegeben'}]}
+];
+var fstate={ph:0, busy:false, built:false};
+
+function flowHTML(){
+  var arrow='<div class="farrow" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>';
+  var cols=FPH.map(function(ph,pi){
+    var roles=ph.roles.map(function(r){var x=FROLES[r];
+      return '<div class="frole"><span class="fa" style="background:'+x.c+'">'+x.i+'</span><span><b>'+x.n+'</b><span>'+x.s+'</span></span></div>';}).join('');
+    var checks=ph.checks.map(function(c,ci){var x=FROLES[c.p];
+      return '<div class="fc" id="fc'+pi+'_'+ci+'"><span class="bx"></span><span class="rd" style="background:'+x.c+'" title="'+x.n+'"></span><span>'+c.t+(c.s?'<small>'+c.s+'</small>':'')+'</span></div>';}).join('');
+    var dec = ph.dec ? '<div class="fdec">Eine Antwort „nein“ → zurück an Ebene 1, mit Begründung im Verlauf</div>' :
+              ph.back2 ? '<div class="fdec">Offene Punkte → zurück an Ebene 2</div>' : '';
+    return '<div class="fcol ph'+(pi+1)+'" id="fcol'+pi+'">'
+      +'<div class="fh"><b>'+(pi+1)+' · '+ph.name+'</b><small>'+ph.lvl+'</small></div>'
+      +'<div class="fbody"><div class="drop" id="drop'+pi+'"></div>'
+      +'<span class="rlbl">Zuständig</span>'+roles
+      +'<span class="rlbl">Prüfpunkte</span><div class="fchecks">'+checks+'</div>'+dec+'</div></div>';
+  });
+  return '<h2>Freigabeprozess — eine Karte, drei Ebenen</h2>'
+    +'<p class="fsub">Gilt für alles in ONE BIM: AwF-Karten, KI-Agenten (ambersearch), Vorlagen und Prozesse. Schlankes Team: vier erstellen, zwei prüfen, zwei schalten frei. Erst Freigeschaltetes erscheint in ONE BIM mit Status „Freigegeben“.</p>'
+    +'<div class="fgrid">'+cols[0]+arrow+cols[1]+arrow+cols[2]+'</div>'
+    +'<div class="freturns"><div class="fret">&#8592; Rückgabe: Prüfung an Erstellung (mit Begründung)</div><div class="fret">&#8592; Rückgabe: Freigabe an Prüfung</div></div>'
+    +'<div class="fbar"><span class="fstat" id="fstat"></span>'
+    +'<button class="fbtn2" id="fback" type="button">Zurückgeben</button>'
+    +'<button class="fbtn2 prim" id="fnext" type="button">Weiter</button>'
+    +'<button class="fbtn2" id="freset" type="button">Neu starten</button></div>'
+    +'<div class="frules">'
+    +'<div class="frule"><b>Vier-Augen-Prinzip</b>Prüfung und Freigabe brauchen beide Personen der Ebene.</div>'
+    +'<div class="frule"><b>Keine Ebene überspringen</b>Freigeschaltet wird nur, was geprüft wurde. Zurück geht immer.</div>'
+    +'<div class="frule"><b>Fristen</b>Prüfung 5 Arbeitstage, Freigabe 3 Arbeitstage, danach Erinnerung.</div>'
+    +'<div class="frule"><b>Änderungen</b>Freigegebene Inhalte werden nur über eine neue Runde ab Ebene 1 geändert.</div></div>';
+}
+function fToken(){
+  var t=document.createElement('div'); t.className='token'; t.id='ftoken';
+  t.innerHTML='<span class="tt">Beispiel: AwF 040 Visualisierung — Karte + Agent</span><span class="tk" id="ftk">eingereicht von Ebene 1</span>';
+  return t;
+}
+function fRender(moveFrom){
+  for(var pi=0;pi<3;pi++){
+    var col=document.getElementById('fcol'+pi); col.classList.toggle('on', pi===Math.min(fstate.ph,2));
+    FPH[pi].checks.forEach(function(c,ci){
+      var el=document.getElementById('fc'+pi+'_'+ci);
+      el.classList.toggle('ok', pi<fstate.ph || (pi===2 && fstate.ph===3));
+    });
+  }
+  var tok=document.getElementById('ftoken');
+  var target=document.getElementById('drop'+Math.min(fstate.ph,2));
+  if(tok && tok.parentNode!==target){
+    var a=tok.getBoundingClientRect();
+    target.appendChild(tok);
+    var b=tok.getBoundingClientRect();
+    tok.style.transition='none'; tok.style.transform='translate('+(a.left-b.left)+'px,'+(a.top-b.top)+'px)';
+    requestAnimationFrame(function(){requestAnimationFrame(function(){ tok.style.transition=''; tok.style.transform=''; });});
+  }
+  if(tok){
+    tok.classList.toggle('tp2', fstate.ph===1);
+    tok.classList.toggle('tp3', fstate.ph>=2);
+    document.getElementById('ftk').textContent = fstate.ph===0?'in Bearbeitung bei Ebene 1'
+      : fstate.ph===1?'liegt zur Prüfung bei Ebene 2'
+      : fstate.ph===2?'liegt zur Freigabe bei Ebene 3'
+      : 'freigeschaltet — Status in ONE BIM: Freigegeben';
+    if(fstate.ph===3){ tok.classList.add('pulse'); setTimeout(function(){tok.classList.remove('pulse');},900); }
+  }
+  var st=document.getElementById('fstat'), nx=document.getElementById('fnext'), bk=document.getElementById('fback');
+  var msg=['<b>Schritt 1:</b> Ebene 1 erstellt und hakt die vier Prüfpunkte ab.',
+           '<b>Schritt 2:</b> Ebene 2 prüft fachlich und auf Konsistenz.',
+           '<b>Schritt 3:</b> Ebene 3 prüft final und schaltet offiziell frei.',
+           '<b>Fertig:</b> Inhalt ist Standard in ONE BIM. Änderungen starten neu bei Ebene 1.'][fstate.ph];
+  st.innerHTML=msg;
+  nx.disabled = fstate.busy || fstate.ph>=3;
+  nx.textContent = fstate.ph===0?'Zur Prüfung geben':fstate.ph===1?'Zur Freigabe geben':fstate.ph===2?'Offiziell freischalten':'Freigeschaltet';
+  bk.disabled = fstate.busy || fstate.ph===0 || fstate.ph===3;
+}
+function fAdvance(){
+  if(fstate.busy||fstate.ph>=3) return; fstate.busy=true;
+  var pi=fstate.ph, checks=FPH[pi].checks, i=0;
+  (function tick(){
+    if(i<checks.length){ document.getElementById('fc'+pi+'_'+i).classList.add('ok'); i++; setTimeout(tick,260); }
+    else { setTimeout(function(){ fstate.ph++; fstate.busy=false; fRender(pi);
+      toast(fstate.ph===3?'Freigeschaltet — erscheint in ONE BIM als „Freigegeben“':'Übergeben an '+FPH[fstate.ph].lvl.split(' — ')[0]); },220); }
+  })();
+}
+function fBack(){
+  if(fstate.busy||fstate.ph===0||fstate.ph===3) return;
+  var from=fstate.ph;
+  FPH[from].checks.forEach(function(c,ci){document.getElementById('fc'+from+'_'+ci).classList.remove('ok');});
+  FPH[from-1].checks.forEach(function(c,ci){document.getElementById('fc'+(from-1)+'_'+ci).classList.remove('ok');});
+  fstate.ph=from-1; fRender();
+  toast('Zurückgegeben an '+FPH[fstate.ph].lvl.split(' — ')[0]+' — Begründung kommt in den Verlauf');
+}
+function showFlow(){
+  closePanel(); clearRing(); level=6; nav=[{f:showDomains},{f:showCats}]; setSearch(false); setDomain('bim');
+  setCrumb('ONE BIM › <b>Freigabeprozess</b> — In Bearbeitung › In Prüfung › Freigeschaltet', true);
+  document.getElementById('legend').classList.add('mini');
+  var f=document.getElementById('flow');
+  if(!fstate.built){
+    document.getElementById('fwrap').innerHTML=flowHTML();
+    document.getElementById('drop0').appendChild(fToken());
+    document.getElementById('fnext').onclick=fAdvance;
+    document.getElementById('fback').onclick=fBack;
+    document.getElementById('freset').onclick=function(){ fstate.ph=0; fstate.busy=false;
+      for(var pi=0;pi<3;pi++) FPH[pi].checks.forEach(function(c,ci){document.getElementById('fc'+pi+'_'+ci).classList.remove('ok');});
+      fRender(); };
+    fstate.built=true;
+  }
+  f.classList.add('open');
+  fRender();
+}
+
+/* ---------- Unterseite: Skripte (Quelle: skripte.json im GitHub-Repository) ---------- */
+/* EINMAL ANPASSEN: Organisation/Benutzer, Repository und Branch eures GitHub-Repositorys */
+var GH = { owner:'DEINE-ORGANISATION', repo:'one-bim', branch:'main' };
+
+/* Fallback, falls skripte.json nicht geladen werden kann (z. B. Datei lokal per Doppelklick geöffnet) */
+var SKRIPTE_FALLBACK = [
+  { titel:'IFC-Export: Proxy-Elemente als CSV', kurz:'Liest alle IfcBuildingElementProxy mit Name, GUID und Klassifikation aus einer IFC-Datei und schreibt sie als CSV.',
+    typ:'Python', pfad:'skripte/ifc_proxy_export.py', datum:'2026-09-10', status:'f', tags:['IFC','CSV','Klassifikation'] },
+  { titel:'Prüfregel: Pflichtattribute Oberleitung', kurz:'Regeldefinition (JSON) für die Attributprüfung im VDC Manager — welche Attribute je Elementtyp gefüllt sein müssen.',
+    typ:'JSON', pfad:'skripte/pruefregel_pflichtattribute.json', datum:'2026-09-10', status:'b', tags:['VDC Manager','Attribute','Prüfung'] }
+];
+var SKRIPTE = SKRIPTE_FALLBACK.slice(), sBuilt=false;
+
+function ghBase(){ return 'https://github.com/'+GH.owner+'/'+GH.repo; }
+function ghView(pfad){ return /^https?:\/\//i.test(pfad) ? pfad : ghBase()+'/blob/'+GH.branch+'/'+pfad.replace(/^\//,''); }
+function ghRaw(pfad){ return /^https?:\/\//i.test(pfad) ? pfad : 'https://raw.githubusercontent.com/'+GH.owner+'/'+GH.repo+'/'+GH.branch+'/'+pfad.replace(/^\//,''); }
+function sEsc(t){ return String(t==null?'':t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function sFmtDate(d){
+  if(!d) return '';
+  var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(d); if(m) return m[3]+'.'+m[2]+'.'+m[1];
+  return d;
+}
+function sSetStat(msg, cls){ var el=document.getElementById('sStat'); el.textContent=msg; el.className='sstat'+(cls?' '+cls:''); }
+function sRender(){
+  var q=(document.getElementById('sQ').value||'').trim().toLowerCase();
+  var all=SKRIPTE;
+  var list=all.filter(function(e){ if(!q) return true;
+    var hay=(e.titel+' '+(e.kurz||'')+' '+(e.typ||'')+' '+(e.tags||[]).join(' ')+' '+(e.pfad||'')).toLowerCase();
+    return q.split(/\s+/).filter(Boolean).every(function(w){ return hay.indexOf(w)>=0; }); });
+  document.getElementById('sCount').textContent = list.length+(list.length===1?' Eintrag':' Einträge')+(q&&list.length!==all.length?' von '+all.length:'');
+  var box=document.getElementById('slist');
+  if(!list.length){ box.innerHTML='<div class="sempty">'+(all.length?'Kein Skript passt zur Suche.':'Noch keine Skripte in skripte.json.')+'</div>'; return; }
+  box.innerHTML=list.map(function(e,i){
+    var badge=e.status ? '<span class="st '+e.status+'">'+STLABEL[e.status]+'</span>' : '';
+    var chips=(e.tags||[]).map(function(t){return '<span class="chip">'+sEsc(t)+'</span>';}).join('');
+    return '<div class="scard">'
+      +'<div class="sh" onclick="this.parentNode.classList.toggle(\'open\')">'
+      +'<svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>'
+      +'<b title="'+sEsc(e.titel)+'">'+sEsc(e.titel)+'</b>'
+      +'<span class="kind">'+sEsc((e.typ||'Text').toUpperCase())+'</span>'
+      +'<span class="sdate">'+sFmtDate(e.datum)+'</span></div>'
+      +'<div class="sb">'
+      +(badge?'<p class="kw">'+badge+'</p>':'')
+      +'<p class="sdesc">'+sEsc(e.kurz||'')+'</p>'
+      +(chips?'<div class="chips">'+chips+'</div>':'')
+      +'<div class="sact">'
+      +'<a class="slink" href="'+sEsc(ghView(e.pfad))+'" target="_blank" rel="noopener">Auf GitHub ansehen ↗</a>'
+      +'<a class="slink" href="'+sEsc(ghRaw(e.pfad))+'" target="_blank" rel="noopener" download>Herunterladen ⇩</a>'
+      +'</div></div></div>';
+  }).join('');
+}
+function ghAuto(){
+  /* Auf GitHub Pages: Besitzer und Repository automatisch aus der Adresse ableiten — nichts muss von Hand eingetragen werden */
+  try{
+    var h=location.hostname||'';
+    if(/\.github\.io$/i.test(h)){
+      var owner=h.split('.')[0];
+      var seg=location.pathname.split('/').filter(Boolean);
+      if(owner) GH.owner=owner;
+      if(seg.length && !/\.html?$/i.test(seg[0])) GH.repo=seg[0];
+    }
+  }catch(e){}
+}
+function sLoad(){
+  ghAuto(); sLinks();
+  sSetStat('Lade skripte.json …');
+  var url='skripte.json?t='+Date.now();
+  if(location.protocol==='file:'){ sSetStat('Datei lokal geöffnet — Beispielliste wird gezeigt. Über die Web-Adresse (GitHub Pages / Intranet) lädt die Seite skripte.json.', 'warn'); sRender(); return; }
+  fetch(url,{cache:'no-store'}).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); })
+  .then(function(data){
+    var list=Array.isArray(data)?data:(data.skripte||[]);
+    if(data && data.github){
+      if(data.github.owner && !/^DEINE/i.test(data.github.owner)) GH.owner=data.github.owner;
+      if(data.github.repo && !/^DEINE/i.test(data.github.repo)) GH.repo=data.github.repo;
+      if(data.github.branch) GH.branch=data.github.branch;
+    }
+    SKRIPTE=list.filter(function(e){return e && e.titel && e.pfad;});
+    sSetStat('skripte.json geladen — '+SKRIPTE.length+' Einträge · Stand '+(data.stand?sFmtDate(data.stand):'—'), 'ok');
+    sLinks(); sRender();
+  })
+  .catch(function(){ sSetStat('skripte.json nicht gefunden — Beispielliste wird gezeigt.', 'warn'); sRender(); });
+}
+function sLinks(){
+  document.getElementById('sRepo').href=ghBase();
+  document.getElementById('sNew').href=ghBase()+'/issues/new?title='+encodeURIComponent('Skript-Vorschlag: ')+'&body='+encodeURIComponent('Titel:\nKurzbeschreibung:\nTyp (Python/JSON/VBA/…):\nZweck / Anwendungsfall:\nDatei (Anhang oder Pfad):');
+}
+function sBuild(){ if(sBuilt) return; sBuilt=true; document.getElementById('sQ').addEventListener('input', sRender); sLinks(); }
+function showScripts(){
+  closePanel(); clearRing(); level=7; nav=[{f:showDomains},{f:showCats}]; setSearch(false); setDomain('bim');
+  setCrumb('ONE BIM › <b>Skripte</b> — Quelle: GitHub-Repository', true);
+  document.getElementById('legend').classList.add('mini');
+  sBuild(); sLoad();
+  document.getElementById('scripts').classList.add('open');
+}
+
+centerNode();
+inhalteLoad();
+reifeLoad();
+if(location.hash.indexOf('#reifegrad')===0) rkOpen(location.hash.split('=')[1]||null);
+</script>
+<script>
+/* =====================================================================
+   Pflege-Modus: Meldungen direkt aus der Seite (?pflege in der Adresse)
+   - Persönlicher Schlüssel (nur Issues-Recht) wird ausschließlich im
+     eigenen Browser gespeichert. Ohne Schlüssel öffnet sich das
+     GitHub-Formular vorausgefüllt.
+   - Jede Meldung wird von der Automatik geprüft und erst nach /freigeben
+     übernommen. Dateien werden aus der Seite heraus nie direkt geändert.
+   ===================================================================== */
+var PF_KEY='one_pflege_key'; var PF_DARF_FREIGEBEN=false;
+var BEREICH_LABEL={
+  vdc:'VDC Manager', vorlagen:'Vorlagen und Standards', software:'Software und Werkzeuge', projekte:'Projekterfahrungen',
+  team:'Beitragen und Kernteam', dim:'ONE DIM', gis:'ONE GIS',
+  'ps-vertrag':'Agent Prozesssteckbrief (Vertrag)', 'ps-fertig':'Agent Prozesssteckbrief (fertig)', 'ps-monitor':'Agent Prozesssteckbrief (Monitor)',
+  'ps-analyse':'Agent Prozesssteckbrief (Analyse)', 'ps-praes':'Agent Prozesssteckbrief (Präsentation)', 'ps-proto':'Agent Prozesssteckbrief (Protokoll)',
+  'fp-handbuch':'Agent Fachplaner-Handbuch', 'fp-grundlagen':'Agent Fachplaner-Grundlagen', 'fp-leistung':'Agent Fachplaner-Leistung',
+  'bim-awf':'Agent BIM-Anwendungsfälle', 'bim-workflow':'Agent BIM-Workflow', 'bim-daten':'Agent BIM-Daten', 'bim-skript':'Agent BIM-Skripte',
+  'bim-prozess':'Agent BIM-Prozesse', 'bim-ifc':'Agent BIM-IFC'
+};
+var STATUS_FORM={b:'b · In Bearbeitung', g:'g · Geprüft', f:'f · Freigegeben'};
+
+function bereichLabel(id){ var a=AWFS.filter(function(x){return x.id===id;})[0]; return id+' · '+(a?a.name:(BEREICH_LABEL[id]||id)); }
+function pfKey(){ try{ return localStorage.getItem(PF_KEY)||''; }catch(e){ return ''; } }
+function pfKeySet(k){ try{ if(k) localStorage.setItem(PF_KEY,k); else localStorage.removeItem(PF_KEY); }catch(e){} }
+function repoPath(){ ghAuto(); return '/repos/'+GH.owner+'/'+GH.repo; }
+function ghApi(path,opts){
+  var o=opts||{}, h={'Accept':'application/vnd.github+json'}, k=pfKey();
+  if(k) h['Authorization']='Bearer '+k;
+  if(o.body) h['Content-Type']='application/json';
+  return fetch('https://api.github.com'+path,{method:o.method||'GET',headers:h,body:o.body?JSON.stringify(o.body):undefined})
+    .then(function(r){ return r.json().catch(function(){return {};}).then(function(j){ if(!r.ok){ var e=new Error((j&&j.message)||('HTTP '+r.status)); e.status=r.status; throw e; } return j; }); });
+}
+function pfFehlerText(e){
+  var m=(e&&e.message)||''; var s=e&&e.status;
+  if(s===401) return 'Der Schlüssel ist ungültig oder abgelaufen (401). Unter „Schlüssel“ einen neuen hinterlegen.';
+  if(s===403||/not accessible|Resource not accessible/i.test(m)) return 'Der Schlüssel darf das nicht (403). Beim Erzeugen muss unter Permissions → Repository permissions → Issues „Read and write“ gewählt sein — Read allein reicht nicht. Bitte neuen Schlüssel erzeugen und unter „Schlüssel“ eintragen.';
+  if(s===404) return 'Nicht gefunden (404): Der Schlüssel gilt vermutlich nicht für dieses Repository (beim Erzeugen „Only select repositories“ → ONE-Digitales-Planen wählen).';
+  if(s===422) return 'GitHub hat die Eingabe abgelehnt (422): '+m;
+  return m||'Unbekannter Fehler';
+}
+function feld(label,value){ var v=value==null?'':String(value).trim(); return '### '+label+'\n\n'+(v?v:'_No response_')+'\n\n'; }
+function pfDatum(s){ try{ var d=new Date(s); return d.toLocaleDateString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric'})+' '+d.toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}); }catch(e){ return s; } }
+
+/* ---------- Dialog ---------- */
+function pfModal(title,html){
+  var m=document.getElementById('pfModal');
+  if(!m){ m=document.createElement('div'); m.id='pfModal';
+    m.innerHTML='<div class="pf-box"><div class="pf-head"><b id="pfTitle"></b><button type="button" class="pf-x" aria-label="Schließen" onclick="pfClose()">×</button></div><div class="pf-body" id="pfBody"></div></div>';
+    document.body.appendChild(m); m.addEventListener('click',function(e){ if(e.target===m) pfClose(); }); }
+  document.getElementById('pfTitle').textContent=title; document.getElementById('pfBody').innerHTML=html; m.classList.add('open');
+}
+function pfClose(){ var m=document.getElementById('pfModal'); if(m) m.classList.remove('open'); }
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') pfClose(); });
+
+/* ---------- Leiste unten links ---------- */
+function pfBar(){
+  if(!pflegeModus()) return;
+  var b=document.createElement('div'); b.id='pfBar';
+  b.innerHTML='<span class="pf-tag">Pflege</span><span id="pfWho">…</span>'
+    +'<button type="button" onclick="pfKeyDialog()">Schlüssel</button>'
+    +'<button type="button" onclick="pfMeldungen()">Offene Meldungen</button>'
+    +'<button type="button" onclick="pfProtokoll()">Protokoll</button>';
+  document.body.appendChild(b); pfWhoRefresh();
+}
+function pfWhoRefresh(){
+  var el=document.getElementById('pfWho'); if(!el) return;
+  if(!pfKey()){ el.textContent='Kein Schlüssel — Meldungen öffnen sich als GitHub-Formular'; return; }
+  el.textContent='Schlüssel wird geprüft …';
+  ghApi('/user').then(function(u){
+    return ghApi(repoPath()).then(function(r){ PF_DARF_FREIGEBEN=!!(r&&r.permissions&&(r.permissions.push||r.permissions.admin||r.permissions.maintain));
+      el.textContent='Angemeldet als '+(u.login||'?')+(PF_DARF_FREIGEBEN?' — darf melden und freigeben':' — darf melden (Freigabe nur durch das Kernteam)'); })
+    .catch(function(){ PF_DARF_FREIGEBEN=false; el.textContent='Angemeldet als '+(u.login||'?')+' — darf melden'; });
+  }).catch(function(e){ PF_DARF_FREIGEBEN=false; el.textContent='Schlüssel ungültig oder abgelaufen ('+e.message+')'; });
+}
+function pfKeyDialog(){
+  pfModal('Persönlicher Schlüssel',
+    '<p>Mit einem Schlüssel schickt die Seite Meldungen <b>direkt</b> ab und du kannst Meldungen hier freigeben — ohne GitHub-Fenster. Der Schlüssel wird nur in <b>diesem Browser</b> gespeichert und darf ausschließlich das Recht <b>Issues: Read and write</b> haben (er kann keine Dateien ändern).</p>'
+    +'<p>Erzeugen: GitHub → Profilbild → Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token → Repository: nur dieses → Permissions: Issues „Read and write" → Generate.</p>'
+    +'<label>Schlüssel (beginnt mit github_pat_)</label><input id="pfKeyIn" type="password" autocomplete="off" placeholder="github_pat_…" value="'+esc2(pfKey())+'">'
+    +'<div class="pf-acts"><button type="button" class="pf-btn pri" onclick="pfKeySave()">Speichern</button>'
+    +'<button type="button" class="pf-btn" onclick="pfKeySet(\'\');pfWhoRefresh();pfClose();toast(\'Schlüssel entfernt\')">Entfernen</button></div>');
+}
+function pfKeySave(){ var v=(document.getElementById('pfKeyIn').value||'').trim(); if(!v){ toast('Bitte Schlüssel einfügen'); return; } pfKeySet(v); pfWhoRefresh(); pfClose(); toast('Schlüssel gespeichert (nur in diesem Browser)'); setTimeout(function(){ toast(document.getElementById('pfWho').textContent); },1500); }
+
+/* ---------- Meldung anlegen ---------- */
+function pfIssue(title,body){ return ghApi(repoPath()+'/issues',{method:'POST',body:{title:title,body:body}}); }
+
+/* Reifegrad: vorbereitete Änderungen als Meldungen senden (mit Schlüssel direkt, sonst Formular) */
+function rkMeldungBody(c){
+  var e=reifeGet(c.awf,c.ort);
+  return feld('Anwendungsfall',bereichLabel(c.awf))+feld('Niederlassung',c.ort)+feld('Neue Stufe',STUFEN_FORM[c.zu])
+    +feld('Ansprechperson (optional)',e.person)+feld('Hinweis / Begründung (optional)',e.hinweis);
+}
+function pflegeReifeSenden(ev){
+  if(!pfKey()){
+    if(RK.changes.length>1){ ev.preventDefault(); var c0=RK.changes[0]; window.open(rkMeldUrl(c0.awf,c0.ort,c0),'_blank','noopener');
+      RK.changes=RK.changes.slice(1); toast('Formular für '+rkAwfNum(c0.awf)+' · '+c0.ort+' geöffnet — bitte absenden, dann hier für die nächste Änderung erneut klicken ('+RK.changes.length+' übrig)'); rkRefresh(); return false; }
+    return true;
+  }
+  ev.preventDefault();
+  var changes=RK.changes.slice(); if(!changes.length){ toast('Keine Änderung vorbereitet'); return false; }
+  var p=Promise.resolve(), nums=[];
+  changes.forEach(function(c){ p=p.then(function(){ return pfIssue('Reifegrad: '+rkAwfNum(c.awf)+' '+c.ort+' → Stufe '+c.zu, rkMeldungBody(c)).then(function(i){ nums.push(i.number); }); }); });
+  p.then(function(){ toast(nums.length+(nums.length===1?' Meldung gesendet: #':' Meldungen gesendet: #')+nums.join(', #'));
+      RK.changes=[]; REIFE_RAW=null; REIFE_SRC='laden'; RK.form=null; RK.edit=false; reifeLoad(); rkRefresh(); setTimeout(pfMeldungen,600); })
+   .catch(function(e){ toast('Senden fehlgeschlagen: '+pfFehlerText(e)); });
+  return false;
+}
+
+/* Inhalt: Link, Status oder Beschreibung für einen Bereich melden */
+function pfInhaltDialog(id){
+  var e=inhalteEntry(id);
+  pfModal('Inhalt melden — '+bereichLabel(id),
+    '<p>Fülle nur aus, was sich ändern soll. Die Automatik zeigt eine Vorschau; nach <code>/freigeben</code> steht es auf der Seite.</p>'
+    +'<label>Link-Titel</label><input id="pfLt" placeholder="z. B. Steckbrief AwF 050">'
+    +'<label>Link-Beschreibung (optional)</label><input id="pfLb" placeholder="z. B. Karte als Markdown: Zweck, Prüfpunkte">'
+    +'<label>Link-Adresse (SharePoint: Datei → Teilen → Link kopieren)</label><input id="pfLa" placeholder="https://obermeyer.sharepoint.com/…">'
+    +'<label>Status-Badge</label><select id="pfSt"><option value="">keine Änderung</option><option value="b">In Bearbeitung</option><option value="g">Geprüft</option><option value="f">Freigegeben</option></select>'
+    +'<label>Beschreibung des Bereichs (erscheint auf der Seite)</label><textarea id="pfBe" placeholder="Kurz: Worum geht es, was gibt es hier?">'+esc2(e.beschreibung||'')+'</textarea>'
+    +'<label>Hinweis für das Kernteam (optional)</label><input id="pfHi" placeholder="Warum? (erscheint nur in der Meldung)">'
+    +'<div class="pf-acts"><button type="button" class="pf-btn pri" onclick="pfInhaltSenden(\''+esc2(id)+'\')">Als Meldung senden</button><button type="button" class="pf-btn" onclick="pfClose()">Abbrechen</button></div>');
+}
+function pfInhaltSenden(id){
+  var g=function(i){ return (document.getElementById(i).value||'').trim(); };
+  var d={titel:g('pfLt'),text:g('pfLb'),link:g('pfLa'),status:g('pfSt'),beschreibung:g('pfBe'),hinweis:g('pfHi')};
+  var alt=(inhalteEntry(id).beschreibung||'').trim(); if(d.beschreibung===alt) d.beschreibung='';
+  if(!d.titel&&!d.link&&!d.status&&!d.beschreibung){ toast('Nichts zu melden — bitte Link, Status oder Beschreibung angeben'); return; }
+  if((d.titel||d.link)&&!(d.titel&&d.link)){ toast('Für einen Link bitte Titel und Adresse angeben'); return; }
+  if(d.link&&!/^https?:\/\/\S+$/.test(d.link)){ toast('Die Link-Adresse muss mit https:// beginnen'); return; }
+  var was=[]; if(d.titel) was.push('Link „'+d.titel+'“'); if(d.status) was.push('Status'); if(d.beschreibung) was.push('Beschreibung');
+  var title='Inhalt: '+id+' — '+was.join(' · ');
+  if(!pfKey()){
+    var q='template=inhalt-melden.yml&title='+encodeURIComponent(title)+'&bereich='+encodeURIComponent(bereichLabel(id));
+    if(d.titel) q+='&linktitel='+encodeURIComponent(d.titel); if(d.text) q+='&linkbeschreibung='+encodeURIComponent(d.text); if(d.link) q+='&linkadresse='+encodeURIComponent(d.link);
+    if(d.status) q+='&status='+encodeURIComponent(STATUS_FORM[d.status]); if(d.beschreibung) q+='&beschreibung='+encodeURIComponent(d.beschreibung); if(d.hinweis) q+='&hinweis='+encodeURIComponent(d.hinweis);
+    window.open(ghBase()+'/issues/new?'+q,'_blank','noopener'); pfClose(); return;
+  }
+  var body=feld('Bereich',bereichLabel(id))+feld('Link-Titel',d.titel)+feld('Link-Beschreibung (optional)',d.text)+feld('Link-Adresse',d.link)
+    +feld('Status-Badge ändern (optional)',d.status?STATUS_FORM[d.status]:'keine Änderung')+feld('Beschreibung des Bereichs (optional)',d.beschreibung)+feld('Hinweis für das Kernteam (optional)',d.hinweis);
+  pfIssue(title,body).then(function(i){ toast('Meldung #'+i.number+' gesendet'); pfClose(); setTimeout(pfMeldungen,600); })
+    .catch(function(e){ var b=document.getElementById('pfBody'); if(b){ var d=document.createElement('div'); d.style.cssText='color:#C50042;margin-top:10px'; d.textContent='Senden fehlgeschlagen: '+pfFehlerText(e); b.appendChild(d); } toast('Senden fehlgeschlagen'); });
+}
+
+/* ---------- Offene Meldungen (mit Freigeben-Knopf) ---------- */
+function pfMeldungen(){
+  pfModal('Meldungen','<p>Lade …</p>');
+  var k=!!pfKey()&&PF_DARF_FREIGEBEN;
+  var offen=ghApi(repoPath()+'/issues?state=open&per_page=40&sort=created&direction=desc');
+  var zu=ghApi(repoPath()+'/issues?state=closed&per_page=10&sort=updated&direction=desc');
+  offen.then(function(list){
+    list=(list||[]).filter(function(i){ return !i.pull_request; });
+    var h='<h4 style="margin:0 0 6px">Offen ('+list.length+')</h4>';
+    if(!list.length) h+='<p>Keine offene Meldung. Alles, was gemeldet wurde, ist übernommen oder geschlossen — siehe unten.</p>';
+    else h+='<p style="margin-top:0">'+(k?'<b>Freigeben</b> übernimmt die Meldung automatisch (etwa eine Minute).':(pfKey()?'Dein Konto darf melden, aber nicht freigeben — das macht das Kernteam.':'Zum Freigeben Schlüssel hinterlegen oder in GitHub <code>/freigeben</code> kommentieren.'))+'</p>';
+    h+=list.map(function(i){
+      return '<div class="pf-row" id="pfI'+i.number+'"><div><b>#'+i.number+'</b> '+esc2(i.title)+'<small>von '+esc2(i.user&&i.user.login||'?')+' · '+pfDatum(i.created_at)+'</small></div>'
+        +'<div class="pf-acts" style="margin:0"><a class="pf-btn" href="'+esc2(i.html_url)+'" target="_blank" rel="noopener">Ansehen</a>'
+        +(k?'<button type="button" class="pf-btn pri" onclick="pfFreigeben('+i.number+')">Freigeben</button>':'')+'</div></div>';
+    }).join('');
+    h+='<div id="pfZu"><h4 style="margin:16px 0 6px">Zuletzt erledigt</h4><p>Lade …</p></div>';
+    document.getElementById('pfBody').innerHTML=h;
+    return zu;
+  }).then(function(list){
+    list=(list||[]).filter(function(i){ return !i.pull_request; });
+    var el=document.getElementById('pfZu'); if(!el) return;
+    el.innerHTML='<h4 style="margin:16px 0 6px">Zuletzt erledigt</h4>'+(list.length?list.map(function(i){
+      return '<div class="pf-row"><div>'+esc2(i.title)+'<small>#'+i.number+' · von '+esc2(i.user&&i.user.login||'?')+' · geschlossen '+pfDatum(i.closed_at||i.updated_at)+'</small></div><a class="pf-btn" href="'+esc2(i.html_url)+'" target="_blank" rel="noopener">Ansehen</a></div>'; }).join(''):'<p>Noch nichts erledigt.</p>');
+  }).catch(function(e){ document.getElementById('pfBody').innerHTML='<p>Konnte die Meldungen nicht laden: '+esc2(e.message)+'</p>'; });
+}
+function pfFreigeben(n){
+  var r=document.getElementById('pfI'+n); var btn=r?r.querySelector('.pf-btn.pri'):null; if(btn){ btn.disabled=true; btn.textContent='Sende …'; }
+  ghApi(repoPath()+'/issues/'+n+'/comments',{method:'POST',body:{body:'/freigeben'}}).then(function(){
+    if(r) r.innerHTML='<div><b>#'+n+'</b> Freigabe gesendet — die Automatik arbeitet … <small id="pfW'+n+'">warte auf Bestätigung (bis zu 2 Minuten)</small></div>';
+    toast('Freigabe für #'+n+' gesendet');
+    var versuche=0; var t=setInterval(function(){ versuche++;
+      ghApi(repoPath()+'/issues/'+n).then(function(i){ var w=document.getElementById('pfW'+n); if(!w){ clearInterval(t); return; }
+        if(i.state==='closed'){ clearInterval(t); w.innerHTML='<b style="color:#1b7f3b">Übernommen ✓</b> — die Seite zeigt die Änderung nach dem nächsten Neuladen (Strg+F5).'; }
+        else if(versuche>=12){ clearInterval(t); w.innerHTML='Noch nicht bestätigt. In GitHub unter <a href="'+esc2(i.html_url)+'" target="_blank" rel="noopener">der Meldung</a> nachsehen — dort steht, was die Automatik gemeldet hat (z. B. „Freigabe ist dem Kernteam vorbehalten“ oder ein Fehler in der Meldung).'; }
+      }).catch(function(){}); }, 10000);
+  }).catch(function(e){
+    if(btn){ btn.disabled=false; btn.textContent='Freigeben'; }
+    var msg='<div style="color:#C50042;font-size:12.5px;margin-top:6px">Freigabe fehlgeschlagen: '+esc2(pfFehlerText(e))+'</div>';
+    if(r){ var old=r.querySelector('.pf-err'); if(old) old.remove(); var d=document.createElement('div'); d.className='pf-err'; d.style.width='100%'; d.innerHTML=msg; r.appendChild(d); }
+    toast('Freigabe fehlgeschlagen');
+  });
+}
+
+/* ---------- Änderungsprotokoll ---------- */
+function pfProtokoll(){
+  pfModal('Änderungsprotokoll','<p>Lade …</p>');
+  ghApi(repoPath()+'/commits?per_page=25').then(function(list){
+    var h='<p>Die letzten Änderungen an der Seite — jede lässt sich in GitHub mit einem Klick zurückdrehen (Commit öffnen → Revert).</p>';
+    h+=(list||[]).map(function(c){ var m=(c.commit&&c.commit.message||'').split('\n')[0]; var wer=c.commit&&c.commit.author&&c.commit.author.name||'?'; var wann=c.commit&&c.commit.author&&c.commit.author.date||'';
+      return '<div class="pf-row"><div>'+esc2(m)+'<small>'+esc2(wer)+' · '+pfDatum(wann)+'</small></div><a class="pf-btn" href="'+esc2(c.html_url)+'" target="_blank" rel="noopener">Öffnen</a></div>'; }).join('');
+    document.getElementById('pfBody').innerHTML=h;
+  }).catch(function(e){ document.getElementById('pfBody').innerHTML='<p>Konnte das Protokoll nicht laden: '+esc2(e.message)+'</p>'; });
+}
+
+pfBar();
+
+</script>
+</body>
+</html>
