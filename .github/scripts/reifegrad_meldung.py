@@ -62,8 +62,6 @@ def parse_body(text):
         "ort": get("niederlassung"),
         "stufe_roh": get("stufe"),
         "person": get("ansprechperson"),
-        "kontakt": get("mail"),
-        "projekt": get("projekt"),
         "hinweis": get("hinweis"),
     }
 
@@ -82,9 +80,9 @@ def pruefe(d, daten):
     stufe = int(m2.group(0)) if m2 else None
     if stufe is None:
         fehler.append(f"Stufe nicht erkannt: „{d['stufe_roh'] or 'leer'}“ (0 bis 4)")
-    for mail in re.split(r"\s*[·,;]\s*", d["kontakt"] or ""):
-        if mail and not re.fullmatch(r"[^@\s]+@[^@\s]+\.[A-Za-z]{2,}", mail):
-            fehler.append(f"E-Mail sieht ungültig aus: „{mail}“")
+    for k in ("person", "hinweis"):
+        if re.search(r"[^@\s]+@[^@\s]+\.[A-Za-z]{2,}", d[k] or ""):
+            fehler.append(f"Im Feld „{k}“ steht eine E-Mail-Adresse — bitte entfernen (die Seite ist öffentlich, Kontakt über das Firmenverzeichnis)")
     return awf, ort, stufe, fehler
 
 
@@ -102,11 +100,12 @@ def anwenden(daten, awf, ort, stufe, d):
     karte = daten.setdefault("reifegrad", {}).setdefault(awf, {})
     alt = karte.get(ort)
     neu = dict(alt) if isinstance(alt, dict) else ({} if alt is None else {"stufe": alt})
+    neu.pop("kontakt", None); neu.pop("projekt", None)  # Altfelder werden nicht mehr geführt
     neu["stufe"] = stufe
-    for feld in ("person", "kontakt", "projekt", "hinweis"):
+    for feld in ("person", "hinweis"):
         if d[feld]:
             neu[feld] = d[feld]
-    extra = [k for k in ("person", "kontakt", "projekt", "hinweis") if str(neu.get(k, "")).strip()]
+    extra = [k for k in ("person", "hinweis") if str(neu.get(k, "")).strip()]
     if stufe == 0 and not extra:
         karte.pop(ort, None)
         wert = None
@@ -115,7 +114,7 @@ def anwenden(daten, awf, ort, stufe, d):
         wert = stufe
     else:
         wert = {"stufe": stufe}
-        for k in ("person", "kontakt", "projekt", "hinweis"):
+        for k in ("person", "hinweis"):
             if str(neu.get(k, "")).strip():
                 wert[k] = neu[k]
         karte[ort] = wert
@@ -162,7 +161,7 @@ def main():
         text = MARKER + "**Vorschau der Meldung**\n\n" + zeile + "\n\n" + eintrag
         if alt_stufe == stufe and json.dumps(alt, sort_keys=True, ensure_ascii=False) == json.dumps(wert, sort_keys=True, ensure_ascii=False):
             text += "\n\nHinweis: Die Karte steht bereits auf diesem Stand."
-        text += "\n\nLeere Formularfelder lassen vorhandene Angaben (Person, Projekt …) unverändert."
+        text += "\n\nLeere Formularfelder lassen vorhandene Angaben (Person, Hinweis) unverändert."
         text += "\n\n**Freigabe:** Ein Mitglied des Kernteams kommentiert hier `/freigeben` — danach trägt die Automatik die Änderung selbst ein und die Karte ist etwa eine Minute später aktuell."
         schreibe("kommentar.md", text)
         return
